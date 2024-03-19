@@ -122,6 +122,14 @@ namespace Objetos
             }
         }
 
+        public static int Inserir(Sobremesas s)
+        {
+            string sql;
+            sql = "Insert into Sobremesas (Nome, Descricao, Tipo) Values ('" + s.Nome.ToString() + "', '" + s.Descricao.ToString() + "', " + Geral.Geral.BoolToInt(s.Tipo) + ")";
+
+            return Geral.Geral.Inserir(sql);
+        }
+
         #endregion
 
         #endregion

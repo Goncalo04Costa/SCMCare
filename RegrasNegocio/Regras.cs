@@ -11,9 +11,15 @@ namespace RegrasNegocio
             Dictionary<String, Object> dic = new Dictionary<String, Object>();
             dic.Add("Nome", "Ban");
 
-            Sobremesas.ObterLista(dic);
+            //Sobremesas.ObterLista(dic);
+            Sobremesas a = new Sobremesas();
+            a.Nome = "Teste2";
+            a.Descricao = "Teste inserir sobremesa 2";
+            a.Tipo = false;
 
-            return 0;
+            return Sobremesas.Inserir(a);
+
+            //return 0;
         }
     }
 }

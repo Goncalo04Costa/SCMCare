@@ -79,4 +79,50 @@ namespace Geral
 
         #endregion
     }
+    public class Geral
+    {
+        #region Base de Dados
+
+        public static int Inserir(string sql)
+        {
+            int resultado = 0;
+
+            string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
+
+            using (SqlConnection ligacao = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    ligacao.Open();
+
+                    SqlCommand comando = new SqlCommand(sql, ligacao);
+
+                    comando.ExecuteNonQuery();
+
+                    resultado = 1;
+
+                    ligacao.Close();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("ERRO: ", ex);
+                }
+            }
+
+            return resultado;
+        }
+
+        #endregion
+        #region Conversões
+
+        public static int BoolToInt(bool b)
+        {
+            if (b)
+                return 1;
+            else
+                return 0;
+        }
+
+        #endregion
+    }
 }
