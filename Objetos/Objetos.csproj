@@ -45,6 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sobremesas.cs" />
     <Compile Include="Sopas.cs" />
+    <Compile Include="TipoAlergia.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Geral\Geral.csproj">
