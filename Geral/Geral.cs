@@ -13,11 +13,17 @@ using System.Data.SqlClient;
 
 namespace Geral
 {
-    public class Geral<TDataType>
+    public class Geral<TipoDados>
     {
         #region Base de Dados
 
-        public static TDataType[] ObterLista(string sql)
+        /// <summary>
+        /// Método para obter os dados de uma lista de acordo com a query sql recebida.
+        /// </summary>
+        /// <param name="sql">Query SQL a ser executada.</param>
+        /// <returns>Devolve uma lista do tipo de dados pretendido.</returns>
+        /// <exception cref="Exception"> Excessão para quando ocorre um erro.</exception>
+        public static TipoDados[] ObterLista(string sql)
         {
             DataTable resultado = new DataTable(); 
             string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
@@ -45,16 +51,21 @@ namespace Geral
             return Converter(resultado);
         }
 
-        // !!! Verificar como Funciona
-        private static TDataType[] Converter(DataTable tabela)
+        /// <summary>
+        /// Método para converter a DataTable numa lista.
+        /// </summary>
+        /// <param name="tabela">DataTable a converter</param>
+        /// <returns>Devolve uma lista do tipo de dados pretendido.</returns>
+        /// <exception cref="Exception"> Excessão para quando ocorre um erro.</exception>
+        private static TipoDados[] Converter(DataTable tabela)
         {
             try
             {
-                List<TDataType> lstConvertidos = new List<TDataType>();
+                List<TipoDados> lstConvertidos = new List<TipoDados>();
 
                 foreach (DataRow item in tabela.Rows)
                 {
-                    TDataType aux = (TDataType)Activator.CreateInstance(typeof(TDataType), item);
+                    TipoDados aux = (TipoDados)Activator.CreateInstance(typeof(TipoDados), item);
                     lstConvertidos.Add(aux);
                 }
 

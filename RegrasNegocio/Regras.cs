@@ -9,6 +9,8 @@ namespace RegrasNegocio
         public static int Teste() 
         {
             Dictionary<String, Object> dic = new Dictionary<String, Object>();
+            dic.Add("Nome", "Ban");
+
             Sobremesas.ObterLista(dic);
 
             return 0;

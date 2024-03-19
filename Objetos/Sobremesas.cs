@@ -57,6 +57,11 @@ namespace Objetos
 
         #region Outros Métodos
 
+        /// <summary>
+        /// Método para obter a lista de sobremesas de acordo com o filtro.
+        /// </summary>
+        /// <param name="filtros">Filtro de parámetros.</param>
+        /// <returns>Devolve a lista de sobremesas.</returns>
         public static Sobremesas[] ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
@@ -67,6 +72,11 @@ namespace Objetos
             return lstS;
         }
 
+        /// <summary>
+        /// Método para preparar a query sql com os filtros obtidos.
+        /// </summary>
+        /// <param name="filtros">Filtros a aplicar.</param>
+        /// <param name="sql">Query sql.</param>
         private static void PreparaSQL(Dictionary<String, Object> filtros, out string sql)
         {
             // Parámetros a devolver no final
@@ -77,6 +87,7 @@ namespace Objetos
             // Adicionar filtros ao sql, e registar os parámetros
             if (filtros != null)
             {
+                // Para int - Aplica filtro para um intervalo de Ids.
                 if (filtros.ContainsKey("IdDe") && !string.IsNullOrEmpty(filtros["IdDe"].ToString()))
                 {
                     sql += " and Id >= " + filtros["IdDe"].ToString();
@@ -85,11 +96,12 @@ namespace Objetos
                 {
                     sql += " and Id <= @" + filtros["IdAte"].ToString();
                 }
-                //  !!! Verificar como funciona antes de implementar
-                //if (filtros.ContainsKey("NomeDe") && !string.IsNullOrEmpty(filtros["filtros"].ToString()))
-                //{
-                //    sql += " and c.Nome COLLATE Latin1_general_CI_AI LIKE " + filtros["NomeDe"].ToString() + " COLLATE Latin1_general_CI_AI";
-                //}
+
+                //  Para string - Verifica se existe alguma string como a recebida no filtro (ignorando a capitalização e acentuação)
+                if (filtros.ContainsKey("Nome") && !string.IsNullOrEmpty(filtros["Nome"].ToString()))
+                {
+                    sql += " and Nome COLLATE Latin1_general_CI_AI LIKE '%" + filtros["Nome"].ToString() + "%' COLLATE Latin1_general_CI_AI";
+                }
 
                 // Para bit/bool - Verifica se tem filtro para True, verifica se tem filtro para False, se já tiver filtro para True, adiciona 'or',
                 // se a string não estiver vazia adiciona os filtros à string SQL.
