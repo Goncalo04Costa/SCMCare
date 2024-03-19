@@ -26,8 +26,8 @@ namespace Geral
         public static TipoDados[] ObterLista(string sql)
         {
             DataTable resultado = new DataTable(); 
-            string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
-
+            //string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
+            string connectionString = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
             using (SqlConnection ligacao = new SqlConnection(connectionString))
             {
                 try
