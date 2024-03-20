@@ -15,28 +15,27 @@ using System;
 
 namespace Objetos
 {
-    public class Pratos
+    public class Hospitais
     {
         #region Atributos
 
         public int Id { get; set; }
         public string Nome { get; set; }
-        public string Descricao { get; set; }
-        public bool Tipo { get; set; }
+        public string Morada { get; set; }
 
         #endregion
 
         #region Métodos
 
         #region Construtores
-        public Pratos() { }
+        public Hospitais() { }
 
         /// <summary>
         /// Construtor para pratos.
         /// Recebe uma tabela com dados e de acordo com as colunas vai adicionar ao objeto.
         /// </summary>
         /// <param name="tabela">Tabela de dados.</param>
-        public Pratos(DataRow tabela)
+        public Hospitais(DataRow tabela)
         {
             if (tabela.Table.Columns.Contains("Id"))
             {
@@ -46,13 +45,9 @@ namespace Objetos
             {
                 this.Nome = tabela.Field<string>("Nome");
             }
-            if (tabela.Table.Columns.Contains("Descricao"))
+            if (tabela.Table.Columns.Contains("Morada"))
             {
-                this.Descricao = tabela.Field<string>("Descricao");
-            }
-            if (tabela.Table.Columns.Contains("Tipo"))
-            {
-                this.Tipo = tabela.Field<bool>("Tipo");
+                this.Morada = tabela.Field<string>("Morada");
             }
         }
         #endregion
@@ -64,12 +59,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de pratos.</returns>
-        public static Pratos[] ObterLista(Dictionary<String, Object> filtros)
+        public static Hospitais[] ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Pratos[] lstS = Geral<Pratos>.ObterLista(sql);
+            Hospitais[] lstS = Geral<Hospitais>.ObterLista(sql);
 
             return lstS;
         }
@@ -105,29 +100,14 @@ namespace Objetos
                     sql += " and Nome COLLATE Latin1_general_CI_AI LIKE '%" + filtros["Nome"].ToString() + "%' COLLATE Latin1_general_CI_AI";
                 }
 
-                // Para bit/bool - Verifica se tem filtro para True, verifica se tem filtro para False, se já tiver filtro para True, adiciona 'or',
-                // se a string não estiver vazia adiciona os filtros à string SQL.
-                String Tipo = "";
-                if (filtros.ContainsKey("Tipo1") && filtros["Tipo1"].ToString() == "1")
-                {
-                    Tipo += "Tipo=1";
-                }
-                if (filtros.ContainsKey("Tipo0") && filtros["Tipo0"].ToString() == "1")
-                {
-                    if (!String.IsNullOrWhiteSpace(Tipo))
-                        Tipo += " or ";
-                    Tipo += "Tipo=0";
-                }
-                if (!String.IsNullOrWhiteSpace(Tipo))
-                    sql += String.Format(" and ({0})", Tipo);
-
+               
             }
         }
 
-        public static int Inserir(Pratos p)
+        public static int Inserir(Hospitais h)
         {
             string sql;
-            sql = "Insert into Pratos (Nome, Descricao, Tipo) Values ('" + p.Nome.ToString() + "', '" + p.Descricao.ToString() + "', " + Geral.Geral.BoolToInt(p.Tipo) + ")";
+            sql = "Insert into Pratos (Nome, Descricao, Tipo) Values ('" + h.Nome.ToString() + "', '" + h.Morada.ToString() + "', "  + ")";
 
             return Geral.Geral.Inserir(sql);
         }
