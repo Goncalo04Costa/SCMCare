@@ -83,12 +83,13 @@ namespace Geral
     {
         #region Base de Dados
 
-        public static int Inserir(string sql)
+    
+        public static int Manipular(string sql)
         {
             int resultado = 0;
 
-            string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
-
+            //string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
+            string connectionString = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
             using (SqlConnection ligacao = new SqlConnection(connectionString))
             {
                 try

@@ -127,7 +127,23 @@ namespace Objetos
             string sql;
             sql = "Insert into Sobremesas (Nome, Descricao, Tipo) Values ('" + s.Nome.ToString() + "', '" + s.Descricao.ToString() + "', " + Geral.Geral.BoolToInt(s.Tipo) + ")";
 
-            return Geral.Geral.Inserir(sql);
+            return Geral.Geral.Manipular(sql);
+        }
+
+
+        public static int Remover(int i)
+        {
+            string sql;
+            sql = "Delete from Sobremesas where id = " + i.ToString(); 
+            return Geral.Geral.Manipular(sql);
+        }
+
+        public static int AlterarDados(Sobremesas s)
+        {
+            string sql;
+            sql = "Update Sobremesas set Nome ='" +s.Nome.ToString() + "' ,Descricao ='"+s.Descricao.ToString() + "' ,Tipo ="  + Geral.Geral.BoolToInt(s.Tipo) + ")";
+
+            return Geral.Geral.Manipular(sql);
         }
 
         #endregion
