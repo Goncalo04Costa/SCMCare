@@ -1,12 +1,11 @@
 ﻿/*
-*	<copyright file="TipoAlergia" company="IPCA">
+*	<copyright file="TipoContacto" company="IPCA">
 *	</copyright>
 * 	<author>Gonçalo Costa</author>
 *	<contact>a26024@alunos.ipca.pt</contact>
-*   <date>2024 19/03/2024 22:37:04</date>
+*   <date>2024 20/03/2024 16:36:59</date>
 *	<description></description>
 **/
-
 
 using Geral;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ using System;
 
 namespace Objetos
 {
-    public class TipoAlergia
+    public class TipoContato
     {
         #region Atributos
 
@@ -27,14 +26,14 @@ namespace Objetos
         #region Métodos
 
         #region Construtores
-        public TipoAlergia() { }
+        public TipoContato() { }
 
         /// <summary>
-        /// Construtor para tipos de alergias.
+        /// Construtor para tipos de contato.
         /// Recebe uma tabela com dados e de acordo com as colunas vai adicionar ao objeto.
         /// </summary>
         /// <param name="tabela">Tabela de dados.</param>
-        public TipoAlergia(DataRow tabela)
+        public TipoContato(DataRow tabela)
         {
             if (tabela.Table.Columns.Contains("Id"))
             {
@@ -50,14 +49,14 @@ namespace Objetos
         #region Outros Métodos
 
         /// <summary>
-        /// Método para obter a lista de tipos de alergias.
+        /// Método para obter a lista de tipos de contato.
         /// </summary>
-        /// <returns>Devolve a lista de tipos de alergias.</returns>
-        public static TipoAlergia[] ObterLista()
+        /// <returns>Devolve a lista de tipos de contato.</returns>
+        public static TipoContato[] ObterLista()
         {
-            string sql = "SELECT Id, Descricao FROM TipoAlergias";
-            TipoAlergia[] listaTiposAlergia = Geral<TipoAlergia>.ObterLista(sql);
-            return listaTiposAlergia;
+            string sql = "SELECT Id, Descricao FROM TipoContatos";
+            TipoContato[] listaTiposContato = Geral<TipoContato>.ObterLista(sql);
+            return listaTiposContato;
         }
 
         /// <summary>
@@ -69,7 +68,7 @@ namespace Objetos
         {
             // Parâmetros a devolver no final
             List<object> parSQL = new List<object>();
-            sql = @"SELECT Id, Descricao FROM TipoAlergias WHERE 1=1 ";
+            sql = @"SELECT Id, Descricao FROM TipoContatos WHERE 1=1 ";
 
             // Adicionar filtros ao SQL, e registrar os parâmetros
             if (filtros != null)
@@ -91,21 +90,25 @@ namespace Objetos
                 }
             }
         }
-        public static int Inserir(TipoAlergia tipoAlergia)
+        public static int Inserir(TipoContato tipoContato)
         {
-            string sql = "INSERT INTO TipoAlergias (Descricao) VALUES ('" + tipoAlergia.Descricao + "')";
+            string sql = "INSERT INTO TipoContatos (Descricao) VALUES ('" + tipoContato.Descricao + "')";
             return Geral.Geral.Manipular(sql);
         }
 
         public static int Remover(int id)
         {
-            string sql = "DELETE FROM TipoAlergias WHERE Id = " + id;
+            string sql = "DELETE FROM TipoContatos WHERE Id = " + id;
             return Geral.Geral.Manipular(sql);
         }
 
-        public static int AlterarDados(TipoAlergia tipoAlergia)
+        public static int AlterarDados(TipoContato tipoContato)
         {
-            string sql = "UPDATE TipoAlergias SET Descricao = '" + tipoAlergia.Descricao + "' WHERE Id = " + tipoAlergia.Id;
+            string sql = "UPDATE TipoContatos SET Descricao = '" + tipoContato.Descricao + "' WHERE Id = " + tipoContato.Id;
             return Geral.Geral.Manipular(sql);
         }
+        #endregion
 
+        #endregion
+    }
+}
