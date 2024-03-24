@@ -151,6 +151,12 @@ namespace Objetos
             return Geral.Geral.Manipular(sql);
         }
 
+           public static List<Utentes> ListarUtentes()
+        {
+            string sql = "SELECT * FROM Utentes";
+            return new List<Utentes>(Geral.Geral<Utentes>.ObterLista(sql));
+        }
+
 
         #endregion
 
