@@ -111,6 +111,20 @@ namespace Objetos
             sql = "DELETE FROM Mensalidades WHERE Mes = '" + mes.ToString("yyyy-MM-dd") + "' AND UtentesId = " + utentesId;
             return Geral.Geral.Manipular(sql);
         }
+       public static int VerificarEstadoMensalidade(DateTime mes, int utentesId)
+        {
+            string sql = $"SELECT Estado FROM Mensalidades WHERE Mes = '{mes.ToString("yyyy-MM-dd")}' AND UtentesId = {utentesId}"; 
+            DataTable result = Geral.Geral<DataTable>.ObterLista(sql);
+            if (result.Rows.Count > 0)
+            {
+                int estado = Convert.ToInt32(result.Rows[0]["Estado"]);
+                return estado;
+            }
+            else
+            {
+                return -1; 
+            }
+        }
 
         #endregion
 
