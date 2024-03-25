@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class ContactosFuncionarios
     {
@@ -58,12 +58,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de contactos de funcionários.</returns>
-        public static ContactosFuncionarios[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<ContactosFuncionarios> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            ContactosFuncionarios[] lstCF = Geral<ContactosFuncionarios>.ObterLista(sql);
+            List<ContactosFuncionarios> lstCF = Geral<ContactosFuncionarios>.ObterLista(sql);
 
             return lstCF;
         }
@@ -91,7 +91,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO ContactosFuncionarios (FuncionariosId, TipoContactoId, Valor) VALUES (" + cf.FuncionariosId + ", " + cf.TipoContactoId + ", '" + cf.Valor + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -99,7 +99,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM ContactosFuncionarios WHERE FuncionariosId = " + funcionariosId + " AND TipoContactoId = " + tipoContactoId;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

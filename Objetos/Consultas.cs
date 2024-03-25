@@ -6,12 +6,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Consultas
     {
@@ -75,12 +75,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de consultas.</returns>
-        public static Consultas[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Consultas> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Consultas[] lstS = Geral<Consultas>.ObterLista(sql);
+            List<Consultas> lstS = Geral<Consultas>.ObterLista(sql);
 
             return lstS;
         }
@@ -132,14 +132,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Consultas (Data, Descricao, HospitaisId, UtentesId, FuncionariosId, ResponsaveisId) Values (" + s.Data.ToString() + ", '" + s.Descricao + ", '" + s.HospitaisId.ToString() + "', '" + s.UtentesId.ToString() + "', '" + s.FuncionariosId.ToString() + "', '" + s.ResponsaveisId.ToString() + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i)
         {
             string sql;
             sql = "Delete from Consultas where Id = " + i.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Consultas s)
@@ -147,7 +147,7 @@ namespace Objetos
             string sql;
             sql = "Update Consultas set Data = '" + s.Data.ToString() + "', Descricao = '" + s.Descricao + "', HospitaisId = '" + s.HospitaisId.ToString() + "', UtentesId = '" + s.UtentesId.ToString() + "', FuncionariosId = '" + s.FuncionariosId.ToString() + "', ResponsaveisId = '" + s.ResponsaveisId.ToString() + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

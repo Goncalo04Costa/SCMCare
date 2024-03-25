@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Quartos
     {
@@ -58,12 +58,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de quartos.</returns>
-        public static Quartos[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Quartos> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Quartos[] lstQ = Geral<Quartos>.ObterLista(sql);
+            List<Quartos> lstQ = Geral<Quartos>.ObterLista(sql);
 
             return lstQ;
         }
@@ -100,7 +100,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO Quartos (Numero, TiposQuartoId) VALUES (" + q.Numero + ", " + q.TiposQuartoId + ")";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -108,7 +108,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM Quartos WHERE Id = " + i;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Quartos q)
@@ -116,7 +116,7 @@ namespace Objetos
             string sql;
             sql = "UPDATE Quartos SET Numero = " + q.Numero + ", TiposQuartoId = " + q.TiposQuartoId + " WHERE Id = " + q.Id;
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

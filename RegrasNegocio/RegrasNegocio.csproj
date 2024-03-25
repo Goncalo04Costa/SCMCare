@@ -45,13 +45,13 @@
     <Compile Include="Regras.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Geral\Geral.csproj">
+    <ProjectReference Include="..\Geral\MetodosGlobais.csproj">
       <Project>{dfee4112-b932-4111-a74b-e5c30bad915f}</Project>
-      <Name>Geral</Name>
+      <Name>MetodosGlobais</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Objetos\Objetos.csproj">
+    <ProjectReference Include="..\Objetos\ObjetosNegocio.csproj">
       <Project>{c79ce0dd-35a5-4051-8acd-42e19aafdc60}</Project>
-      <Name>Objetos</Name>
+      <Name>ObjetosNegocio</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

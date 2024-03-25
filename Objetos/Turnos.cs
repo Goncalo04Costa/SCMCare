@@ -10,9 +10,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
+using ObjetosNegocio;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Turnos
     {
@@ -50,15 +51,16 @@ namespace Objetos
                 this.Ativo = tabela.Field<bool>("Ativo");
             }
         }
+        #endregion
 
         #region Outros Métodos
 
-        public static Turnos[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Turnos> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Turnos[] lstT = Geral<Turnos>.ObterLista(sql);
+            List<Turnos> lstT = Geral<Turnos>.ObterLista(sql);
 
             return lstT;
         }
@@ -102,29 +104,29 @@ namespace Objetos
 
         public static int Inserir(Turnos t)
         {
-            string sql = "INSERT INTO Turnos (HoraInicio, HoraFim, Ativo) VALUES ('" + t.HoraInicio.ToString() + "', '" + t.HoraFim.ToString() + "', " + Geral.Geral.BoolToInt(t.Ativo) + ")";
+            string sql = "INSERT INTO Turnos (HoraInicio, HoraFim, Ativo) VALUES ('" + t.HoraInicio.ToString() + "', '" + t.HoraFim.ToString() + "', " + Geral.BoolToInt(t.Ativo) + ")";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int id)
         {
             string sql = "DELETE FROM Turnos WHERE Id = " + id.ToString();
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
         public static int AlterarDados(Turnos t)
         {
-            string sql = "UPDATE Turnos SET HoraInicio = '" + t.HoraInicio.ToString() + "', HoraFim = '" + t.HoraFim.ToString() + "', Ativo = " + Geral.Geral.BoolToInt(t.Ativo) + " WHERE Id = " + t.Id.ToString();
+            string sql = "UPDATE Turnos SET HoraInicio = '" + t.HoraInicio.ToString() + "', HoraFim = '" + t.HoraFim.ToString() + "', Ativo = " + Geral.BoolToInt(t.Ativo) + " WHERE Id = " + t.Id.ToString();
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion
 
-
+        #endregion
 
     }
 }

@@ -6,12 +6,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Horarios
     {
@@ -54,12 +54,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de horarios.</returns>
-        public static Horarios[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Horarios> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Horarios[] lstS = Geral<Horarios>.ObterLista(sql);
+            List<Horarios> lstS = Geral<Horarios>.ObterLista(sql);
 
             return lstS;
         }
@@ -104,14 +104,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Horarios (FuncionariosId, TurnosId, Dia) Values (" + s.FuncionariosId.ToString() + ", '" + s.TurnosId.ToString() + ", '" + s.Dia.ToString() + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i, int a, DateTime b)
         {
             string sql;
             sql = "Delete from Horarios where FuncionariosId = " + i.ToString() + " and TurnosId = " + a.ToString() + " and Dia = " + b.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Horarios s)
@@ -119,7 +119,7 @@ namespace Objetos
             string sql;
             sql = "Update Horarios set FuncionariosId = '" + s.FuncionariosId.ToString() + "', TurnosId = '" + s.TurnosId.ToString() + "', Dia = '" + s.Dia.ToString() + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
         #endregion

@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class MedicamentosPrescricao
     {
@@ -68,12 +68,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de MedicamentosPrescricao.</returns>
-        public static MedicamentosPrescricao[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<MedicamentosPrescricao> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            MedicamentosPrescricao[] lstMP = Geral<MedicamentosPrescricao>.ObterLista(sql);
+            List<MedicamentosPrescricao> lstMP = Geral<MedicamentosPrescricao>.ObterLista(sql);
 
             return lstMP;
         }
@@ -101,7 +101,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO MedicamentosPrescricao (PrescricoesId, MedicamentosId, QuantidadePIntervalo, IntervaloHoras, Instrucoes) VALUES (" + mp.PrescricoesId + ", " + mp.MedicamentosId + ", " + mp.QuantidadePIntervalo + ", " + mp.IntervaloHoras + ", '" + mp.Instrucoes + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -109,7 +109,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM MedicamentosPrescricao WHERE PrescricoesId = " + prescricoesId + " AND MedicamentosId = " + medicamentosId;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

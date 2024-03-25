@@ -8,12 +8,12 @@
 **/
 
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System.Data;
 using System;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class TipoPagamento
     {
@@ -53,10 +53,10 @@ namespace Objetos
         /// Método para obter a lista de tipos de pagamentos.
         /// </summary>
         /// <returns>Devolve a lista de tipos de pagamentos.</returns>
-        public static TipoPagamento[] ObterLista()
+        public static List<TipoPagamento> ObterLista()
         {
             string sql = "SELECT Id, Descricao FROM TipoPagamentos";
-            TipoPagamento[] listaTiposPagamento = Geral<TipoPagamento>.ObterLista(sql);
+            List<TipoPagamento> listaTiposPagamento = Geral<TipoPagamento>.ObterLista(sql);
             return listaTiposPagamento;
         }
 
@@ -94,19 +94,19 @@ namespace Objetos
         public static int Inserir(TipoPagamento tipoPagamento)
         {
             string sql = "INSERT INTO TipoPagamentos (Descricao) VALUES ('" + tipoPagamento.Descricao + "')";
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int id)
         {
             string sql = "DELETE FROM TipoPagamentos WHERE Id = " + id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(TipoPagamento tipoPagamento)
         {
             string sql = "UPDATE TipoPagamentos SET Descricao = '" + tipoPagamento.Descricao + "' WHERE Id = " + tipoPagamento.Id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
 

@@ -6,12 +6,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Avarias
     {
@@ -63,12 +63,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de avarias.</returns>
-        public static Avarias[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Avarias> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Avarias[] lstS = Geral<Avarias>.ObterLista(sql);
+            List<Avarias> lstS = Geral<Avarias>.ObterLista(sql);
 
             return lstS;
         }
@@ -120,14 +120,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Avarias (Data, EquipamentosId, Descricao, Estado) Values (" + s.Data.ToString() + ", '" + s.EquipamentosId.ToString() + ", '" + s.Descricao + "', '" + s.Estado.ToString() + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i)
         {
             string sql;
             sql = "Delete from Avaliacoes where Id = " + i.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Avarias s)
@@ -135,7 +135,7 @@ namespace Objetos
             string sql;
             sql = "Update Avaliacoes set Data = '" + s.Data.ToString() + "', EquipamentosId = '" + s.EquipamentosId.ToString() + "', Descricao = '" + s.Descricao + "', Estado = '" + s.Estado.ToString() + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

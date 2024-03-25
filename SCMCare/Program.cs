@@ -8,6 +8,7 @@ namespace SCMCare
         static void Main(string[] args)
         {
             Console.WriteLine(Regras.Teste());
+            Regras.ObterFichaUtente(2);
         }
     }
 }

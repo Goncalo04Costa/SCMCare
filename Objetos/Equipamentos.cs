@@ -6,13 +6,13 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Equipamentos
     {
@@ -66,12 +66,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de equipamentos.</returns>
-        public static Equipamentos[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Equipamentos> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Equipamentos[] lstS = Geral<Equipamentos>.ObterLista(sql);
+            List<Equipamentos> lstS = Geral<Equipamentos>.ObterLista(sql);
 
             return lstS;
         }
@@ -129,14 +129,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Equipamentos (Descricao, Historico, TiposEquipamentoId, QuartosId) Values (" + s.Descricao + ", '" + s.Historico.ToString() + ", '" + s.TiposEquipamentoId.ToString() + "', '" + s.QuartosId.ToString() + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i)
         {
             string sql;
             sql = "Delete from Equipamentos where Id = " + i.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Equipamentos s)
@@ -144,7 +144,7 @@ namespace Objetos
             string sql;
             sql = "Update Equipamentos set Descricao = '" + s.Descricao + "', Historico = '" + s.Historico.ToString() + "', TiposEquipamentoId = '" + s.TiposEquipamentoId.ToString() + "', QuartosId = '" + s.QuartosId.ToString() + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         } 
 
         #endregion

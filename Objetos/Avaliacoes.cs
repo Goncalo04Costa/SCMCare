@@ -6,17 +6,18 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Avaliacoes
     {
         #region atributos
+        public int Id { get; set; }
         public int UtentesId { get; set; }
         public int FuncionariosId { get; set; }
         public string Analise { get; set; }
@@ -37,6 +38,10 @@ namespace Objetos
         /// <param name="tabela"> Tabela de dados. </param>
         public Avaliacoes(DataRow tabela)
         {
+            if (tabela.Table.Columns.Contains("Id"))
+            {
+                this.Id = tabela.Field<int>("Id");
+            }
             if (tabela.Table.Columns.Contains("UtentesId"))
             {
                 this.UtentesId = tabela.Field<int>("UtentesId");
@@ -75,12 +80,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de avaliacoes.</returns>
-        public static Avaliacoes[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Avaliacoes> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Avaliacoes[] lstS = Geral<Avaliacoes>.ObterLista(sql);
+            List<Avaliacoes> lstS = Geral<Avaliacoes>.ObterLista(sql);
 
             return lstS;
         }
@@ -94,7 +99,7 @@ namespace Objetos
         {
             // Parámetros a devolver no final
             List<object> parSQL = new List<object>();
-            sql = @"Select UtentesId, FuncionariosId, Analise, Data, TipoAvaliacaoId, AuscultacaoPolmunar, AucultacaoCardiaca From Avaliacao where 1=1";
+            sql = @"Select Id, UtentesId, FuncionariosId, Analise, Data, TipoAvaliacaoId, AuscultacaoPolmunar, AucultacaoCardiaca From Avaliacao where 1=1";
 
             // Adicionar filtros ao sql, e registar os parámetros
             if (filtros != null)
@@ -107,12 +112,6 @@ namespace Objetos
                 if (filtros.ContainsKey("IdAte") && !string.IsNullOrEmpty(filtros["IdAte"].ToString()))
                 {
                     sql += " and Id <= @" + filtros["IdAte"].ToString();
-                }
-
-                //  Para string - Verifica se existe alguma string como a recebida no filtro (ignorando a capitalização e acentuação)
-                if (filtros.ContainsKey("Nome") && !string.IsNullOrEmpty(filtros["Nome"].ToString()))
-                {
-                    sql += " and Nome COLLATE Latin1_general_CI_AI LIKE '%" + filtros["Nome"].ToString() + "%' COLLATE Latin1_general_CI_AI";
                 }
 
                 // Para DateTime - Aplica filtro de data
@@ -132,14 +131,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Avaliacoes (UtentesId, FuncionariosId, Analise, Data, TipoAvaliacaoId, AuscultacaoPolmunar, AucultacaoCardiaca) Values (" + s.UtentesId.ToString() + ", '" + s.FuncionariosId.ToString() + ", '" + s.Analise + "', '" + s.Data.ToString() + ", '" + s.TipoAvaliacaoId.ToString() + ", '" + s.AuscultacaoPolmunar + ", '" + s.AucultacaoCardiaca + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i, int a, DateTime d)
         {
             string sql;
             sql = "Delete from Avaliacoes where UtentesId = " + i.ToString() + " and FuncionariosId = " + a.ToString() + " and Data = " + d.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Avaliacoes s)
@@ -147,7 +146,7 @@ namespace Objetos
             string sql;
             sql = "Update Avaliacoes set Analise = '" + s.Analise + "', Data = '" + s.Data.ToString() + "', TipoAvaliacaoId = '" + s.TipoAvaliacaoId + "', AuscultacaoPolmunar = '" + s.AuscultacaoPolmunar + "', AucultacaoCardiaca = '" + s.AucultacaoCardiaca + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
         #endregion

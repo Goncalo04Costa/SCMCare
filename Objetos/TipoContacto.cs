@@ -7,12 +7,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System.Data;
 using System;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class TipoContato
     {
@@ -52,10 +52,10 @@ namespace Objetos
         /// Método para obter a lista de tipos de contato.
         /// </summary>
         /// <returns>Devolve a lista de tipos de contato.</returns>
-        public static TipoContato[] ObterLista()
+        public static List<TipoContato> ObterLista()
         {
             string sql = "SELECT Id, Descricao FROM TipoContatos";
-            TipoContato[] listaTiposContato = Geral<TipoContato>.ObterLista(sql);
+            List<TipoContato> listaTiposContato = Geral<TipoContato>.ObterLista(sql);
             return listaTiposContato;
         }
 
@@ -93,19 +93,19 @@ namespace Objetos
         public static int Inserir(TipoContato tipoContato)
         {
             string sql = "INSERT INTO TipoContatos (Descricao) VALUES ('" + tipoContato.Descricao + "')";
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int id)
         {
             string sql = "DELETE FROM TipoContatos WHERE Id = " + id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(TipoContato tipoContato)
         {
             string sql = "UPDATE TipoContatos SET Descricao = '" + tipoContato.Descricao + "' WHERE Id = " + tipoContato.Id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
 

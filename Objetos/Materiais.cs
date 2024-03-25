@@ -6,13 +6,13 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System;
 using System.Data;
 using System.Runtime.InteropServices;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Materiais
     {
@@ -60,12 +60,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de materiais.</returns>
-        public static Materiais[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Materiais> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Materiais[] lstS = Geral<Materiais>.ObterLista(sql);
+            List<Materiais> lstS = Geral<Materiais>.ObterLista(sql);
 
             return lstS;
         }
@@ -107,14 +107,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Materiais (Nome, Limite, TiposMaterialId) Values (" + s.Nome + ", '" + s.Limite.ToString() + ", '" + s.TiposMaterialId.ToString() + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i)
         {
             string sql;
             sql = "Delete from Materiais where Id = " + i.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Materiais s)
@@ -122,7 +122,7 @@ namespace Objetos
             string sql;
             sql = "Update Materiais set Nome = '" + s.Nome + "', Limite = '" + s.Limite.ToString() + "', TiposMaterialId = '" + s.TiposMaterialId.ToString() + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

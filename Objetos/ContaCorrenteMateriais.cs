@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class ContaCorrenteMateriais
     {
@@ -93,12 +93,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de conta corrente de materiais.</returns>
-        public static ContaCorrenteMateriais[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<ContaCorrenteMateriais> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            ContaCorrenteMateriais[] lstCCM = Geral<ContaCorrenteMateriais>.ObterLista(sql);
+            List<ContaCorrenteMateriais> lstCCM = Geral<ContaCorrenteMateriais>.ObterLista(sql);
 
             return lstCCM;
         }
@@ -126,7 +126,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO ContaCorrenteMateriais (Fatura, MateriaisId, PedidosMaterialId, FuncionariosId, UtentesId, Data, Tipo, QuantidadeMovimento, Observacoes) VALUES ('" + ccm.Fatura + "', " + ccm.MateriaisId + ", " + (ccm.PedidosMaterialId != null ? ccm.PedidosMaterialId.ToString() : "NULL") + ", " + ccm.FuncionariosId + ", " + (ccm.UtentesId != null ? ccm.UtentesId.ToString() : "NULL") + ", '" + ccm.Data.ToString("yyyy-MM-dd") + "', " + (ccm.Tipo ? "1" : "0") + ", " + ccm.QuantidadeMovimento + ", '" + ccm.Observacoes + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -134,7 +134,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM ContaCorrenteMateriais WHERE Id = " + id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

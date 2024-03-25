@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Responsaveis
     {
@@ -63,12 +63,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de responsáveis.</returns>
-        public static Responsaveis[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Responsaveis> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Responsaveis[] lstR = Geral<Responsaveis>.ObterLista(sql);
+            List<Responsaveis> lstR = Geral<Responsaveis>.ObterLista(sql);
 
             return lstR;
         }
@@ -105,7 +105,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO Responsaveis (Nome, UtentesId, Morada) VALUES ('" + r.Nome + "', " + r.UtentesId + ", '" + r.Morada + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -113,7 +113,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM Responsaveis WHERE Id = " + i;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Responsaveis r)
@@ -121,7 +121,7 @@ namespace Objetos
             string sql;
             sql = "UPDATE Responsaveis SET Nome = '" + r.Nome + "', UtentesId = " + r.UtentesId + ", Morada = '" + r.Morada + "' WHERE Id = " + r.Id;
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

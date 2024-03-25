@@ -6,12 +6,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Fornecedores
     {
@@ -50,12 +50,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de fornecedores.</returns>
-        public static Fornecedores[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Fornecedores> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Fornecedores[] lstS = Geral<Fornecedores>.ObterLista(sql);
+            List<Fornecedores> lstS = Geral<Fornecedores>.ObterLista(sql);
 
             return lstS;
         }
@@ -97,14 +97,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Fornecedores (Nome) Values (" + s.Nome + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i)
         {
             string sql;
             sql = "Delete from Fornecedores where Id = " + i.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Fornecedores s)
@@ -112,7 +112,7 @@ namespace Objetos
             string sql;
             sql = "Update Fornecedores set Nome = '" + s.Nome + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

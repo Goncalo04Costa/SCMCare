@@ -8,12 +8,12 @@
 **/
 
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System.Data;
 using System;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class TipoQuarto
     {
@@ -53,10 +53,10 @@ namespace Objetos
         /// Método para obter a lista de tipos de quartos.
         /// </summary>
         /// <returns>Devolve a lista de tipos de quartos.</returns>
-        public static TipoQuarto[] ObterLista()
+        public static List<TipoQuarto> ObterLista()
         {
             string sql = "SELECT Id, Descricao FROM TipoQuartos";
-            TipoQuarto[] listaTiposQuarto = Geral<TipoQuarto>.ObterLista(sql);
+            List<TipoQuarto> listaTiposQuarto = Geral<TipoQuarto>.ObterLista(sql);
             return listaTiposQuarto;
         }
 
@@ -94,19 +94,19 @@ namespace Objetos
         public static int Inserir(TipoQuarto tipoQuarto)
         {
             string sql = "INSERT INTO TipoQuartos (Descricao) VALUES ('" + tipoQuarto.Descricao + "')";
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int id)
         {
             string sql = "DELETE FROM TipoQuartos WHERE Id = " + id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(TipoQuarto tipoQuarto)
         {
             string sql = "UPDATE TipoQuartos SET Descricao = '" + tipoQuarto.Descricao + "' WHERE Id = " + tipoQuarto.Id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
 

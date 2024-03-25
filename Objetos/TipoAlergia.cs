@@ -8,12 +8,12 @@
 **/
 
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System.Data;
 using System;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class TipoAlergia
     {
@@ -53,10 +53,10 @@ namespace Objetos
         /// Método para obter a lista de tipos de alergias.
         /// </summary>
         /// <returns>Devolve a lista de tipos de alergias.</returns>
-        public static TipoAlergia[] ObterLista()
+        public static List<TipoAlergia> ObterLista()
         {
             string sql = "SELECT Id, Descricao FROM TipoAlergias";
-            TipoAlergia[] listaTiposAlergia = Geral<TipoAlergia>.ObterLista(sql);
+            List<TipoAlergia> listaTiposAlergia = Geral<TipoAlergia>.ObterLista(sql);
             return listaTiposAlergia;
         }
 
@@ -94,18 +94,25 @@ namespace Objetos
         public static int Inserir(TipoAlergia tipoAlergia)
         {
             string sql = "INSERT INTO TipoAlergias (Descricao) VALUES ('" + tipoAlergia.Descricao + "')";
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int id)
         {
             string sql = "DELETE FROM TipoAlergias WHERE Id = " + id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(TipoAlergia tipoAlergia)
         {
             string sql = "UPDATE TipoAlergias SET Descricao = '" + tipoAlergia.Descricao + "' WHERE Id = " + tipoAlergia.Id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
+
+        #endregion
+
+        #endregion
+
+    }
+}
 

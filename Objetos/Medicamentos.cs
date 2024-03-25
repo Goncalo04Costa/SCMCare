@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Medicamentos
     {
@@ -63,12 +63,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de medicamentos.</returns>
-        public static Medicamentos[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Medicamentos> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Medicamentos[] lstM = Geral<Medicamentos>.ObterLista(sql);
+            List<Medicamentos> lstM = Geral<Medicamentos>.ObterLista(sql);
 
             return lstM;
         }
@@ -96,7 +96,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO Medicamentos (Nome, Descricao, Limite) VALUES ('" + m.Nome + "', '" + m.Descricao + "', " + m.Limite + ")";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -104,7 +104,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM Medicamentos WHERE Id = " + i;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Medicamentos m)
@@ -112,7 +112,7 @@ namespace Objetos
             string sql;
             sql = "UPDATE Medicamentos SET Nome = '" + m.Nome + "', Descricao = '" + m.Descricao + "', Limite = " + m.Limite + " WHERE Id = " + m.Id;
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

@@ -6,12 +6,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class FornecedoresMedicamento
     {
@@ -48,12 +48,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de Fornecedores e Medicamentos.</returns>
-        public static FornecedoresMedicamento[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<FornecedoresMedicamento> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            FornecedoresMedicamento[] lstS = Geral<FornecedoresMedicamento>.ObterLista(sql);
+            List<FornecedoresMedicamento> lstS = Geral<FornecedoresMedicamento>.ObterLista(sql);
 
             return lstS;
         }
@@ -89,14 +89,14 @@ namespace Objetos
             string sql;
             sql = "Insert into FornecedoresMedicamento (MedicamentosId, FornecedoresId) Values (" + s.MedicamentosId.ToString() + ", '" + s.FornecedoresId.ToString() + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i, int a)
         {
             string sql;
             sql = "Delete from FornecedoresMedicamento where MedicamentosId = " + i.ToString() + " and FornecedoresId = " + a.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(FornecedoresMedicamento s)
@@ -104,7 +104,7 @@ namespace Objetos
             string sql;
             sql = "Update FornecedoresMedicamento set MedicamentosId = '" + s.MedicamentosId.ToString() + "', FornecedoresId = '" + s.FornecedoresId.ToString() + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
         #endregion

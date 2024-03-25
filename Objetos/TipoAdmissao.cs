@@ -8,12 +8,12 @@
 **/
 
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System.Data;
 using System;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class TipoAdmissao
     {
@@ -53,10 +53,10 @@ namespace Objetos
         /// Método para obter a lista de tipos de admissão.
         /// </summary>
         /// <returns>Devolve a lista de tipos de admissão.</returns>
-        public static TipoAdmissao[] ObterLista()
+        public static List<TipoAdmissao> ObterLista()
         {
             string sql = "SELECT Id, Descricao FROM TipoAdmissoes";
-            TipoAdmissao[] listaTiposAdmissao = Geral<TipoAdmissao>.ObterLista(sql);
+            List<TipoAdmissao> listaTiposAdmissao = Geral<TipoAdmissao>.ObterLista(sql);
             return listaTiposAdmissao;
         }
 
@@ -94,19 +94,19 @@ namespace Objetos
         public static int Inserir(TipoAdmissao tipoAdmissao)
         {
             string sql = "INSERT INTO TipoAdmissoes (Descricao) VALUES ('" + tipoAdmissao.Descricao + "')";
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int id)
         {
             string sql = "DELETE FROM TipoAdmissoes WHERE Id = " + id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(TipoAdmissao tipoAdmissao)
         {
             string sql = "UPDATE TipoAdmissoes SET Descricao = '" + tipoAdmissao.Descricao + "' WHERE Id = " + tipoAdmissao.Id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
 

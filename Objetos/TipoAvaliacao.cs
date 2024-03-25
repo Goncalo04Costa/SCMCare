@@ -7,12 +7,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System.Data;
 using System;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class TipoAvaliacao
     {
@@ -52,10 +52,10 @@ namespace Objetos
         /// Método para obter a lista de tipos de avaliação.
         /// </summary>
         /// <returns>Devolve a lista de tipos de avaliação.</returns>
-        public static TipoAvaliacao[] ObterLista()
+        public static List<TipoAvaliacao> ObterLista()
         {
             string sql = "SELECT Id, Descricao FROM TipoAvaliacoes";
-            TipoAvaliacao[] listaTiposAvaliacao = Geral<TipoAvaliacao>.ObterLista(sql);
+            List<TipoAvaliacao> listaTiposAvaliacao = Geral<TipoAvaliacao>.ObterLista(sql);
             return listaTiposAvaliacao;
         }
 
@@ -93,19 +93,19 @@ namespace Objetos
         public static int Inserir(TipoAvaliacao tipoAvaliacao)
         {
             string sql = "INSERT INTO TipoAvaliacoes (Descricao) VALUES ('" + tipoAvaliacao.Descricao + "')";
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int id)
         {
             string sql = "DELETE FROM TipoAvaliacoes WHERE Id = " + id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(TipoAvaliacao tipoAvaliacao)
         {
             string sql = "UPDATE TipoAvaliacoes SET Descricao = '" + tipoAvaliacao.Descricao + "' WHERE Id = " + tipoAvaliacao.Id;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
 

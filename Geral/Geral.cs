@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Geral
+namespace MetodosGlobais
 {
     public class Geral<TipoDados>
     {
@@ -23,11 +23,11 @@ namespace Geral
         /// <param name="sql">Query SQL a ser executada.</param>
         /// <returns>Devolve uma lista do tipo de dados pretendido.</returns>
         /// <exception cref="Exception"> Excessão para quando ocorre um erro.</exception>
-        public static TipoDados[] ObterLista(string sql)
+        public static List<TipoDados> ObterLista(string sql)
         {
             DataTable resultado = new DataTable(); 
-            //string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
-            string connectionString = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
+            string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
+            //string connectionString = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
             using (SqlConnection ligacao = new SqlConnection(connectionString))
             {
                 try
@@ -57,7 +57,7 @@ namespace Geral
         /// <param name="tabela">DataTable a converter</param>
         /// <returns>Devolve uma lista do tipo de dados pretendido.</returns>
         /// <exception cref="Exception"> Excessão para quando ocorre um erro.</exception>
-        private static TipoDados[] Converter(DataTable tabela)
+        private static List<TipoDados> Converter(DataTable tabela)
         {
             try
             {
@@ -69,7 +69,49 @@ namespace Geral
                     lstConvertidos.Add(aux);
                 }
 
-                return lstConvertidos.ToArray();
+                return lstConvertidos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("ERRO: ", ex);
+            }
+        }
+
+        public static TipoDados ObterUnico(string sql)
+        {
+            DataTable resultados = new DataTable();
+            string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
+            //string connectionString = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
+            using (SqlConnection ligacao = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    ligacao.Open();
+
+                    SqlCommand comando = new SqlCommand(sql, ligacao);
+                    SqlDataAdapter adaptador = new SqlDataAdapter(comando);
+
+                    adaptador.Fill(resultados);
+
+                    ligacao.Close();
+                    adaptador.Dispose();
+
+                    return ConverterUnico(resultados.Rows[0]);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("ERRO: ", ex);
+                }
+            }
+        }
+
+        private static TipoDados ConverterUnico(DataRow item)
+        {
+            try
+            {
+                TipoDados aux = (TipoDados)Activator.CreateInstance(typeof(TipoDados), item);
+
+                return aux;
             }
             catch (Exception ex)
             {
@@ -83,7 +125,6 @@ namespace Geral
     {
         #region Base de Dados
 
-    
         public static int Manipular(string sql)
         {
             int resultado = 0;

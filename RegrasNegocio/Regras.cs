@@ -1,4 +1,4 @@
-﻿using Objetos;
+﻿using ObjetosNegocio;
 using System;
 using System.Collections.Generic;
 
@@ -6,20 +6,34 @@ namespace RegrasNegocio
 {
     public class Regras
     {
-        public static int Teste() 
+        public static int Teste()
         {
             Dictionary<String, Object> dic = new Dictionary<String, Object>();
             dic.Add("Nome", "Ban");
 
-            //Sobremesas.ObterLista(dic);
-            Sobremesas a = new Sobremesas();
-            a.Nome = "Teste2";
-            a.Descricao = "Teste inserir sobremesa 2";
-            a.Tipo = false;
+            Utentes.ObterLista(dic);
 
-            return Sobremesas.Inserir(a);
+            //Sobremesas a = new Sobremesas();
+            //a.Nome = "Teste2";
+            //a.Descricao = "Teste inserir sobremesa 2";
+            //a.Tipo = false;
 
-            //return 0;
+            //return Sobremesas.Inserir(a);
+
+            return 0;
+        }
+
+        public static object ObterFichaUtente(int id)
+        {
+            Utentes u = new Utentes();
+            u = Utentes.ObterUtente(id);
+
+            return u;
+        }
+
+        public static int RegistaAvaliacaoUtente(Avaliacoes a)
+        {
+            return Avaliacoes.Inserir(a);
         }
     }
 }

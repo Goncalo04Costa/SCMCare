@@ -6,12 +6,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class FeriasFuncionario
     {
@@ -64,12 +64,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de ferias dos funcionarios.</returns>
-        public static FeriasFuncionario[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<FeriasFuncionario> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            FeriasFuncionario[] lstS = Geral<FeriasFuncionario>.ObterLista(sql);
+            List<FeriasFuncionario> lstS = Geral<FeriasFuncionario>.ObterLista(sql);
 
             return lstS;
         }
@@ -115,14 +115,14 @@ namespace Objetos
             string sql;
             sql = "Insert into FeriasFuncionario (FuncionariosId, FuncionariosIdValida, Dia, Estado) Values (" + s.FuncionariosId.ToString() + ", '" + s.FuncionariosIdValida.ToString() + ", '" + s.Dia.ToString() + "', '" + s.Estado.ToString() + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i)
         {
             string sql;
             sql = "Delete from FeriasFuncionario where Id = " + i.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(FeriasFuncionario s)
@@ -130,7 +130,7 @@ namespace Objetos
             string sql;
             sql = "Update FeriasFuncionario set FuncionariosId = '" + s.FuncionariosId.ToString() + "', FuncionariosIdValida = '" + s.FuncionariosIdValida.ToString() + "', Dia = '" + s.Dia.ToString() + "', Estado = '" + s.Estado.ToString() + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

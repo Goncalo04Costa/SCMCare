@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Prescricoes
     {
@@ -68,12 +68,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de prescrições.</returns>
-        public static Prescricoes[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Prescricoes> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Prescricoes[] lstP = Geral<Prescricoes>.ObterLista(sql);
+            List<Prescricoes> lstP = Geral<Prescricoes>.ObterLista(sql);
 
             return lstP;
         }
@@ -110,7 +110,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO Prescricoes (UtentesId, DataInicio, DataFim, Observacoes) VALUES (" + p.UtentesId + ", '" + p.DataInicio.ToString("yyyy-MM-dd") + "', " + (p.DataFim != null ? "'" + p.DataFim.Value.ToString("yyyy-MM-dd") + "'" : "NULL") + ", '" + p.Observacoes + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -118,7 +118,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM Prescricoes WHERE Id = " + i;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Prescricoes p)
@@ -126,7 +126,19 @@ namespace Objetos
             string sql;
             sql = "UPDATE Prescricoes SET UtentesId = " + p.UtentesId + ", DataInicio = '" + p.DataInicio.ToString("yyyy-MM-dd") + "', DataFim = " + (p.DataFim != null ? "'" + p.DataFim.Value.ToString("yyyy-MM-dd") + "'" : "NULL") + ", Observacoes = '" + p.Observacoes + "' WHERE Id = " + p.Id;
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
+        }
+        
+        /// <summary>
+         /// Método para obter todas as prescrições de um determinado utente.
+         /// </summary>
+         /// <param name="utenteId">ID do utente.</param>
+         /// <returns>Array de Prescricoes correspondentes ao utente.</returns>
+        public static List<Prescricoes> ObterPrescricoesPorUtente(int utenteId)
+        {
+            string sql = "SELECT Id, UtentesId, DataInicio, DataFim, Observacoes FROM Prescricoes WHERE UtentesId = " + utenteId;
+
+            return Geral<Prescricoes>.ObterLista(sql);
         }
 
         #endregion

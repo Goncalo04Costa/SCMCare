@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Menu
     {

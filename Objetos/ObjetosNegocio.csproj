@@ -7,8 +7,8 @@
     <ProjectGuid>{C79CE0DD-35A5-4051-8ACD-42E19AAFDC60}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Objetos</RootNamespace>
-    <AssemblyName>Objetos</AssemblyName>
+    <RootNamespace>ObjetosNegocio</RootNamespace>
+    <AssemblyName>ObjetosNegocio</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,17 +41,56 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="hospitais.cs" />
+    <Compile Include="Alta.cs" />
+    <Compile Include="Avaliacoes.cs" />
+    <Compile Include="Avarias.cs" />
+    <Compile Include="Camas.cs" />
+    <Compile Include="Consultas.cs" />
+    <Compile Include="ContaCorrenteMateriais.cs" />
+    <Compile Include="ContaCorrenteMedicamentos.cs" />
+    <Compile Include="ContactoResponsaveis.cs" />
+    <Compile Include="ContactosFornecedorescs.cs" />
+    <Compile Include="ContactosFuncionarioscs.cs" />
+    <Compile Include="Equipamentos.cs" />
+    <Compile Include="FeriasFuncionario.cs" />
+    <Compile Include="Fornecedores.cs" />
+    <Compile Include="FornecedoresMedicamento.cs" />
+    <Compile Include="Funcionarios.cs" />
+    <Compile Include="Horarios.cs" />
+    <Compile Include="Hospitais.cs" />
+    <Compile Include="Limpezas.cs" />
+    <Compile Include="Materiais.cs" />
+    <Compile Include="MedicamentoPrescricao.cs" />
+    <Compile Include="Medicamentos.cs" />
+    <Compile Include="Mensalidades.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="PedidoMedicamentos.cs" />
+    <Compile Include="PedidosMaterial.cs" />
+    <Compile Include="Planos.cs" />
     <Compile Include="Pratos.cs" />
+    <Compile Include="Prescricoes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quartos.cs" />
+    <Compile Include="Responsaveis.cs" />
+    <Compile Include="Senhas.cs" />
     <Compile Include="Sobremesas.cs" />
     <Compile Include="Sopas.cs" />
+    <Compile Include="TipoAdmissao.cs" />
     <Compile Include="TipoAlergia.cs" />
+    <Compile Include="TipoAvaliacao.cs" />
+    <Compile Include="TipoContacto.cs" />
+    <Compile Include="TipoEquipamento.cs" />
+    <Compile Include="TipoFuncionario.cs" />
+    <Compile Include="TipoMaterial.cs" />
+    <Compile Include="TipoPagamento.cs" />
+    <Compile Include="TipoQuarto.cs" />
+    <Compile Include="Turnos.cs" />
+    <Compile Include="Utentes.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Geral\Geral.csproj">
+    <ProjectReference Include="..\Geral\MetodosGlobais.csproj">
       <Project>{dfee4112-b932-4111-a74b-e5c30bad915f}</Project>
-      <Name>Geral</Name>
+      <Name>MetodosGlobais</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

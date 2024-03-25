@@ -11,9 +11,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Senhas
     {
@@ -59,12 +59,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de senhas.</returns>
-        public static Senhas[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Senhas> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Senhas[] lstS = Geral<Senhas>.ObterLista(sql);
+            List<Senhas> lstS = Geral<Senhas>.ObterLista(sql);
 
             return lstS;
         }
@@ -92,7 +92,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO Senhas (FuncionariosId, MenuId, Estado) VALUES (" + s.FuncionariosId + ", " + s.MenuId + ", " + s.Estado + ")";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -100,7 +100,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM Senhas WHERE FuncionariosId = " + funcId + " AND MenuId = " + menuId;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarEstado(int funcId, int menuId, int novoEstado)
@@ -108,7 +108,7 @@ namespace Objetos
             string sql;
             sql = "UPDATE Senhas SET Estado = " + novoEstado + " WHERE FuncionariosId = " + funcId + " AND MenuId = " + menuId;
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

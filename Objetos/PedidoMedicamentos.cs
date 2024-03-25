@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class PedidosMedicamento
     {
@@ -78,12 +78,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de pedidos de medicamento.</returns>
-        public static PedidosMedicamento[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<PedidosMedicamento> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            PedidosMedicamento[] lstP = Geral<PedidosMedicamento>.ObterLista(sql);
+            List<PedidosMedicamento> lstP = Geral<PedidosMedicamento>.ObterLista(sql);
 
             return lstP;
         }
@@ -120,7 +120,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO PedidosMedicamento (MedicamentosId, FuncionariosId, Quantidade, DataPedido, Estado, DataConclusao) VALUES (" + p.MedicamentosId + ", " + p.FuncionariosId + ", " + p.Quantidade + ", '" + p.DataPedido.ToString("yyyy-MM-dd") + "', " + p.Estado + ", " + (p.DataConclusao != null ? "'" + p.DataConclusao.Value.ToString("yyyy-MM-dd") + "'" : "NULL") + ")";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -128,7 +128,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM PedidosMedicamento WHERE Id = " + i;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(PedidosMedicamento p)
@@ -136,7 +136,7 @@ namespace Objetos
             string sql;
             sql = "UPDATE PedidosMedicamento SET MedicamentosId = " + p.MedicamentosId + ", FuncionariosId = " + p.FuncionariosId + ", Quantidade = " + p.Quantidade + ", DataPedido = '" + p.DataPedido.ToString("yyyy-MM-dd") + "', Estado = " + p.Estado + ", DataConclusao = " + (p.DataConclusao != null ? "'" + p.DataConclusao.Value.ToString("yyyy-MM-dd") + "'" : "NULL") + " WHERE Id = " + p.Id;
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

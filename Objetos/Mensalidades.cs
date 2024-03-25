@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Mensalidades
     {
@@ -68,12 +68,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de mensalidades.</returns>
-        public static Mensalidades[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Mensalidades> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Mensalidades[] lstM = Geral<Mensalidades>.ObterLista(sql);
+            List<Mensalidades> lstM = Geral<Mensalidades>.ObterLista(sql);
 
             return lstM;
         }
@@ -101,7 +101,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO Mensalidades (Mes, DataPagamento, UtentesId, TiposPagamentoId, Estado) VALUES ('" + m.Mes.ToString("yyyy-MM-dd") + "', " + (m.DataPagamento != null ? "'" + m.DataPagamento.Value.ToString("yyyy-MM-dd") + "'" : "NULL") + ", " + m.UtentesId + ", " + (m.TiposPagamentoId != null ? m.TiposPagamentoId.ToString() : "NULL") + ", " + m.Estado + ")";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -109,15 +109,15 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM Mensalidades WHERE Mes = '" + mes.ToString("yyyy-MM-dd") + "' AND UtentesId = " + utentesId;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
        public static int VerificarEstadoMensalidade(DateTime mes, int utentesId)
         {
-            string sql = $"SELECT Estado FROM Mensalidades WHERE Mes = '{mes.ToString("yyyy-MM-dd")}' AND UtentesId = {utentesId}"; 
-            DataTable result = Geral.Geral<DataTable>.ObterLista(sql);
-            if (result.Rows.Count > 0)
+            string sql = $"SELECT Estado FROM Mensalidades WHERE Mes = '{mes.ToString("yyyy-MM-dd")}' AND UtentesId = {utentesId}";
+            Mensalidades result = Geral<Mensalidades>.ObterUnico(sql);
+            if (result != null)
             {
-                int estado = Convert.ToInt32(result.Rows[0]["Estado"]);
+                int estado = Convert.ToInt32(result.Estado);
                 return estado;
             }
             else

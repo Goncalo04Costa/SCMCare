@@ -9,9 +9,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Sobremesas
     {
@@ -62,12 +62,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de sobremesas.</returns>
-        public static Sobremesas[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Sobremesas> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
-            
-            Sobremesas[] lstS = Geral<Sobremesas>.ObterLista(sql);
+
+            List<Sobremesas> lstS = Geral<Sobremesas>.ObterLista(sql);
 
             return lstS;
         }
@@ -125,9 +125,9 @@ namespace Objetos
         public static int Inserir(Sobremesas s)
         {
             string sql;
-            sql = "Insert into Sobremesas (Nome, Descricao, Tipo) Values ('" + s.Nome.ToString() + "', '" + s.Descricao.ToString() + "', " + Geral.Geral.BoolToInt(s.Tipo) + ")";
+            sql = "Insert into Sobremesas (Nome, Descricao, Tipo) Values ('" + s.Nome.ToString() + "', '" + s.Descricao.ToString() + "', " + Geral.BoolToInt(s.Tipo) + ")";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -135,15 +135,15 @@ namespace Objetos
         {
             string sql;
             sql = "Delete from Sobremesas where id = " + i.ToString(); 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Sobremesas s)
         {
             string sql;
-            sql = "Update Sobremesas set Nome ='" +s.Nome.ToString() + "' ,Descricao ='"+s.Descricao.ToString() + "' ,Tipo ="  + Geral.Geral.BoolToInt(s.Tipo) + ")";
+            sql = "Update Sobremesas set Nome ='" +s.Nome.ToString() + "' ,Descricao ='"+s.Descricao.ToString() + "' ,Tipo ="  + Geral.BoolToInt(s.Tipo) + " where Id =" + s.Id.ToString();
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

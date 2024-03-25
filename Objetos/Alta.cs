@@ -6,12 +6,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Alta
     {
@@ -57,12 +57,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de altas.</returns>
-        public static Alta[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Alta> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Alta[] lstS = Geral<Alta>.ObterLista(sql);
+            List<Alta> lstS = Geral<Alta>.ObterLista(sql);
 
             return lstS;
         }
@@ -104,14 +104,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Alta (UtentesId, FuncionariosId, Motivo, Destino) Values (" + s.UtentesId.ToString() + ", '" + s.FuncionariosId.ToString() + ", '" + s.Motivo + "', '" + s.Destino + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i)
         {
             string sql;
             sql = "Delete from Alta where UtentesId = " + i.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Alta s)
@@ -119,7 +119,7 @@ namespace Objetos
             string sql;
             sql = "Update Alta set Motivo = '" + s.Motivo + "', Destino = '" + s.Destino + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

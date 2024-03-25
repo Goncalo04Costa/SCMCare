@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Geral;
+using MetodosGlobais;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Planos
     {
@@ -68,12 +68,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parâmetros.</param>
         /// <returns>Devolve a lista de planos.</returns>
-        public static Planos[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Planos> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Planos[] lstP = Geral<Planos>.ObterLista(sql);
+            List<Planos> lstP = Geral<Planos>.ObterLista(sql);
 
             return lstP;
         }
@@ -110,7 +110,7 @@ namespace Objetos
             string sql;
             sql = "INSERT INTO Planos (UtentesId, DataInicio, DataFim, Observacoes) VALUES (" + p.UtentesId + ", '" + p.DataInicio.ToString("yyyy-MM-dd") + "', " + (p.DataFim != null ? "'" + p.DataFim.Value.ToString("yyyy-MM-dd") + "'" : "NULL") + ", '" + p.Observacoes + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
 
@@ -118,7 +118,7 @@ namespace Objetos
         {
             string sql;
             sql = "DELETE FROM Planos WHERE Id = " + i;
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Planos p)
@@ -126,7 +126,7 @@ namespace Objetos
             string sql;
             sql = "UPDATE Planos SET UtentesId = " + p.UtentesId + ", DataInicio = '" + p.DataInicio.ToString("yyyy-MM-dd") + "', DataFim = " + (p.DataFim != null ? "'" + p.DataFim.Value.ToString("yyyy-MM-dd") + "'" : "NULL") + ", Observacoes = '" + p.Observacoes + "' WHERE Id = " + p.Id;
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

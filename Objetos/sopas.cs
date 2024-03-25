@@ -8,12 +8,12 @@
 **/
 
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System.Data;
 using System;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Sopas
     {
@@ -64,12 +64,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de sopas.</returns>
-        public static Sopas[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Sopas> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Sopas[] lstS = Geral<Sopas>.ObterLista(sql);
+            List<Sopas> lstS = Geral<Sopas>.ObterLista(sql);
 
             return lstS;
         }
@@ -127,9 +127,9 @@ namespace Objetos
         public static int Inserir(Sopas s)
         {
             string sql;
-            sql = "Insert into Sopas (Nome, Descricao, Tipo) Values ('" + s.Nome.ToString() + "', '" + s.Descricao.ToString() + "', " + Geral.Geral.BoolToInt(s.Tipo) + ")";
+            sql = "Insert into Sopas (Nome, Descricao, Tipo) Values ('" + s.Nome.ToString() + "', '" + s.Descricao.ToString() + "', " + Geral.BoolToInt(s.Tipo) + ")";
 
-            return Geral.Geral.Inserir(sql);
+            return Geral.Manipular(sql);
         }
 
         #endregion

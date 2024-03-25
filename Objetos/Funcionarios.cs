@@ -6,12 +6,12 @@
 *	<description></description>
 **/
 
-using Geral;
+using MetodosGlobais;
 using System.Collections.Generic;
 using System;
 using System.Data;
 
-namespace Objetos
+namespace ObjetosNegocio
 {
     public class Funcionarios
     {
@@ -58,12 +58,12 @@ namespace Objetos
         /// </summary>
         /// <param name="filtros">Filtro de parámetros.</param>
         /// <returns>Devolve a lista de funcionarios.</returns>
-        public static Funcionarios[] ObterLista(Dictionary<String, Object> filtros)
+        public static List<Funcionarios> ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
 
-            Funcionarios[] lstS = Geral<Funcionarios>.ObterLista(sql);
+            List<Funcionarios> lstS = Geral<Funcionarios>.ObterLista(sql);
 
             return lstS;
         }
@@ -121,14 +121,14 @@ namespace Objetos
             string sql;
             sql = "Insert into Funcionarios (Nome, TiposFuncionarioId, Historico) Values (" + s.Nome + ", '" + s.TiposFuncionarioId.ToString() + ", '" + s.Historico.ToString() + "')";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int Remover(int i)
         {
             string sql;
             sql = "Delete from Funcionarios where Id = " + i.ToString();
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
 
         public static int AlterarDados(Funcionarios s)
@@ -136,7 +136,7 @@ namespace Objetos
             string sql;
             sql = "Update Funcionarios set Nome = '" + s.Nome + "', TiposFuncionarioId = '" + s.TiposFuncionarioId.ToString() + "', Historico = '" + s.Historico.ToString() + "'";
 
-            return Geral.Geral.Manipular(sql);
+            return Geral.Manipular(sql);
         }
         #endregion
         #endregion
