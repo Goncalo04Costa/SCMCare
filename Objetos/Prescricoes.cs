@@ -129,6 +129,16 @@ namespace Objetos
             return Geral.Geral.Manipular(sql);
         }
 
+   
+        public static Prescricoes[] ObterPrescricoesPorUtente(int utenteId)
+        {
+            string sql = "SELECT Id, UtentesId, DataInicio, DataFim, Observacoes FROM Prescricoes WHERE UtentesId = @UtenteId";
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("@UtenteId", utenteId);
+
+            return Geral<Prescricoes>.ObterLista(sql, parameters);
+        }
+
         #endregion
 
         #endregion
