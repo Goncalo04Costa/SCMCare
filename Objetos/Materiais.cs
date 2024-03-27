@@ -125,6 +125,17 @@ namespace ObjetosNegocio
             return Geral.Manipular(sql);
         }
 
+        /// <summary>
+        /// Verifica se a quantidade atual está abaixo do limite e gera um alerta.
+        /// </summary>
+        public void VerificarAlertaLimite()
+        {
+            if (this.Limite > 0 && this.QuantidadeAtual < this.Limite)
+            {
+                Console.WriteLine($"Alerta: A quantidade atual de '{this.Nome}' está abaixo do limite!");
+            }
+        }
+
         #endregion
         #endregion
     }
