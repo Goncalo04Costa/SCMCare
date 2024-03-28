@@ -21,6 +21,7 @@ namespace ObjetosNegocio
         public string Nome { get; set; }
         public int Limite { get; set;}
         public int TiposMaterialId { get; set; }
+        public int QuantidadeAtual { get; set; }
 
 
         #endregion
@@ -50,6 +51,10 @@ namespace ObjetosNegocio
             if (tabela.Table.Columns.Contains("TiposMaterialId"))
             {
                 this.TiposMaterialId = tabela.Field<int>("TiposMaterialId");
+            }
+            if (tabela.Table.Columns.Contains("QuantidadeAtual"))
+            {
+                this.QuantidadeAtual = tabela.Field<int>("QuantidadeAtual");
             }
         }
 
@@ -105,7 +110,7 @@ namespace ObjetosNegocio
         public static int Inserir(Materiais s)
         {
             string sql;
-            sql = "Insert into Materiais (Nome, Limite, TiposMaterialId) Values (" + s.Nome + ", '" + s.Limite.ToString() + ", '" + s.TiposMaterialId.ToString() + "')";
+            sql = "Insert into Materiais (Nome, Limite, TiposMaterialId, QuantidadeAtual) Values (" + s.Nome + ", '" + s.Limite.ToString() + ", '" + s.TiposMaterialId.ToString() + ", '" + s.QuantidadeAtual.ToString() + "')";
 
             return Geral.Manipular(sql);
         }
@@ -120,7 +125,7 @@ namespace ObjetosNegocio
         public static int AlterarDados(Materiais s)
         {
             string sql;
-            sql = "Update Materiais set Nome = '" + s.Nome + "', Limite = '" + s.Limite.ToString() + "', TiposMaterialId = '" + s.TiposMaterialId.ToString() + "'";
+            sql = "Update Materiais set Nome = '" + s.Nome + "', Limite = '" + s.Limite.ToString() + "', TiposMaterialId = '" + s.TiposMaterialId.ToString() + "', QuantidadeAtual = '" + s.QuantidadeAtual.ToString() + "'";
 
             return Geral.Manipular(sql);
         }

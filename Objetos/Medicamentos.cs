@@ -22,6 +22,7 @@ namespace ObjetosNegocio
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public int Limite { get; set; }
+        public int QuantidadeAtual { get; set; }
 
         #endregion
 
@@ -52,6 +53,10 @@ namespace ObjetosNegocio
             if (tabela.Table.Columns.Contains("Limite"))
             {
                 this.Limite = tabela.Field<int>("Limite");
+            }
+            if (tabela.Table.Columns.Contains("QuantidadeAtual"))
+            {
+                this.QuantidadeAtual = tabela.Field<int>("QuantidadeAtual");
             }
         }
         #endregion
@@ -94,7 +99,7 @@ namespace ObjetosNegocio
         public static int Inserir(Medicamentos m)
         {
             string sql;
-            sql = "INSERT INTO Medicamentos (Nome, Descricao, Limite) VALUES ('" + m.Nome + "', '" + m.Descricao + "', " + m.Limite + ")";
+            sql = "INSERT INTO Medicamentos (Nome, Descricao, Limite, QuantidadeAtual) VALUES ('" + m.Nome + "', '" + m.Descricao + "', " + m.Limite + m.QuantidadeAtual + ")";
 
             return Geral.Manipular(sql);
         }
@@ -110,13 +115,15 @@ namespace ObjetosNegocio
         public static int AlterarDados(Medicamentos m)
         {
             string sql;
-            sql = "UPDATE Medicamentos SET Nome = '" + m.Nome + "', Descricao = '" + m.Descricao + "', Limite = " + m.Limite + " WHERE Id = " + m.Id;
+            sql = "UPDATE Medicamentos SET Nome = '" + m.Nome + "', Descricao = '" + m.Descricao + "', Limite = " + m.Limite + "', QuantidadeAtual = " + m.QuantidadeAtual + " WHERE Id = " + m.Id;
 
             return Geral.Manipular(sql);
         }
 
 
-   
+        /// <summary>
+        /// Verifica se a quantidade atual está abaixo do limite e gera um alerta.
+        /// </summary>
         public void VerificarAlertaLimite()
         {
             if (this.Limite > 0 && this.QuantidadeAtual < this.Limite)
@@ -124,6 +131,29 @@ namespace ObjetosNegocio
                 Console.WriteLine($"Alerta: A quantidade atual de '{this.Nome}' está abaixo do limite!");
                
             }
+        }
+
+        /// <summary>
+        /// Altera a Quantidade Atual do medicamento
+        /// </summary>
+        /// <param name="quantidade"></param>
+        public int RegistarQuantidade(string nome, int quantidade)
+        {
+            if (this.Nome == nome)
+            {
+                try
+                {
+                    string sql;
+                    sql = "UPDATE Medicamentos SET QuantidadeAtual = " + quantidade + "WHERE Nome = '" + this.Nome +"'";
+
+                    return Geral.Manipular(sql);
+                }
+                catch (Exception ex) { 
+                    throw new Exception("Erro ao atualizar quandidade de medicamento."); 
+                }
+                
+            }
+            return 0;
         }
 
         #endregion
