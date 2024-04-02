@@ -1,5 +1,5 @@
 /*
-*	<copyright file="Sobremesas" company="IPCA"></copyright>
+*	<copyright file="Horarios" company="IPCA"></copyright>
 * 	<author>Sofia Carvalho</author>
 *	<contact>a25991@alunos.ipca.pt</contact>
 *   <date>3/20/2024 23:24:32 PM</date>
@@ -75,10 +75,8 @@ namespace ObjetosNegocio
             List<object> parSQL = new List<object>();
             sql = @"Select UtentesId, FuncionariosId, Analise, Data, TipoAvaliacaoId, AuscultacaoPolmunar, AucultacaoCardiaca From Avaliacao where 1=1";
 
-            // Adicionar filtros ao sql, e registar os parámetros
             if (filtros != null)
             {
-                // Para int - Aplica filtro para um intervalo de Ids.
                 if (filtros.ContainsKey("IdDe") && !string.IsNullOrEmpty(filtros["IdDe"].ToString()))
                 {
                     sql += " and Id >= " + filtros["IdDe"].ToString();
@@ -87,7 +85,7 @@ namespace ObjetosNegocio
                 {
                     sql += " and Id <= @" + filtros["IdAte"].ToString();
                 }
-                // Para DateTime - Aplica filtro de data
+            
                 if (filtros.ContainsKey("DataDe") && !string.IsNullOrEmpty(filtros["DataDe"].ToString()))
                 {
                     sql += " and Data >= " + filtros["DataDe"].ToString();
@@ -121,6 +119,11 @@ namespace ObjetosNegocio
 
             return Geral.Manipular(sql);
         }
+
+
+     
+
+
         #endregion
         #endregion
     }

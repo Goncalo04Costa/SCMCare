@@ -150,6 +150,25 @@ namespace ObjetosNegocio
             return Geral.Manipular(sql);
         }
 
+
+        public static bool CanAttendConsulta(int responsavelId, DateTime consultaData)
+        {
+            if (IsAvailable(responsavelId, consultaData))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static bool IsAvailable(int responsavelId, DateTime consultaData)
+        {
+            return true; 
+        }
+
+
         #endregion
         #endregion
     }
