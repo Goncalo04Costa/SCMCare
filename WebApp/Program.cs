@@ -30,7 +30,7 @@ app.MapGet("/testing", (HttpContext context) => {
     if (Int32.TryParse(context.Request.Query["id"], out id))
     {
         // !!! NÃO FUNCIONA REVER COM O STOR
-        //return Regras.ObterFichaUtente(id);
+        return Regras.ObterFichaUtente(id);
 
         return id;
     }
