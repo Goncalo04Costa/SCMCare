@@ -8,7 +8,6 @@
 **/
 
 using System;
-using Geral;
 using System.Collections.Generic;
 using System.Data;
 using MetodosGlobais;
@@ -54,12 +53,10 @@ namespace ObjetosNegocio
 
         #region Outros Métodos
         public static List<Pratos> ObterLista(Dictionary<String, Object> filtros)
-        public static Hospitais[] ObterLista(Dictionary<String, Object> filtros)
         {
             string sql;
             PreparaSQL(filtros, out sql);
             List<Pratos> lstP = Geral<Pratos>.ObterLista(sql);
-            Hospitais[] lstS = Geral<Hospitais>.ObterLista(sql);
 
             return lstP;
         }
@@ -124,15 +121,13 @@ namespace ObjetosNegocio
             string sql;
             sql = "Delete from Pratos where id = " + i.ToString();
             return Geral.Manipular(sql);
-            }
         }
 
         public static int AlterarDados(Pratos p)
         {
-            sql = "Update Pratos set Nome ='" + p.Nome.ToString() + "' ,Descricao ='" + p.Descricao.ToString() + "' ,Tipo =" + Geral.BoolToInt(p.Tipo) + ")";
-            sql = "Insert into Pratos (Nome, Descricao, Tipo) Values ('" + h.Nome.ToString() + "', '" + h.Morada.ToString() + "', "  + ")";
-            return Geral.Manipular(sql);
-            return Geral.Geral.Inserir(sql);
+            string sql = "Update Pratos set Nome ='" + p.Nome.ToString() + "' ,Descricao ='" + p.Descricao.ToString() + "' ,Tipo =" + Geral.BoolToInt(p.Tipo) + ")";
+            
+        return Geral.Manipular(sql);
         }
 
         #endregion

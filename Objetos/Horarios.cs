@@ -1,7 +1,7 @@
 /*
 *	<copyright file="Horarios" company="IPCA"></copyright>
-* 	<author>Sofia Carvalho</author>
-*	<contact>a25991@alunos.ipca.pt</contact>
+* 	<author>Daniela Pereira</author>
+*	<contact>a25988@alunos.ipca.pt</contact>
 *   <date>3/20/2024 23:24:32 PM</date>
 *	<description></description>
 **/
@@ -85,7 +85,7 @@ namespace ObjetosNegocio
                 {
                     sql += " and Id <= @" + filtros["IdAte"].ToString();
                 }
-            
+
                 if (filtros.ContainsKey("DataDe") && !string.IsNullOrEmpty(filtros["DataDe"].ToString()))
                 {
                     sql += " and Data >= " + filtros["DataDe"].ToString();
@@ -121,7 +121,44 @@ namespace ObjetosNegocio
         }
 
 
-     
+        public static List<Horarios> VerHorarioFuncionario(int funcionarioId)
+        {
+            string sql = "SELECT * FROM Horarios WHERE FuncionariosId = @FuncionarioId";
+            Dictionary<string, object> parametros = new Dictionary<string, object>
+    {
+        { "@FuncionarioId", funcionarioId }
+    };
+            return Geral<Horarios>.ObterLista(sql, parametros);
+        }
+
+        public static List<Horarios> VerHorarioFuncionarioPeriodo(int funcionarioId, DateTime dataInicio, DateTime dataFim)
+        {
+            string sql = "SELECT * FROM Horarios WHERE FuncionariosId = @FuncionarioId AND Dia BETWEEN @DataInicio AND @DataFim";
+            Dictionary<string, object> parametros = new Dictionary<string, object>
+    {
+        { "@FuncionarioId", funcionarioId },
+        { "@DataInicio", dataInicio },
+        { "@DataFim", dataFim }
+    };
+            return Geral<Horarios>.ObterLista(sql, parametros);
+        }
+
+
+        public static List<Horarios> VerHorarioTipoFuncionario(int tipoFuncionarioId)
+        {
+            string sql = @"SELECT h.*
+                   FROM Horarios h
+                   INNER JOIN Funcionarios f ON h.FuncionariosId = f.Id
+                   WHERE f.TiposFuncionarioId = @TipoFuncionarioId";
+
+            Dictionary<string, object> parametros = new Dictionary<string, object>
+    {
+        { "@TipoFuncionarioId", tipoFuncionarioId }
+    };
+
+            return Geral<Horarios>.ObterLista(sql, parametros);
+        }
+
 
 
         #endregion

@@ -13,6 +13,14 @@ using System.Data.SqlClient;
 
 namespace MetodosGlobais
 {
+    public static class Globais
+    {
+        // Diogo
+        public static readonly String ligacao = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
+        // Gonçalo
+        //public static readonly String ligacao = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
+    }
+
     public class Geral<TipoDados>
     {
         #region Base de Dados
@@ -26,8 +34,7 @@ namespace MetodosGlobais
         public static List<TipoDados> ObterLista(string sql)
         {
             DataTable resultado = new DataTable(); 
-            string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
-            //string connectionString = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
+            string connectionString = Globais.ligacao;
             using (SqlConnection ligacao = new SqlConnection(connectionString))
             {
                 try
@@ -80,8 +87,7 @@ namespace MetodosGlobais
         public static TipoDados ObterUnico(string sql)
         {
             DataTable resultados = new DataTable();
-            string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
-            //string connectionString = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
+            string connectionString = Globais.ligacao;
             using (SqlConnection ligacao = new SqlConnection(connectionString))
             {
                 try
@@ -129,8 +135,7 @@ namespace MetodosGlobais
         {
             int resultado = 0;
 
-            //string connectionString = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
-            string connectionString = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
+            string connectionString = Globais.ligacao;
             using (SqlConnection ligacao = new SqlConnection(connectionString))
             {
                 try
@@ -155,6 +160,7 @@ namespace MetodosGlobais
         }
 
         #endregion
+
         #region Conversões
 
         public static int BoolToInt(bool b)
