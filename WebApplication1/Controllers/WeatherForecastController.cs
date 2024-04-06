@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Models;
 using WebApplication1.Conecta;
 
 namespace WebApplication1.Controllers
@@ -14,40 +16,26 @@ namespace WebApplication1.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
-        }
-
-        //[HttpGet(Name = "GetWeatherForecast")]
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //    {
-        //        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //        TemperatureC = Random.Shared.Next(-20, 55),
-        //        Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        //    })
-        //    .ToArray();
-        //}
-
-
-
-
         private readonly SCMDbContext _context;
 
-        public WeatherForecastController(SCMDbContext context)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, SCMDbContext context)
         {
+            _logger = logger;
             _context = context;
         }
+
         [HttpGet(Name = "GetWeatherForecast")]
-        public int Get()
+        public async Task<ActionResult<Sobremesa>> Get()
         {
+            var sobremesa = await _context.Sobremesas.FirstOrDefaultAsync(m => m.Id == 2);
 
-            var person = _context.Sobremesas.FirstOrDefaultAsync(m => m.Id == 1);
+            if (sobremesa == null)
+            {
+                return NotFound(); // Retorna um 404 Not Found se a sobremesa não for encontrada
+            }
 
-            return 1;
+            return Ok(sobremesa); // Retorna a sobremesa encontrada
         }
+
     }
 }

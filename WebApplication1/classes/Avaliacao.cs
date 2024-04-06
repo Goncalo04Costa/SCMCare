@@ -12,9 +12,6 @@ namespace Models
         public string Analise { get; set; }
 
         [Required]
-        public DateTime Data { get; set; }
-
-        [Required]
         public int TipoAvaliacaoId { get; set; }
 
         [Required]
