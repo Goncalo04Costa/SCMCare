@@ -1,11 +1,15 @@
-using WebApplication1.Conecta;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("Ligacao");
-builder.Services.AddDbContext<SCMDbContext>(options =>
-    options.UseSqlServer(connectionString));
+// Gonçalo
+//var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
+
+// Diogo
+var connectionString = builder.Configuration.GetConnectionString("LigacaoDiogo");
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 // Add services to the container.
 
