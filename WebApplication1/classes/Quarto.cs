@@ -3,13 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public class Hospital
+    public class Quarto
     {
         public int Id { get; set; }
 
         [Required]
-        public string Nome { get; set; }
+        public int Numero { get; set; }
 
-        public string Morada { get; set; }
+        [Required]
+        public int TiposQuartoId { get; set; }
     }
 }

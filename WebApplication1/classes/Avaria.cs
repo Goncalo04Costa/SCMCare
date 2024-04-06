@@ -1,19 +1,21 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Models
 {
-    public class Sopa
+    public class Avaria
     {
         public int Id { get; set; }
 
         [Required]
-        public string Nome { get; set; }
+        public DateTime Data { get; set; }
+
+        [Required]
+        public int EquipamentosId { get; set; }
 
         public string Descricao { get; set; }
 
-        public bool Tipo { get; set; }
+        [Required]
+        public int Estado { get; set; }
     }
 }
