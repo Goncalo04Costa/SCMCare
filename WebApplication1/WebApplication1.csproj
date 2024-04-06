@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,13 +7,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="classes\Hospital.cs" />
+    <Compile Remove="classes\Sopas.cs" />
+    <Compile Remove="classes\Utente.cs" />
+    <Compile Remove="Conecta\CBD.cs" />
+    <Compile Remove="Controllers\UserController.cs" />
+    <Compile Remove="metodosclasses\MetodosHospitais.cs" />
+    <Compile Remove="metodosclasses\MetodosSopas.cs" />
+    <Compile Remove="metodosclasses\MetodosUtentes.cs" />
+    <Compile Remove="ObjetosNegocio\SCMCareContext.cs" />
+    <Compile Remove="ObjetosNegocio\User.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Objetos\ObjetosNegocio.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ObjetosNegocio\" />
   </ItemGroup>
 
 </Project>

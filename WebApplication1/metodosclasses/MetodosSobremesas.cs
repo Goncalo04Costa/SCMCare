@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace Data.Repositories
 {
-    public class SobremesaRepository : ISobremesaRepository
+    //public class SobremesaRepository : ISobremesaRepository
+    public class SobremesaRepository
     {
         private readonly DbContext _dbContext;
 
