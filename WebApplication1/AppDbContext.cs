@@ -45,6 +45,10 @@ namespace WebApplication1
 
         public DbSet<Menu> Menus { get; set; }
 
+        public DbSet<PedidoMaterial> PedidosMaterial { get; set; }
+
+        public DbSet<PedidoMedicamento> PedidosMedicamento { get; set; }
+
         public DbSet<Plano> Planos { get; set; }
 
         public DbSet<Prato> Pratos { get; set; }
