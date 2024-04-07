@@ -2,6 +2,7 @@
 using Modelos;
 using Models;
 
+
 namespace WebApplication1
 {
     public class AppDbContext : DbContext
@@ -27,10 +28,18 @@ namespace WebApplication1
         public DbSet<Fornecedor> Fornecedores { get; set; }
 
         public DbSet<Funcionario> Funcionarios { get; set; }
-
         public DbSet<Horario> Horarios { get; set; }
-
         public DbSet<Hospital> Hospitais { get; set; }
+        public DbSet<Sopa> Sopa { get; set; }
+        public DbSet<Limpeza> Limpezas { get; set; }
+        public DbSet<Material> Materiais { get; set; }
+        public DbSet<Medicamento> Medicamentos { get; set; }
+        public DbSet<Mensalidade> Mensalidades { get; set; } 
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<Plano> Planos { get; set; }
+        public DbSet<Prato> Pratos { get; set; }
+        public DbSet<Prescricao> Prescricoes { get; set; }
+        public DbSet<Quarto> Quartos { get; set; }
 
         public DbSet<Sopa> Sopas { get; set; }
 
@@ -62,8 +71,6 @@ namespace WebApplication1
 
         public DbSet<TipoAdmissao> TiposAdmissao { get; set; }
 
+        public DbSet<Senha> Senhas { get; set; }
     }
 }
-
-
-

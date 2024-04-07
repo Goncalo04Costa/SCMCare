@@ -44,15 +44,5 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regras.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Geral\MetodosGlobais.csproj">
-      <Project>{dfee4112-b932-4111-a74b-e5c30bad915f}</Project>
-      <Name>MetodosGlobais</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Objetos\ObjetosNegocio.csproj">
-      <Project>{c79ce0dd-35a5-4051-8acd-42e19aafdc60}</Project>
-      <Name>ObjetosNegocio</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
