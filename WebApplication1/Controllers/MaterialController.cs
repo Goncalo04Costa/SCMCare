@@ -97,5 +97,23 @@ namespace WebApplication1.Controllers
         {
             return _context.Materiais.Any(e => e.Id == id);
         }
+
+        [HttpGet("emrisco")]
+        public async Task<ActionResult<IEnumerable<Material>>> ObterMateriaisRisco(int limite)
+        {
+            try
+            {
+                var materiaisRisco = await _context.Materiais
+                    .Where(m => m.QuantidadeAtual < m.Limite)
+                    .ToListAsync();
+
+                return Ok(materiaisRisco);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno ao obter materiais em risco: {ex.Message}");
+            }
+        }
+
     }
 }

@@ -96,5 +96,44 @@ namespace WebApplication1.Controllers
         {
             return _context.Limpezas.Any(e => e.Id == id);
         }
+
+
+        [HttpPost("registrar")]
+        public async Task<ActionResult<Limpeza>> RegistrarLimpeza([FromBody] Limpeza limpeza)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                // Verificar se o quarto existe
+                var quarto = await _context.Quartos.FindAsync(limpeza.QuartosId);
+                if (quarto == null)
+                {
+                    return BadRequest("O quarto especificado não existe.");
+                }
+
+                // Verificar se o funcionário existe
+                var funcionario = await _context.Funcionarios.FindAsync(limpeza.FuncionariosId);
+                if (funcionario == null)
+                {
+                    return BadRequest("O funcionário especificado não existe.");
+                }
+
+                // Adicionar a limpeza ao contexto
+                _context.Limpezas.Add(limpeza);
+                await _context.SaveChangesAsync();
+
+                // Retornar os detalhes da limpeza registrada
+                return CreatedAtAction(nameof(ObterLimpeza), new { id = limpeza.Id }, limpeza);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno ao registrar a limpeza: {ex.Message}");
+            }
+        }
+
     }
 }

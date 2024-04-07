@@ -114,6 +114,27 @@ namespace WebApplication1.Controllers
             return Ok(dado);
         }
 
+        [HttpGet("nome/{nome}")]
+        public async Task<ActionResult<Utente>> ObterUtentePorNome(string nome)
+        {
+            try
+            {
+                var utente = await _context.Utentes.FirstOrDefaultAsync(d => d.Nome == nome);
+
+                if (utente == null)
+                {
+                    return NotFound($"Utente com o nome '{nome}' não encontrado.");
+                }
+
+                return Ok(utente);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno ao obter o utente pelo nome: {ex.Message}");
+            }
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<Utente>> InserirUtente([FromBody] Utente utente)
         {

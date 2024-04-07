@@ -99,5 +99,22 @@ namespace WebApplication1.Controllers
         {
             return _context.Medicamentos.Any(e => e.Id == id);
         }
+
+        [HttpGet("emrisco")]
+        public async Task<ActionResult<IEnumerable<Medicamento>>> ObterMedicamentoRisco(int limite)
+        {
+            try
+            {
+                var medicamentoRisco = await _context.Medicamentos
+                    .Where(m => m.QuantidadeAtual < m.Limite)
+                    .ToListAsync();
+
+                return Ok(medicamentoRisco);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno ao obter medicamentos em risco: {ex.Message}");
+            }
+        }
     }
 }

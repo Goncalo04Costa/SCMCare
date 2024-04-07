@@ -97,5 +97,30 @@ namespace WebApplication1.Controllers
         {
             return _context.Mensalidades.Any(m => m.Mes == mes && m.UtentesId == utentesId);
         }
+
+        [HttpGet("estado/{mes}/{utentesId}")]
+        public async Task<ActionResult<string>> ObterEstadoMensalidade(DateTime mes, int utentesId)
+        {
+            try
+            {
+                // Busca a mensalidade com base no mês e no ID do utente
+                var mensalidade = await _context.Mensalidades.FirstOrDefaultAsync(m => m.Mes == mes && m.UtentesId == utentesId);
+
+                if (mensalidade == null)
+                {
+                    return NotFound($"Não foi encontrada nenhuma mensalidade para o mês {mes} e o utente com ID {utentesId}.");
+                }
+
+                // Define o estado da mensalidade com base no valor do campo "Estado"
+                string estado = mensalidade.Estado == 0 ? "Pendente" : mensalidade.Estado == 1 ? "Pago" : "Estado inválido";
+
+                return Ok($"O estado da mensalidade para o mês {mes} e o utente com ID {utentesId} é: {estado}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro ao obter o estado da mensalidade: {ex.Message}");
+            }
+        }
+
     }
 }

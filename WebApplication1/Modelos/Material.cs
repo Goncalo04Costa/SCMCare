@@ -14,6 +14,9 @@ namespace Modelos
 
         [Required]
         public int TiposMaterialId { get; set; }
+
+        [Required]
+        public int QuantidadeAtual { get; set; }
     }
 
 }

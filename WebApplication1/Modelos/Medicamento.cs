@@ -15,5 +15,8 @@ namespace Modelos
 
         [Required]
         public int Limite { get; set; }
+
+        [Required]
+        public int QuantidadeAtual { get; set; }
     }
 }
