@@ -21,11 +21,19 @@ namespace WebApplication1
 
         public DbSet<Consulta> Consultas { get; set; }
 
+        public DbSet<ContactoFornecedor> ContactosFornecedores { get; set; }
+
+        public DbSet<ContactoFuncionario> ContactosFuncionarios { get; set; }
+
+        public DbSet<ContactoResponsavel> ContactosResponsaveis { get; set; }
+
         public DbSet<Equipamento> Equipamentos { get; set; }
 
         public DbSet<FeriasFuncionario> FeriasFuncionario { get; set; }
 
         public DbSet<Fornecedor> Fornecedores { get; set; }
+
+        public DbSet<FornecedorMedicamento> FornecedoresMedicamento { get; set; }
 
         public DbSet<Funcionario> Funcionarios { get; set; }
 
