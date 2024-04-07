@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Modelos;
 using Models;
-using ObjetosNegocio;
+
 
 namespace WebApplication1
 {
@@ -20,15 +20,21 @@ namespace WebApplication1
         public DbSet<Equipamento> Equipamentos { get; set; }
         public DbSet<Fornecedor> Fornecedores { get; set; }
         public DbSet<Funcionario> Funcionarios { get; set; }
-
         public DbSet<Horario> Horarios { get; set; }
-
         public DbSet<Hospital> Hospitais { get; set; }
+        public DbSet<Sopa> Sopa { get; set; }
+        public DbSet<Limpeza> Limpezas { get; set; }
+        public DbSet<Material> Materiais { get; set; }
+        public DbSet<Medicamento> Medicamentos { get; set; }
+        public DbSet<Mensalidade> Mensalidades { get; set; } 
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<Plano> Planos { get; set; }
+        public DbSet<Prato> Pratos { get; set; }
+        public DbSet<Prescricao> Prescricoes { get; set; }
+        public DbSet<Quarto> Quartos { get; set; }
 
-        public DbSet<Sopas> Sopa { get; set; }
+        public DbSet<Responsavel> Responsaveis { get; set; }
 
+        public DbSet<Senha> Senhas { get; set; }
     }
 }
-
-
-
