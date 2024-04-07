@@ -57,7 +57,6 @@
     <Compile Include="Fornecedores.cs" />
     <Compile Include="FornecedoresMedicamento.cs" />
     <Compile Include="Funcionarios.cs" />
-    <Compile Include="Horarios.cs" />
     <Compile Include="Hospitais.cs" />
     <Compile Include="Limpezas.cs" />
     <Compile Include="Materiais.cs" />
