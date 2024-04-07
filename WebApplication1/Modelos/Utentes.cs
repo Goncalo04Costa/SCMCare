@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Modelos
 {
-    public class Utentes
+    public class Utente
     {
         public int Id { get; set; }
 

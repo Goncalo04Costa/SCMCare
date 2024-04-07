@@ -8,10 +8,10 @@ namespace Modelos
         public int Id { get; set; }
 
         [Required]
-        public TimeSpan HoraInicio { get; set; }
+        public TimeOnly HoraInicio { get; set; }
 
         [Required]
-        public TimeSpan HoraFim { get; set; }
+        public TimeOnly HoraFim { get; set; }
 
         [Required]
         public bool Ativo { get; set; }
