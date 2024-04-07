@@ -48,6 +48,7 @@
     <Compile Include="Consultas.cs" />
     <Compile Include="ContaCorrenteMateriais.cs" />
     <Compile Include="ContaCorrenteMedicamentos.cs" />
+    <Compile Include="ContaCorrenteMedicamentos2.cs" />
     <Compile Include="ContactoResponsaveis.cs" />
     <Compile Include="ContactosFornecedorescs.cs" />
     <Compile Include="ContactosFuncionarioscs.cs" />

@@ -16,9 +16,11 @@ namespace MetodosGlobais
     public static class Globais
     {
         // Diogo
-        public static readonly String ligacao = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
+        //public static readonly String ligacao = "Data Source=DESKTOP-BAJ0CE4;Initial Catalog=PDS;User ID=DESKTOP-BAJ0CE4\\diogo;Integrated Security=True;";
         // Gonçalo
         //public static readonly String ligacao = "Data Source=GONCALO;Initial Catalog=PDS;User ID=GONCALO\\gonca;Integrated Security=True;";
+        // Daniela
+        public static readonly String ligacao = "Data Source=DANIELA_BRITO;Initial Catalog=PDS;User ID=DANIELA_BRITO\\danie;Integrated Security=True;";
     }
 
     public class Geral<TipoDados>
