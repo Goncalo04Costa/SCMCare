@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Modelos\Hospital.cs" />
-    <Compile Remove="Modelos\Sopas.cs" />
     <Compile Remove="Modelos\Utente.cs" />
     <Compile Remove="Controllers\UserController.cs" />
   </ItemGroup>
