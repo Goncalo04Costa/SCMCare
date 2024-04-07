@@ -23,6 +23,8 @@ namespace WebApplication1
 
         public DbSet<Equipamento> Equipamentos { get; set; }
 
+        public DbSet<FeriasFuncionario> FeriasFuncionario { get; set; }
+
         public DbSet<Fornecedor> Fornecedores { get; set; }
 
         public DbSet<Funcionario> Funcionarios { get; set; }
@@ -36,6 +38,8 @@ namespace WebApplication1
         public DbSet<Material> Materiais { get; set; }
 
         public DbSet<Medicamento> Medicamentos { get; set; }
+
+        public DbSet<MedicamentoPrescricao> MedicamentoPrescricao { get; set; }
 
         public DbSet<Mensalidade> Mensalidades { get; set; } 
 
