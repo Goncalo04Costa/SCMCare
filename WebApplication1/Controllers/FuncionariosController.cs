@@ -89,5 +89,20 @@ namespace WebApplication1.Controllers
 
             return Ok($"Funcionário com o ID {id} removido com sucesso");
         }
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Funcionario>> ObterFuncionarioPorId(int id)
+        {
+            var funcionario = await _context.Funcionarios.FindAsync(id);
+
+            if (funcionario == null)
+            {
+                return NotFound($"Funcionário com o ID {id} não encontrado");
+            }
+
+            return Ok(funcionario);
+        }
+
     }
 }

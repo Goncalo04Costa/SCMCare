@@ -37,18 +37,49 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Consulta>> InserirConsulta([FromBody] Consulta consulta)
+        [HttpPost]
+        public async Task<IActionResult> RegistrarConsulta(int idConsulta, int idFuncionario, int idResponsavel, DateTime dataConsulta)
         {
+            var consulta = await _context.Consultas.FindAsync(idConsulta);
             if (consulta == null)
             {
-                return BadRequest("Objeto inválido");
+                return NotFound($"Consulta com o ID {idConsulta} não encontrada");
             }
 
-            _context.Consultas.Add(consulta);
-            await _context.SaveChangesAsync();
+            var funcionario = await _context.Funcionarios.FindAsync(idFuncionario);
+            if (funcionario == null)
+            {
+                return NotFound($"Funcionário com o ID {idFuncionario} não encontrado");
+            }
 
-            return Ok("Consulta adicionada com sucesso");
+            var responsavel = await _context.Responsaveis.FindAsync(idResponsavel);
+            if (responsavel == null)
+            {
+                return NotFound($"Responsável com o ID {idResponsavel} não encontrado");
+            }
+
+           
+            var canAttendResult = await CanAttendConsulta(idResponsavel, dataConsulta);
+            if (canAttendResult is OkObjectResult)
+            {
+                return Ok("O responsável pode comparecer à consulta. Não é necessário nomear um funcionário.");
+            }
+            else if (canAttendResult is OkObjectResult)
+            {
+             
+                funcionario.Id = idFuncionario;
+
+                await _context.SaveChangesAsync();
+
+                return Ok($"Funcionário com o ID {idFuncionario} nomeado para a consulta com o ID {idConsulta}.");
+            }
+            else
+            {
+                return StatusCode(500, "Erro interno do servidor ao verificar a disponibilidade do responsável.");
+            }
         }
+
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarConsulta(int id, [FromBody] Consulta novaConsulta)
@@ -94,20 +125,26 @@ namespace WebApplication1.Controllers
             return Ok($"Consulta com o ID {id} removida com sucesso");
         }
 
- 
+
         [HttpGet("CanAttendConsulta")]
         public async Task<IActionResult> CanAttendConsulta(int responsavelId, DateTime consultaData)
         {
-            var canAttend = true;
+          
+            var outraConsulta = await _context.Consultas
+                .FirstOrDefaultAsync(c => c.ResponsaveisId == responsavelId && c.Data.Date == consultaData.Date);
 
-            if (canAttend)
+            if (outraConsulta != null)
             {
-                return Ok("O responsável pode comparecer à consulta");
+                return Ok("O responsável não pode comparecer à consulta.");
             }
             else
             {
-                return Ok("O responsável não pode comparecer à consulta");
+                return Ok("O responsável pode comparecer à consulta");
             }
         }
+
+
+      
+
     }
 }
