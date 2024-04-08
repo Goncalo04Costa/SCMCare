@@ -93,5 +93,21 @@ namespace WebApplication1.Controllers
 
             return Ok($"Consulta com o ID {id} removida com sucesso");
         }
+
+ 
+        [HttpGet("CanAttendConsulta")]
+        public async Task<IActionResult> CanAttendConsulta(int responsavelId, DateTime consultaData)
+        {
+            var canAttend = true;
+
+            if (canAttend)
+            {
+                return Ok("O responsável pode comparecer à consulta");
+            }
+            else
+            {
+                return Ok("O responsável não pode comparecer à consulta");
+            }
+        }
     }
 }
