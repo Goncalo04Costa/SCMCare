@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebApplication1.Controllers
 {
@@ -28,7 +31,7 @@ namespace WebApplication1.Controllers
         {
             var medicamentoPrescricao = await _context.MedicamentoPrescricao.FirstOrDefaultAsync(a => a.PrescricoesId == PrescricoesId && a.MedicamentosId == MedicamentosId);
 
-            if (medicamentoPrescricao = null)
+            if (medicamentoPrescricao == null)
             {
                 return NotFound();
             }
@@ -46,7 +49,7 @@ namespace WebApplication1.Controllers
             _context.MedicamentoPrescricao.Add(medicamentoPrescricao);
             await _context.SaveChangesAsync();
 
-            return Ok("medicamentoPrescricao adicionada com sucesso");
+            return CreatedAtAction(nameof(ObterMedicamentoPrescricao), new { PrescricoesId = medicamentoPrescricao.PrescricoesId, MedicamentosId = medicamentoPrescricao.MedicamentosId }, medicamentoPrescricao);
         }
 
         [HttpPut("{PrescricoesId}/{MedicamentosId}")]
@@ -63,16 +66,9 @@ namespace WebApplication1.Controllers
             medicamentoPrescricao.IntervaloHoras = novaMedicamentoPrescricao.IntervaloHoras;
             medicamentoPrescricao.Instrucoes = novaMedicamentoPrescricao.Instrucoes;
 
-            try
-            {
-                await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-                return Ok($"Foi atualizada a medicamentoPrescricao com a prescricao ID {PrescricoesId} e medicamento ID {MedicamentosId}");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            return Ok($"Foi atualizada a medicamentoPrescricao com a prescricao ID {PrescricoesId} e medicamento ID {MedicamentosId}");
         }
 
         [HttpDelete("{PrescricoesId}/{MedicamentosId}")]

@@ -11,6 +11,10 @@ namespace WebApplication1
         {
         }
 
+        public DbSet<ContaCorrenteMaterial> ContaCorrenteMaterial { get; set; }
+
+        public DbSet<ContaCorrenteMedicamento> ContaCorrenteMedicamento {  get; set; }  
+
         public DbSet<Alta> Altas { get; set; }
 
         public DbSet<Avaliacao> Avaliacoes { get; set; }

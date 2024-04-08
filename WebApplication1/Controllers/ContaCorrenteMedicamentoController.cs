@@ -47,7 +47,7 @@ namespace WebApplication1.Controllers
 
             if (pedidosMedicamentoId.HasValue)
             {
-                query = query.Where(d => d.pedidosMedicamentoId == pedidosMedicamentoId.Value);
+                query = query.Where(d => d.PedidosMedicamentoId == pedidosMedicamentoId.Value);
             }
 
             if (funcionariosId.HasValue)

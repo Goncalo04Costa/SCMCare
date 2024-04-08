@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using System.Reflection.Metadata;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
 
 namespace WebApplication1.Controllers
 {
@@ -201,5 +206,35 @@ namespace WebApplication1.Controllers
 
             return Ok($"Foi removido o utente com o ID {id}");
         }
+
+
+        [HttpGet("{id}/ficha")]
+        public async Task<IActionResult> ImprimirFichaUtente(int id)
+        {
+            var utente = await _context.Utentes.FindAsync(id);
+
+            if (utente == null)
+            {
+                return NotFound($"Não foi possível encontrar o utente com o ID {id}");
+            }
+
+            var memoryStream = new MemoryStream();
+            var writer = new PdfWriter(memoryStream);
+            var pdf = new PdfDocument(writer);
+            var document = new iText.Layout.Document(pdf);
+
+
+            document.Add(new Paragraph($"Ficha do Utente - {utente.Nome}"));
+            document.Add(new Paragraph($"ID: {utente.Id}"));
+            document.Add(new Paragraph($"NIF: {utente.NIF}"));
+            document.Add(new Paragraph($"SNS: {utente.SNS}"));
+            document.Add(new Paragraph($"Data de Admissão: {utente.DataAdmissao}"));
+   
+
+            document.Close();
+
+            return File(memoryStream.ToArray(), "application/pdf", $"ficha_utente_{utente.Id}.pdf");
+        }
+
     }
 }
