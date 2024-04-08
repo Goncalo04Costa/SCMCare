@@ -105,6 +105,7 @@ namespace WebApplication1.Controllers
             sopa.Nome = novaSopa.Nome;
             sopa.Descricao = novaSopa.Descricao;
             sopa.Tipo = novaSopa.Tipo;
+            sopa.Ativo = novaSopa.Ativo;
 
             try
             {

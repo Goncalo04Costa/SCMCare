@@ -61,6 +61,7 @@ namespace WebApplication1.Controllers
 
             hospital.Nome = novoHospital.Nome;
             hospital.Morada = novoHospital.Morada;
+            hospital.Ativo = novoHospital.Ativo;
 
             try
             {

@@ -107,6 +107,7 @@ namespace WebApplication1.Controllers
             sobremesa.Nome = novaSobremesa.Nome;
             sobremesa.Descricao = novaSobremesa.Descricao;
             sobremesa.Tipo = novaSobremesa.Tipo;
+            sobremesa.Ativo = novaSobremesa.Ativo;
 
             try
             {

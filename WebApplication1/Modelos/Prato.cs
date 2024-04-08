@@ -14,6 +14,8 @@ namespace Modelos
 
         [Required]
         public bool Tipo { get; set; }
+
+        public bool Ativo { get; set; }
     }
 
 }

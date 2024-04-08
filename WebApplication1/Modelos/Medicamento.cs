@@ -18,5 +18,7 @@ namespace Modelos
 
         [Required]
         public int QuantidadeAtual { get; set; }
+
+        public bool Ativo { get; set; }
     }
 }
