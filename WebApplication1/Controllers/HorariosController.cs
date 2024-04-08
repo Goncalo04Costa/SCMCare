@@ -90,5 +90,18 @@ namespace WebApplication1.Controllers
 
             return Ok($"Horário com o ID {id} removido com sucesso");
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Horario>> ObterHorarioPorId(int id)
+        {
+            var horario = await _context.Horarios.FindAsync(id);
+
+            if (horario == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(horario);
+        }
     }
 }
