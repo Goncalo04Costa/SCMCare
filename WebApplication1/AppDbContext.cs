@@ -57,6 +57,12 @@ namespace WebApplication1
 
         public DbSet<Menu> Menus { get; set; }
 
+        public DbSet<Notificacao> Notificacoes { get; set; }
+
+        public DbSet<NotificacaoFuncionario> NotificacoesFuncionario { get; set; }
+
+        public DbSet<NotificacaoResponsavel> NotificacoesResponsavel { get; set; }
+
         public DbSet<PedidoMaterial> PedidosMaterial { get; set; }
 
         public DbSet<PedidoMedicamento> PedidosMedicamento { get; set; }
