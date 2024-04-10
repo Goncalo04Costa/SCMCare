@@ -103,5 +103,17 @@ namespace WebApplication1.Controllers
 
             return Ok(horario);
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Horario>> ObterHorariosPorCat(int TiposFuncionarioId)
+        {
+            var horarios = await _context.Horarios.Where(a => a.TiposFuncionarioId == TiposFuncionarioId);
+
+            if (horarios == null)
+            { return NotFound(); }     
+
+            return Ok(horarios);
+        }
+
+
     }
 }
