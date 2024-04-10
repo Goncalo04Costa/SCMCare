@@ -131,7 +131,7 @@ namespace WebApplication1.Controllers
         {
           
             var outraConsulta = await _context.Consultas
-                .FirstOrDefaultAsync(c => c.ResponsaveisId == responsavelId && c.Data.Date == consultaData.Date);
+                .FirstOrDefaultAsync(c => c.ResponsaveisId == responsavelId && c.Data == consultaData.Date);
 
             if (outraConsulta != null)
             {

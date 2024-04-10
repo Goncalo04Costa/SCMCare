@@ -97,5 +97,38 @@ namespace WebApplication1.Controllers
         {
             return _context.Senhas.Any(e => e.FuncionariosId == funcionariosId && e.MenuId == menuId);
         }
+
+        [HttpPost("reservar/{funcionarioId}/{menuId}")]
+        public async Task<ActionResult<Senha>> ReservarSenha(int funcionarioId, int menuId)
+        {
+            var funcionario = await _context.Funcionarios.FindAsync(funcionarioId);
+            var menu = await _context.Menus.FindAsync(menuId);
+
+            if (funcionario == null || menu == null)
+            {
+                return NotFound("Funcionário ou menu não encontrado.");
+            }
+
+            var senhaReservada = await _context.Senhas.FirstOrDefaultAsync(s => s.FuncionariosId == funcionarioId && s.MenuId == menuId);
+            if (senhaReservada != null)
+            {
+                return Conflict("A senha já está reservada para este funcionário.");
+            }
+
+            var senha = new Senha
+            {
+                FuncionariosId = funcionarioId,
+                MenuId = menuId,
+                Estado = 1 // 1 senha reservada
+            };
+
+            _context.Senhas.Add(senha);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(ObterSenha), new { funcionariosId = senha.FuncionariosId, menuId = senha.MenuId }, senha);
+        }
+
+
+
     }
 }
