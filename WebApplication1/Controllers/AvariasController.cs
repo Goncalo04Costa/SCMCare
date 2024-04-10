@@ -90,5 +90,28 @@ namespace WebApplication1.Controllers
 
             return Ok($"Avaria com o ID {id} removida com sucesso");
         }
+        
+        [HttpPut("{id}")]
+        public async Task<IActionResult> AtualizarDataAvaria(int id, DateTime data)
+        {
+            var avaria = await _context.Avarias.FindAsync(id);
+
+            if (avaria == null)
+            {
+                return NotFound($"Não foi possível encontrar a avaria com o ID {id}");
+            }
+
+            avaria.Data = data;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok($"Avaria atualizada com sucesso para o ID {id}");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
