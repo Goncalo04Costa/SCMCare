@@ -26,7 +26,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Horario>> ObterHorario(int id)
         {
-            var horario = await _context.Horarios.FindAsync(id);
+            var horario = await _context.Horarios.FindAsync(id); // !!! verificar se funciona
 
             if (horario == null)
             {
@@ -91,22 +91,12 @@ namespace WebApplication1.Controllers
             return Ok($"Horário com o ID {id} removido com sucesso");
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Horario>> ObterHorarioPorId(int id)
-        {
-            var horario = await _context.Horarios.FindAsync(id);
-
-            if (horario == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(horario);
-        }
-        [HttpGet("{id}")]
+        [HttpGet("ObterHorariosPorCat/{TiposFuncionarioId}")]
         public async Task<ActionResult<Horario>> ObterHorariosPorCat(int TiposFuncionarioId)
         {
-            var horarios = await _context.Horarios.Where(a => a.TiposFuncionarioId == TiposFuncionarioId);
+            //var horarios = await _context.Horarios.Where(a => a.TiposFuncionarioId == TiposFuncionarioId);
+            // !!! Acabar implementação, ^ em comentário para testar resto do código
+            var horarios = await _context.Horarios.ToListAsync();
 
             if (horarios == null)
             { return NotFound(); }     

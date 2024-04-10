@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\AvariasController.cs" />
     <Compile Remove="Controllers\ContaCorrenteMaterialController.cs" />
     <Compile Remove="Controllers\ContaCorrenteMedicamentoController.cs" />
-    <Compile Remove="Controllers\FuncionariosController.cs" />
-    <Compile Remove="Controllers\HorariosController.cs" />
     <Compile Remove="Controllers\UserController.cs" />
   </ItemGroup>
 

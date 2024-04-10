@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using WebApplication1.Servicos;
 
 namespace WebApplication1.Controllers
 {
@@ -9,10 +10,22 @@ namespace WebApplication1.Controllers
     public class AvariasController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly TiposFuncionarioServico _tiposFuncionarioService;
+        private readonly NotificacoesServico _notificacoesService;
 
         public AvariasController(AppDbContext context)
         {
             _context = context;
+        }
+
+        public AvariasController(TiposFuncionarioServico tiposFuncionarioService)
+        {
+            _tiposFuncionarioService = tiposFuncionarioService;
+        }
+
+        public AvariasController(NotificacoesServico notificacoesService)
+        {
+            _notificacoesService = notificacoesService;
         }
 
         [HttpGet]
@@ -46,7 +59,21 @@ namespace WebApplication1.Controllers
             _context.Avarias.Add(avaria);
             await _context.SaveChangesAsync();
 
-            return Ok("Avaria adicionada com sucesso");
+            int i = await _tiposFuncionarioService.ObterTipoPorNome("Engenheiro");
+
+            if (i == -1)
+                return Ok("Avaria adicionada com sucesso, com erro de notificação");
+
+            Notificacao notificacao = new Notificacao();
+            notificacao.Mensagem = $"Aberta nova avaria com o id {avaria.Id} no equipamento {avaria.EquipamentosId}: {avaria.Descricao}";
+            notificacao.Data = DateTime.Now;
+
+            int n = await _notificacoesService.InserirNotificacao(notificacao);
+
+            if (n == 1)
+                return Ok("Avaria adicionada com sucesso e engenheiros notificados");
+            else
+                return Ok("Avaria adicionada com sucesso, com erro de notificação");
         }
 
         [HttpPut("{id}")]
@@ -91,7 +118,7 @@ namespace WebApplication1.Controllers
             return Ok($"Avaria com o ID {id} removida com sucesso");
         }
         
-        [HttpPut("{id}")]
+        [HttpPut("AtualizarDataAvaria/{id}")]
         public async Task<IActionResult> AtualizarDataAvaria(int id, DateTime data)
         {
             var avaria = await _context.Avarias.FindAsync(id);

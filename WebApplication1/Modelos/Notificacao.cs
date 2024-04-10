@@ -11,6 +11,6 @@ namespace Modelos
         public string Mensagem { get; set; }
 
         [Required]
-        public int TiposFuncionarioId { get; set; }
+        public DateTime Data { get; set; }
     }
 }

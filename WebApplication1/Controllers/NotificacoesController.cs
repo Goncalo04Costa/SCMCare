@@ -60,7 +60,7 @@ namespace WebApplication1.Controllers
             }
 
             notificacao.Mensagem = novaNotificacao.Mensagem;
-            notificacao.TiposFuncionarioId = novaNotificacao.TiposFuncionarioId;
+            notificacao.Data = novaNotificacao.Data;
 
             try
             {

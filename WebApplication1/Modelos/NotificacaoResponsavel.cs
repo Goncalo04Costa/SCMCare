@@ -10,9 +10,6 @@ namespace Modelos
         [Required]
         public int ResponsavelId { get; set; }
 
-        [Required]
-        public string Mensagem { get; set; }
-
         public int Estado { get; set; }
     }
 }

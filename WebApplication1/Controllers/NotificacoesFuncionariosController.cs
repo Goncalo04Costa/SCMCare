@@ -117,7 +117,8 @@ namespace WebApplication1.Controllers
                 var notificacaoFuncionario = new NotificacaoFuncionario
                 {
                     NotificacaoId = NotificacaoId,
-                    FuncionarioId = funcionario.Id
+                    FuncionarioId = funcionario.Id,
+                    Estado = 0
                 };
 
                 _context.NotificacoesFuncionario.Add(notificacaoFuncionario);
