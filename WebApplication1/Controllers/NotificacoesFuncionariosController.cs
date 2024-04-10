@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using WebApplication1.Servicos;
 
 
 namespace WebApplication1.Controllers
@@ -10,10 +11,16 @@ namespace WebApplication1.Controllers
     public class NotificacoesFuncionariosController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly NotificacoesServico _notificacoesService;
 
         public NotificacoesFuncionariosController(AppDbContext context)
         {
             _context = context;
+        }
+
+        public NotificacoesFuncionariosController(NotificacoesServico notificacoesService)
+        {
+            _notificacoesService = notificacoesService;
         }
 
         [HttpGet]
@@ -22,10 +29,10 @@ namespace WebApplication1.Controllers
             return await _context.NotificacoesFuncionario.ToListAsync();
         }
         
-        [HttpGet("{NotificacoesId}/{FuncionariosId}")]
-        public async Task<ActionResult<NotificacaoFuncionario>> ObterNotificacaoFuncionario(int NotificacoesId, int FuncionariosId)
+        [HttpGet("{NotificacaoId}/{FuncionarioId}")]
+        public async Task<ActionResult<NotificacaoFuncionario>> ObterNotificacaoFuncionario(int NotificacaoId, int FuncionarioId)
         {
-            var notificacaoFuncionario = await _context.NotificacoesFuncionario.FirstOrDefaultAsync(a => a.NotificacoesId == NotificacoesId && a.FuncionariosId == FuncionariosId);
+            var notificacaoFuncionario = await _context.NotificacoesFuncionario.FirstOrDefaultAsync(a => a.NotificacaoId == NotificacaoId && a.FuncionarioId == FuncionarioId);
 
             if (notificacaoFuncionario == null)
             {
@@ -42,51 +49,82 @@ namespace WebApplication1.Controllers
             {
                 return BadRequest("Objeto inválido");
             }
+            bool existe = await _notificacoesService.ExisteNotificacao(notificacaoFuncionario.NotificacaoId);
+            if (!existe)
+            {
+                return BadRequest();
+            }
 
             _context.NotificacoesFuncionario.Add(notificacaoFuncionario);
             await _context.SaveChangesAsync();
 
-            return Ok("NotificacaoFuncionario adicionada com sucesso");
+            return Ok("Funcionário notificado com sucesso");
         }
 
-        [HttpPut("{NotificacoesId}/{FuncionariosId}")]
-        public async Task<IActionResult> AtualizarNotificacaoFuncionarioo(int NotificacoesId, int FuncionariosId, [FromBody] NotificacaoFuncionario novaNotificacaoFuncionario)
+        //[HttpPut("{NotificacaoId}/{FuncionarioId}")]
+        //public async Task<IActionResult> AtualizarNotificacaoFuncionario(int NotificacaoId, int FuncionarioId, [FromBody] NotificacaoFuncionario novaNotificacaoFuncionario)
+        //{
+        //    var notificacaoFuncionario = await _context.NotificacoesFuncionario.FirstOrDefaultAsync(a => a.NotificacaoId == NotificacaoId && a.FuncionarioId == FuncionarioId);
+
+        //    if (notificacaoFuncionario == null)
+        //    {
+        //        return NotFound($"Não foi possível encontrar a notificacaoFuncionario com a notificacao ID {NotificacaoId} e o funcionario ID {FuncionarioId}");
+        //    }
+
+        //    notificacaoFuncionario.Estado = novaNotificacaoFuncionario.Estado;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //        return Ok($"NotificacaoFuncionario atualizada com sucesso para a notificacao ID {NotificacaoId} e o funcionario ID {FuncionarioId}");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
+
+        [HttpDelete("{NotificacaoId}/{FuncionarioId}")]
+        public async Task<IActionResult> RemoverNotificacaoFuncionario(int NotificacaoId, int FuncionarioId)
         {
-            var notificacaoFuncionario = await _context.NotificacoesFuncionario.FirstOrDefaultAsync(a => a.NotificacoesId == NotificacoesId && a.FuncionariosId == FuncionariosId);
+            var notificacaoFuncionario = await _context.NotificacoesFuncionario.FirstOrDefaultAsync(a => a.NotificacaoId == NotificacaoId && a.FuncionarioId == FuncionarioId);
+
 
             if (notificacaoFuncionario == null)
             {
-                return NotFound($"Não foi possível encontrar a notificacaoFuncionario com a notificacao ID {NotificacoesId} e o funcionario ID {FuncionariosId}");
-            }
-
-            notificacaoFuncionario.Estado = novaNotificacaoFuncionario.Estado;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return Ok($"NotificacaoFuncionario atualizada com sucesso para a notificacao ID {NotificacoesId} e o funcionario ID {FuncionariosId}");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        [HttpDelete("{NotificacoesId}/{FuncionariosId}")]
-        public async Task<IActionResult> RemoverNotificacaoFuncionario(int NotificacoesId, int FuncionariosId)
-        {
-            var notificacaoFuncionario = await _context.NotificacoesFuncionario.FirstOrDefaultAsync(a => a.NotificacoesId == NotificacoesId && a.FuncionariosId == FuncionariosId);
-
-
-            if (notificacaoFuncionario == null)
-            {
-                return NotFound($"NotificacaoFuncionario com a notificacao ID {NotificacoesId} e o funcionario ID {FuncionariosId} não encontrada");
+                return NotFound($"Notificação {NotificacaoId} do funcionario {FuncionarioId} não encontrada");
             }
 
             _context.NotificacoesFuncionario.Remove(notificacaoFuncionario);
             await _context.SaveChangesAsync();
 
-            return Ok($"NotificacaoFuncionario com a notificacao ID {NotificacoesId} e o funcionario ID {FuncionariosId} removida com sucesso");
+            return Ok($"Notificação {NotificacaoId} removida do funcionário {FuncionarioId} com sucesso");
+        }
+
+        [HttpGet("InserirNotificacaoTipoFuncionario/{NotificacaoId}/{TipoFuncionarioId}")]
+        public async Task<ActionResult<NotificacaoFuncionario>> InserirNotificacaoTipoFuncionario(int NotificacaoId, int TipoFuncionarioId)
+        {
+            bool existe = await _notificacoesService.ExisteNotificacao(NotificacaoId);
+            if (!existe)
+            {
+                return BadRequest();
+            }
+
+            var funcionarios = await _context.Funcionarios.Where(f => f.TiposFuncionarioId == TipoFuncionarioId).ToListAsync();
+
+            foreach (var funcionario in funcionarios)
+            {
+                var notificacaoFuncionario = new NotificacaoFuncionario
+                {
+                    NotificacaoId = NotificacaoId,
+                    FuncionarioId = funcionario.Id
+                };
+
+                _context.NotificacoesFuncionario.Add(notificacaoFuncionario);
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok($"Funcionários do tipo {TipoFuncionarioId} notificados com sucesso");
         }
 
     }

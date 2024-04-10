@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using WebApplication1.Servicos;
 
 
 namespace WebApplication1.Controllers
@@ -10,22 +11,28 @@ namespace WebApplication1.Controllers
     public class NotificacoesResponsavelController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly NotificacoesServico _notificacoesService;
 
-        public NotificacoesResponsavelController(AppDbContext context)
+        public NotificacoesResponsavelController(AppDbContext context, NotificacoesServico _notificacoesService)
         {
             _context = context;
+        }
+
+        public NotificacoesResponsavelController(NotificacoesServico notificacoesService)
+        {
+            _notificacoesService = notificacoesService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NotificacaoResponsavel>>> ObterTodasNotificacoesResponsavel()
         {
-            return await _context.Notificacoes.ToListAsync();
+            return await _context.NotificacoesResponsavel.ToListAsync();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NotificacaoResponsavel>> ObterNotificacaoResponsavel(int id)
+        [HttpGet("{NotificacaoId}/{ResponsavelId}")]
+        public async Task<ActionResult<NotificacaoResponsavel>> ObterNotificacaoResponsavel(int NotificacaoId, int ResponsavelId)
         {
-            var notificacaoResponsavel = await _context.NotificacoesResponsavel.FindAsync(id);
+            var notificacaoResponsavel = await _context.NotificacoesResponsavel.FirstOrDefaultAsync(a => a.NotificacaoId == NotificacaoId && a.ResponsavelId == ResponsavelId);
 
             if (notificacaoResponsavel == null)
             {
@@ -43,51 +50,32 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
+            bool existe = await _notificacoesService.ExisteNotificacao(notificacaoResponsavel.NotificacaoId);
+            if (!existe)
+            { 
+                return BadRequest();
+            }
+
             _context.NotificacoesResponsavel.Add(notificacaoResponsavel);
             await _context.SaveChangesAsync();
 
-            return Ok("NotificacaoResponsavel adicionada com sucesso");
+            return Ok("Responsável notificado com sucesso");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> AtualizarNotificacaoResponsavel(int id, [FromBody] NotificacaoResponsavel novaNotificacaoResponsavel)
+        [HttpDelete("{NotificacaoId}/{ResponsavelId}")]
+        public async Task<IActionResult> RemoverNotificacaoResponsavel(int NotificacaoId, int ResponsavelId)
         {
-            var notificacaoResponsavel = await _context.NotificacoesResponsavel.FindAsync(id);
+            var notificacaoResponsavel = await _context.NotificacoesResponsavel.FirstOrDefaultAsync(a => a.NotificacaoId == NotificacaoId && a.ResponsavelId == ResponsavelId);
 
             if (notificacaoResponsavel == null)
             {
-                return NotFound($"Não foi possível encontrar a notificacaoResponsavel com o ID {id}");
-            }
-
-            notificacaoResponsavel.Mensagem = novaNotificacaoResponsavel.Mensagem;
-            notificacaoResponsavel.Estado = novaNotificacaoResponsavel.Estado;
-            notificacaoResponsavel.ResponsaveisId = novaNotificacaoResponsavel.ResponsaveisId;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return Ok($"NotificacaoResponsavel atualizada com sucesso para o ID {id}");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoverNotificacaoResponsavel(int id)
-        {
-            var notificacaoResponsavel = await _context.NotificacoesResponsavel.FindAsync(id);
-
-            if (notificacaoResponsavel == null)
-            {
-                return NotFound($"NotificacaoResponsavel com o ID {id} não encontrada");
+                return NotFound($"Notificação {NotificacaoId} do responsável {ResponsavelId} não encontrada");
             }
 
             _context.NotificacoesResponsavel.Remove(notificacaoResponsavel);
             await _context.SaveChangesAsync();
 
-            return Ok($"NotificacaoResponsavel com o ID {id} removida com sucesso");
+            return Ok($"Notificação {NotificacaoId} removida do responsável {ResponsavelId} com sucesso");
         }
 
     }

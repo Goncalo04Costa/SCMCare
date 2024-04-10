@@ -5,14 +5,14 @@ namespace Modelos
 {
     public class NotificacaoResponsavel
     {
-        public int Id { get; set; }
+        public int NotificacaoId { get; set; }
+
+        [Required]
+        public int ResponsavelId { get; set; }
 
         [Required]
         public string Mensagem { get; set; }
 
         public int Estado { get; set; }
-
-        [Required]
-        public int ResponsaveisId { get; set; }
     }
 }

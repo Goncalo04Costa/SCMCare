@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
         {
             var pedidoMaterial = await _context.PedidosMaterial.FindAsync(id);
 
-            if (pedidoMaterial = null)
+            if (pedidoMaterial == null)
             {
                 return NotFound();
             }

@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
         {
             var pedidoMedicamento = await _context.PedidosMedicamento.FindAsync(id);
 
-            if (pedidoMedicamento = null)
+            if (pedidoMedicamento == null)
             {
                 return NotFound();
             }

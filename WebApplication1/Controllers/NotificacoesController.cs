@@ -46,7 +46,7 @@ namespace WebApplication1.Controllers
             _context.Notificacoes.Add(notificacao);
             await _context.SaveChangesAsync();
 
-            return Ok("Notificacao adicionada com sucesso");
+            return Ok("Notificação adicionada com sucesso");
         }
 
         [HttpPut("{id}")]
@@ -56,7 +56,7 @@ namespace WebApplication1.Controllers
 
             if (notificacao == null)
             {
-                return NotFound($"Não foi possível encontrar a notificacao com o ID {id}");
+                return NotFound($"Não foi possível encontrar a notificação com o ID {id}");
             }
 
             notificacao.Mensagem = novaNotificacao.Mensagem;
@@ -65,7 +65,7 @@ namespace WebApplication1.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok($"Notificacao atualizada com sucesso para o ID {id}");
+                return Ok($"Notificação atualizada com sucesso para o ID {id}");
             }
             catch (Exception e)
             {
@@ -80,13 +80,26 @@ namespace WebApplication1.Controllers
 
             if (notificacao == null)
             {
-                return NotFound($"Notificacao com o ID {id} não encontrada");
+                return NotFound($"Notificação com o ID {id} não encontrada");
             }
 
             _context.Notificacoes.Remove(notificacao);
             await _context.SaveChangesAsync();
 
-            return Ok($"Notificacao com o ID {id} removida com sucesso");
+            return Ok($"Notificação com o ID {id} removida com sucesso");
+        }
+
+        [HttpGet("ExisteNotificacao/{id}")]
+        public async Task<ActionResult<bool>> ExisteNotificacao(int id)
+        {
+            var notificacao = await _context.Notificacoes.FindAsync(id);
+
+            if (notificacao == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
     }
