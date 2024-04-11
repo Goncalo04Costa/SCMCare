@@ -79,6 +79,8 @@ namespace WebApplication1
 
         public DbSet<Senha> Senhas { get; set; }
 
+        public DbSet<Sessao> Sessoes { get; set; }
+
         public DbSet<Sobremesa> Sobremesas { get; set; }
 
         public DbSet<Sopa> Sopas { get; set; }

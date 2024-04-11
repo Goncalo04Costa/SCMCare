@@ -119,7 +119,7 @@ namespace WebApplication1.Controllers
             {
                 FuncionariosId = funcionarioId,
                 MenuId = menuId,
-                Estado = 1 // 1 senha reservada
+                Estado = 1 
             };
 
             _context.Senhas.Add(senha);
@@ -127,6 +127,8 @@ namespace WebApplication1.Controllers
 
             return CreatedAtAction(nameof(ObterSenha), new { funcionariosId = senha.FuncionariosId, menuId = senha.MenuId }, senha);
         }
+
+       
 
 
 
