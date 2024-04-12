@@ -104,6 +104,60 @@ namespace WebApplication1.Controllers
             return Ok(horarios);
         }
 
+        [HttpGet("ObterHorariosPorCat/{tipoFuncionarioId}")]
+        public async Task<ActionResult<IEnumerable<Horario>>> ObterHorariosPorCat(int tipoFuncionarioId)
+        {
+
+            var funcionarios = await _context.Funcionarios
+                .Where(f => f.TiposFuncionarioId == tipoFuncionarioId)
+                .ToListAsync();
+
+            if (funcionarios == null || !funcionarios.Any())
+            {
+                return NotFound($"Não foram encontrados funcionários com o tipo de funcionário ID {tipoFuncionarioId}");
+            }
+
+
+            var funcionariosIds = funcionarios.Select(f => f.Id).ToList();
+
+
+            var horarios = await _context.Horarios
+                .Where(h => funcionariosIds.Contains(h.FuncionariosId))
+                .ToListAsync();
+
+            if (horarios == null || !horarios.Any())
+            {
+                return NotFound($"Não foram encontrados horários para os funcionários com o tipo de funcionário ID {tipoFuncionarioId}");
+            }
+
+            return Ok(horarios);
+        }
+
+        [HttpGet("ObterHorariosPorFuncionario/{funcionarioId}")]
+        public async Task<ActionResult<IEnumerable<Horario>>> ObterHorariosPorFuncionario(int funcionarioId)
+        {
+            var horarios = await _context.Horarios.Where(h => h.FuncionariosId == funcionarioId).ToListAsync();
+
+            if (horarios == null || !horarios.Any())
+            {
+                return NotFound($"Não foram encontrados horários para o funcionário com o ID {funcionarioId}");
+            }
+
+            return Ok(horarios);
+        }
+
+        [HttpGet("ObterHorariosTodosFuncionarios")]
+        public async Task<ActionResult<IEnumerable<Horario>>> ObterHorariosTodosFuncionarios()
+        {
+            var horarios = await _context.Horarios.ToListAsync();
+
+            if (horarios == null || !horarios.Any())
+            {
+                return NotFound("Não foram encontrados horários para nenhum funcionário");
+            }
+
+            return Ok(horarios);
+        }
 
     }
 }
