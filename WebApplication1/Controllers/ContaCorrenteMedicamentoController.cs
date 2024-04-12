@@ -167,5 +167,98 @@ namespace WebApplication1.Controllers
 
             return Ok($"Foi removida a conta corrente com o ID {id}");
         }
+
+
+        [HttpPost("adicionar-medicamento")]
+        public async Task<ActionResult> AdicionarMedicamento(int medicamentosId, int quantidadeAdicionada, string observacoes)
+        {
+            try
+            {
+                
+                var medicamentoExistente = await _context.Medicamentos.FindAsync(medicamentosId);
+
+                if (medicamentoExistente == null)
+                {
+                    return NotFound("Medicamento não encontrado");
+                }
+
+               
+                var novaContaCorrente = new ContaCorrenteMedicamento
+                {
+                    MedicamentosId = medicamentosId,
+                    Data = DateTime.Now, 
+                    Tipo = false, 
+                    QuantidadeMovimento = quantidadeAdicionada,
+                    Observacoes = observacoes
+                };
+
+             
+                _context.ContaCorrenteMedicamento.Add(novaContaCorrente);
+
+                medicamentoExistente.Stock += quantidadeAdicionada;
+
+                await _context.SaveChangesAsync();
+
+                return Ok($"Adição de {quantidadeAdicionada} unidades ao stock do medicamento registrada com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro ao adicionar o medicamento ao stock: {ex.Message}");
+            }
+        }
+
+
+
+        [HttpPost("registrar-utilizacao")]
+        public async Task<ActionResult> RegistrarUtilizacaoMedicamento(int medicamentosId, int funcionariosId, int utentesId, int quantidadeUtilizada, string observacoes)
+        {
+            try
+            {
+               
+                var medicamentoExistente = await _context.Medicamentos.FindAsync(medicamentosId);
+                var funcionarioExistente = await _context.Funcionarios.FindAsync(funcionariosId);
+                var utenteExistente = await _context.Utentes.FindAsync(utentesId);
+
+                if (medicamentoExistente == null || funcionarioExistente == null || utenteExistente == null)
+                {
+                    return NotFound("Medicamento, funcionário ou utente não encontrado");
+                }
+
+              
+                if (medicamentoExistente.Stock < quantidadeUtilizada)
+                {
+                    return BadRequest("Stock insuficiente para realizar a utilização do medicamento");
+                }
+
+                
+                var novaContaCorrente = new ContaCorrenteMedicamento
+                {
+                    MedicamentosId = medicamentosId,
+                    FuncionariosId = funcionariosId,
+                    UtentesId = utentesId,
+                    Data = DateTime.Now, 
+                    Tipo = true, 
+                    QuantidadeMovimento = quantidadeUtilizada,
+                    Observacoes = observacoes
+                };
+
+               
+                _context.ContaCorrenteMedicamento.Add(novaContaCorrente);
+
+               
+                medicamentoExistente.Stock -= quantidadeUtilizada;
+
+               
+                await _context.SaveChangesAsync();
+
+                return Ok("Utilização de medicamento registrada com sucesso e stock atualizado");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro ao registrar a utilização de medicamento: {ex.Message}");
+            }
+        }
+
+
     }
 }
