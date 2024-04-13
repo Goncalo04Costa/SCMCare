@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using RegrasNegocio;
 
 
 namespace WebApplication1.Controllers
@@ -43,12 +44,20 @@ namespace WebApplication1.Controllers
             {
                 return BadRequest("Objeto inválido");
             }
+            var regrasHorario = new RegrasHorario(_context);
+            var horarioValido = await regrasHorario.HorarioEValido(horario);
+
+            if (!horarioValido)
+            {
+                return BadRequest("Já existe um horário agendado para o funcionário neste dia e turno");
+            }
 
             _context.Horarios.Add(horario);
             await _context.SaveChangesAsync();
 
             return Ok("Horário adicionado com sucesso");
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarHorario(int id, [FromBody] Horario novoHorario)
@@ -147,17 +156,23 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet("ObterHorariosTodosFuncionarios")]
+        [RegrasHorario.AutorizacaoHorarios] 
         public async Task<ActionResult<IEnumerable<Horario>>> ObterHorariosTodosFuncionarios()
         {
+            var tipoFuncionarioUsuario = 1; 
+            if (tipoFuncionarioUsuario != 1 && tipoFuncionarioUsuario != 2 && tipoFuncionarioUsuario != 3)
+            {
+                return Forbid(); 
+            }
             var horarios = await _context.Horarios.ToListAsync();
 
             if (horarios == null || !horarios.Any())
             {
                 return NotFound("Não foram encontrados horários para nenhum funcionário");
             }
-
-            return Ok(horarios);
+                return Ok(horarios);
         }
+
 
     }
 }
