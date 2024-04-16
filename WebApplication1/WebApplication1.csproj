@@ -7,7 +7,54 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\AltasController.cs" />
+    <Compile Remove="Controllers\AvaliacoesController.cs" />
+    <Compile Remove="Controllers\AvariasController.cs" />
+    <Compile Remove="Controllers\CamasController.cs" />
+    <Compile Remove="Controllers\ConsultasController.cs" />
+    <Compile Remove="Controllers\ContaCorrenteMaterialController.cs" />
+    <Compile Remove="Controllers\ContaCorrenteMedicamentoController.cs" />
+    <Compile Remove="Controllers\ContactosFornecedoresController.cs" />
+    <Compile Remove="Controllers\ContactosFuncionariosController.cs" />
+    <Compile Remove="Controllers\ContactosResponsaveisController.cs" />
+    <Compile Remove="Controllers\EquipamentosController.cs" />
+    <Compile Remove="Controllers\FeriasFuncionarioController.cs" />
+    <Compile Remove="Controllers\FornecedoresController.cs" />
+    <Compile Remove="Controllers\FornecedoresMedicamentoController.cs" />
+    <Compile Remove="Controllers\FuncionariosController.cs" />
+    <Compile Remove="Controllers\HorariosController.cs" />
+    <Compile Remove="Controllers\HospitalController.cs" />
+    <Compile Remove="Controllers\LimpezasController.cs" />
+    <Compile Remove="Controllers\MaterialController.cs" />
+    <Compile Remove="Controllers\MedicamentoController.cs" />
+    <Compile Remove="Controllers\MedicamentosPrescricaoController.cs" />
+    <Compile Remove="Controllers\MensalidadesController.cs" />
+    <Compile Remove="Controllers\MenuController.cs" />
+    <Compile Remove="Controllers\PedidosMaterialController.cs" />
+    <Compile Remove="Controllers\PedidosMedicamentoController.cs" />
+    <Compile Remove="Controllers\PlanoController.cs" />
+    <Compile Remove="Controllers\PratoController.cs" />
+    <Compile Remove="Controllers\PrescricoesController.cs" />
+    <Compile Remove="Controllers\QuartosControllers.cs" />
+    <Compile Remove="Controllers\ResponsavelController.cs" />
+    <Compile Remove="Controllers\SenhasController.cs" />
+    <Compile Remove="Controllers\SobremesasController.cs" />
+    <Compile Remove="Controllers\SopasController.cs" />
+    <Compile Remove="Controllers\TiposAdmissaoController.cs" />
+    <Compile Remove="Controllers\TiposAlergiaController.cs" />
+    <Compile Remove="Controllers\TiposAvaliacaoController.cs" />
+    <Compile Remove="Controllers\TiposContactoController.cs" />
+    <Compile Remove="Controllers\TiposEquipamentoController.cs" />
+    <Compile Remove="Controllers\TiposFuncionarioController.cs" />
+    <Compile Remove="Controllers\TiposMaterialController.cs" />
+    <Compile Remove="Controllers\TiposPagamentoController.cs" />
+    <Compile Remove="Controllers\TiposQuartoController.cs" />
+    <Compile Remove="Controllers\TurnosController.cs" />
     <Compile Remove="Controllers\UserController.cs" />
+    <Compile Remove="Controllers\UsersFuncionarioController.cs" />
+    <Compile Remove="Controllers\UsersResponsavelController.cs" />
+    <Compile Remove="Controllers\UtenteAlergiasController.cs" />
+    <Compile Remove="Controllers\UtentesController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +68,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
         {
             var contactoResponsavel = await _context.ContactosResponsaveis.FirstOrDefaultAsync(a => a.ResponsaveisId == ResponsaveisId && a.TipoContactoId == TipoContactoId);
 
-            if (contactoResponsavel = null)
+            if (contactoResponsavel == null)
             {
                 return NotFound();
             }

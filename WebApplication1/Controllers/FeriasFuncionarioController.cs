@@ -29,7 +29,7 @@ namespace WebApplication1.Controllers
         {
             var feriasfuncionario = await _context.FeriasFuncionario.FindAsync(id);
 
-            if (feriasfuncionario = null)
+            if (feriasfuncionario == null)
             {
                 return NotFound();
             }
