@@ -86,22 +86,22 @@ namespace WebApplication1.Controllers
 
             if (historico0 && !historico1)
             {
-                query = query.Where(d => !d.Historico); // Mostra utentes que não estão em histórico
+                query = query.Where(d => !d.Historico); 
             }
 
             else if (!historico0 && historico1)
             {
-                query = query.Where(d => d.Historico); // Mostra utentes que estão em histórico
+                query = query.Where(d => d.Historico); 
             }
 
             if (tipo0 && !tipo1)
             {
-                query = query.Where(d => !d.Tipo); // Mostra utentes com tipo 0
+                query = query.Where(d => !d.Tipo);
             }
 
             else if (!tipo0 && tipo1)
             {
-                query = query.Where(d => d.Tipo); // Mostra utentes com tipo 1
+                query = query.Where(d => d.Tipo); 
             }
 
             var dados = await query.ToListAsync();
