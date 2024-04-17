@@ -14,7 +14,7 @@ namespace WebApplication1
 
         public DbSet<ContaCorrenteMedicamento> ContaCorrenteMedicamento { get; set; }
 
-        //public DbSet<Alta> Altas { get; set; }
+        public DbSet<Alta> Altas { get; set; }
 
         public DbSet<Avaliacao> Avaliacoes { get; set; }
 
@@ -111,7 +111,6 @@ namespace WebApplication1
         public DbSet<UserResponsavel> UsersResponsavel { get; set; }
 
         public DbSet<UserFuncionario> UsersFuncionario { get; set; }
-
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
