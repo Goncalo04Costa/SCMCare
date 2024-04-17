@@ -35,7 +35,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Logins\" />
     <Folder Include="RegrasNegocio\" />
   </ItemGroup>
 
