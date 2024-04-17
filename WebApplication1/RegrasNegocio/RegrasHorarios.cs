@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Modelos;
 using System.Threading.Tasks;
 
-namespace Servicos
+namespace WebApplication1.RegrasNegocio
 {
 	public class RegrasHorario : ActionFilterAttribute
 	{

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Modelos;
-using Models;
 
 
 namespace WebApplication1
@@ -13,7 +12,7 @@ namespace WebApplication1
 
         public DbSet<ContaCorrenteMaterial> ContaCorrenteMaterial { get; set; }
 
-        public DbSet<ContaCorrenteMedicamento> ContaCorrenteMedicamento {  get; set; }  
+        public DbSet<ContaCorrenteMedicamento> ContaCorrenteMedicamento { get; set; }
 
         public DbSet<Alta> Altas { get; set; }
 
@@ -53,7 +52,7 @@ namespace WebApplication1
 
         public DbSet<MedicamentoPrescricao> MedicamentoPrescricao { get; set; }
 
-        public DbSet<Mensalidade> Mensalidades { get; set; } 
+        public DbSet<Mensalidade> Mensalidades { get; set; }
 
         public DbSet<Menu> Menus { get; set; }
 
@@ -112,5 +111,40 @@ namespace WebApplication1
         public DbSet<UserResponsavel> UsersResponsavel { get; set; }
 
         public DbSet<UserFuncionario> UsersFuncionario { get; set; }
+
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Modelação para entidades sem chave primária própria
+
+            modelBuilder.Entity<Alta>().HasKey(c => new { c.UtentesId });
+
+            modelBuilder.Entity<ContactoFornecedor>().HasKey(c => new { c.FornecedoresId, c.TipoContactoId });
+
+            modelBuilder.Entity<ContactoFuncionario>().HasKey(c => new { c.FuncionariosId, c.TipoContactoId });
+
+            modelBuilder.Entity<ContactoResponsavel>().HasKey(c => new { c.ResponsaveisId, c.TipoContactoId });
+
+            modelBuilder.Entity<FornecedorMedicamento>().HasKey(c => new { c.MedicamentosId, c.FornecedoresId });
+
+            modelBuilder.Entity<Horario>().HasKey(c => new { c.FuncionariosId, c.TurnosId, c.Dia });
+
+            modelBuilder.Entity<MedicamentoPrescricao>().HasKey(c => new { c.PrescricoesId, c.MedicamentosId });
+
+            modelBuilder.Entity<Mensalidade>().HasKey(c => new { c.Mes, c.UtentesId });
+
+            modelBuilder.Entity<NotificacaoFuncionario>().HasKey(c => new { c.FuncionarioId, c.NotificacaoId });
+
+            modelBuilder.Entity<NotificacaoResponsavel>().HasKey(c => new { c.ResponsavelId, c.NotificacaoId });
+
+            modelBuilder.Entity<Senha>().HasKey(c => new { c.FuncionariosId, c.MenuId });
+
+            modelBuilder.Entity<UtenteAlergia>().HasKey(c => new { c.UtentesId, c.TiposAlergiaId });
+
+            modelBuilder.Entity<UserFuncionario>().HasKey(c => new { c.FuncionariosId });
+
+            modelBuilder.Entity<UserResponsavel>().HasKey(c => new { c.ResponsaveisId });
+        }
     }
 }

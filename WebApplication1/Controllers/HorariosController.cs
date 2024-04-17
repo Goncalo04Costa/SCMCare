@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-using RegrasNegocio;
+using WebApplication1.RegrasNegocio;
 
 
 namespace WebApplication1.Controllers
@@ -100,19 +100,6 @@ namespace WebApplication1.Controllers
             return Ok($"Horário com o ID {id} removido com sucesso");
         }
 
-        [HttpGet("ObterHorariosPorCat/{TiposFuncionarioId}")]
-        public async Task<ActionResult<Horario>> ObterHorariosPorCat(int TiposFuncionarioId)
-        {
-            //var horarios = await _context.Horarios.Where(a => a.TiposFuncionarioId == TiposFuncionarioId);
-            // !!! Acabar implementação, ^ em comentário para testar resto do código
-            var horarios = await _context.Horarios.ToListAsync();
-
-            if (horarios == null)
-            { return NotFound(); }     
-
-            return Ok(horarios);
-        }
-
         [HttpGet("ObterHorariosPorCat/{tipoFuncionarioId}")]
         public async Task<ActionResult<IEnumerable<Horario>>> ObterHorariosPorCat(int tipoFuncionarioId)
         {
@@ -156,7 +143,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet("ObterHorariosTodosFuncionarios")]
-        [RegrasHorario.AutorizacaoHorarios] 
+        //[RegrasHorario.AutorizacaoHorarios] 
         public async Task<ActionResult<IEnumerable<Horario>>> ObterHorariosTodosFuncionarios()
         {
             var tipoFuncionarioUsuario = 1; 

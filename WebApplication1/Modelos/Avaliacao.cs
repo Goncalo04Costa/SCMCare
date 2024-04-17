@@ -5,6 +5,8 @@ namespace Modelos
 {
     public class Avaliacao
     {
+        public int Id { get; set; }
+
         public int UtentesId { get; set; }
         public int FuncionariosId { get; set; }
         public DateTime Data { get; set; }

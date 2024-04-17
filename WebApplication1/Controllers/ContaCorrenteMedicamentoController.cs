@@ -195,7 +195,7 @@ namespace WebApplication1.Controllers
              
                 _context.ContaCorrenteMedicamento.Add(novaContaCorrente);
 
-                medicamentoExistente.Stock += quantidadeAdicionada;
+                //medicamentoExistente.Stock += quantidadeAdicionada;
 
                 await _context.SaveChangesAsync();
 
@@ -225,10 +225,10 @@ namespace WebApplication1.Controllers
                 }
 
               
-                if (medicamentoExistente.Stock < quantidadeUtilizada)
+                /*if (medicamentoExistente.Stock < quantidadeUtilizada)
                 {
                     return BadRequest("Stock insuficiente para realizar a utilização do medicamento");
-                }
+                }*/
 
                 
                 var novaContaCorrente = new ContaCorrenteMedicamento
@@ -246,7 +246,7 @@ namespace WebApplication1.Controllers
                 _context.ContaCorrenteMedicamento.Add(novaContaCorrente);
 
                
-                medicamentoExistente.Stock -= quantidadeUtilizada;
+                //medicamentoExistente.Stock -= quantidadeUtilizada;
 
                
                 await _context.SaveChangesAsync();

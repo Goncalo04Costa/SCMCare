@@ -10,10 +10,6 @@
     <Compile Remove="Controllers\ContaCorrenteMaterialController.cs" />
     <Compile Remove="Controllers\ContaCorrenteMedicamentoController.cs" />
     <Compile Remove="Controllers\UserController.cs" />
-    <Compile Remove="Controllers\UsersFuncionarioController.cs" />
-    <Compile Remove="Controllers\UsersResponsavelController.cs" />
-    <Compile Remove="Controllers\UtenteAlergiasController.cs" />
-    <Compile Remove="Controllers\UtentesController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,10 +23,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
