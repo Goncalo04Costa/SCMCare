@@ -1,26 +1,30 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-using System.Reflection.Metadata;
+using RegrasNegocio; // Importe o namespace onde a classe RegrasUtentes está definida
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 
 namespace WebApplication1.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class UtentesController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly RegrasUtentes _regrasUtentes; 
 
-        public UtentesController(AppDbContext context)
+        public UtentesController(AppDbContext context, RegrasUtentes regrasUtentes)
         {
             _context = context;
+            _regrasUtentes = regrasUtentes;
         }
-
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utente>>> ObterTodosUtentes(
@@ -28,7 +32,7 @@ namespace WebApplication1.Controllers
             int? nifMin = null, int? nifMax = null,
             int? snsMin = null, int? snsMax = null,
             string nomeMin = null, string nomeMax = null,
-            DateTime? dataMin = null, DateTime? dataMax = null, //Data de admissão
+            DateTime? dataMin = null, DateTime? dataMax = null, 
             bool historico0 = false, bool historico1 = false,
             bool tipo0 = false, bool tipo1 = false)
         {
@@ -86,12 +90,12 @@ namespace WebApplication1.Controllers
 
             if (historico0 && !historico1)
             {
-                query = query.Where(d => !d.Historico); 
+                query = query.Where(d => !d.Historico);
             }
 
             else if (!historico0 && historico1)
             {
-                query = query.Where(d => d.Historico); 
+                query = query.Where(d => d.Historico);
             }
 
             if (tipo0 && !tipo1)
@@ -101,7 +105,7 @@ namespace WebApplication1.Controllers
 
             else if (!tipo0 && tipo1)
             {
-                query = query.Where(d => d.Tipo); 
+                query = query.Where(d => d.Tipo);
             }
 
             var dados = await query.ToListAsync();
@@ -139,13 +143,19 @@ namespace WebApplication1.Controllers
             }
         }
 
-
         [HttpPost]
         public async Task<ActionResult<Utente>> InserirUtente([FromBody] Utente utente)
         {
             if (utente == null)
             {
                 return BadRequest("Objeto inválido");
+            }
+
+            
+            bool nifExiste = await _regrasUtentes.VerificarNIFExistente(utente.NIF);
+            if (nifExiste)
+            {
+                return BadRequest("NIF já existe.");
             }
 
             _context.Utentes.Add(utente);
@@ -207,7 +217,6 @@ namespace WebApplication1.Controllers
             return Ok($"Foi removido o utente com o ID {id}");
         }
 
-
         [HttpGet("{id}/ficha")]
         public async Task<IActionResult> ImprimirFichaUtente(int id)
         {
@@ -223,18 +232,15 @@ namespace WebApplication1.Controllers
             var pdf = new PdfDocument(writer);
             var document = new iText.Layout.Document(pdf);
 
-
             document.Add(new Paragraph($"Ficha do Utente - {utente.Nome}"));
             document.Add(new Paragraph($"ID: {utente.Id}"));
             document.Add(new Paragraph($"NIF: {utente.NIF}"));
             document.Add(new Paragraph($"SNS: {utente.SNS}"));
             document.Add(new Paragraph($"Data de Admissão: {utente.DataAdmissao}"));
-   
 
             document.Close();
 
             return File(memoryStream.ToArray(), "application/pdf", $"ficha_utente_{utente.Id}.pdf");
         }
-
     }
 }

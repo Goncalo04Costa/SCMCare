@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-using WebApplication1.RegrasNegocio;
+
 
 
 namespace WebApplication1.Controllers
@@ -44,14 +44,8 @@ namespace WebApplication1.Controllers
             {
                 return BadRequest("Objeto inválido");
             }
-            var regrasHorario = new RegrasHorario(_context);
-            var horarioValido = await regrasHorario.HorarioEValido(horario);
-
-            if (!horarioValido)
-            {
-                return BadRequest("Já existe um horário agendado para o funcionário neste dia e turno");
-            }
-
+           
+         
             _context.Horarios.Add(horario);
             await _context.SaveChangesAsync();
 
