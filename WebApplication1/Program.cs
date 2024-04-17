@@ -7,7 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
 
 // Diogo
-var connectionString = builder.Configuration.GetConnectionString("LigacaoDiogo");
+//var connectionString = builder.Configuration.GetConnectionString("LigacaoDiogo");
+
+// Diogo
+var connectionString = builder.Configuration.GetConnectionString("LigacaoDaniela");
+
+
+//Sofia
+//var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");
+
 
 // Daniela
 //var connectionString = builder.Configuration.GetConnectionString("LigacaoDaniela");
