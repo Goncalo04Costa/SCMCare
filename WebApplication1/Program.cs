@@ -13,6 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("LigacaoDaniela");
 
 
+//Sofia
+//var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");
+
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 // Add services to the container.
