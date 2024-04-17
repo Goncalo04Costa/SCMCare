@@ -7,13 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\AltasController.cs" />
     <Compile Remove="Controllers\ContaCorrenteMaterialController.cs" />
     <Compile Remove="Controllers\ContaCorrenteMedicamentoController.cs" />
+    <Compile Remove="Controllers\HorariosController.cs" />
     <Compile Remove="Controllers\UserController.cs" />
     <Compile Remove="Controllers\UsersFuncionarioController.cs" />
     <Compile Remove="Controllers\UsersResponsavelController.cs" />
     <Compile Remove="Controllers\UtenteAlergiasController.cs" />
     <Compile Remove="Controllers\UtentesController.cs" />
+    <Compile Remove="Modelos\Alta.cs" />
+    <Compile Remove="RegrasNegocio\RegrasHorarios.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="RegrasNegocio\" />
   </ItemGroup>
 
 </Project>

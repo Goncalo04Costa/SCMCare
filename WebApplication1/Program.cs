@@ -7,7 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
 
 // Diogo
-var connectionString = builder.Configuration.GetConnectionString("LigacaoDiogo");
+//var connectionString = builder.Configuration.GetConnectionString("LigacaoDiogo");
+
+// Diogo
+var connectionString = builder.Configuration.GetConnectionString("LigacaoDaniela");
+
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
