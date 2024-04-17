@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-
+using RegrasNegocio;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebApplication1.Controllers
 {
@@ -10,10 +12,12 @@ namespace WebApplication1.Controllers
     public class SenhasController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly RegrasSenhas _regrasSenhas;
 
-        public SenhasController(AppDbContext context)
+        public SenhasController(AppDbContext context, RegrasSenhas regrasSenhas)
         {
             _context = context;
+            _regrasSenhas = regrasSenhas;
         }
 
         [HttpGet]
@@ -93,11 +97,6 @@ namespace WebApplication1.Controllers
             return NoContent();
         }
 
-        private bool SenhaExists(int funcionariosId, int menuId)
-        {
-            return _context.Senhas.Any(e => e.FuncionariosId == funcionariosId && e.MenuId == menuId);
-        }
-
         [HttpPost("reservar/{funcionarioId}/{menuId}")]
         public async Task<ActionResult<Senha>> ReservarSenha(int funcionarioId, int menuId)
         {
@@ -109,8 +108,8 @@ namespace WebApplication1.Controllers
                 return NotFound("Funcionário ou menu não encontrado.");
             }
 
-            var senhaReservada = await _context.Senhas.FirstOrDefaultAsync(s => s.FuncionariosId == funcionarioId && s.MenuId == menuId);
-            if (senhaReservada != null)
+            var senhaReservada = await _regrasSenhas.VerificarReservaExistente(funcionarioId, menuId);
+            if (senhaReservada)
             {
                 return Conflict("A senha já está reservada para este funcionário.");
             }
@@ -128,9 +127,9 @@ namespace WebApplication1.Controllers
             return CreatedAtAction(nameof(ObterSenha), new { funcionariosId = senha.FuncionariosId, menuId = senha.MenuId }, senha);
         }
 
-       
-
-
-
+        private bool SenhaExists(int funcionariosId, int menuId)
+        {
+            return _context.Senhas.Any(e => e.FuncionariosId == funcionariosId && e.MenuId == menuId);
+        }
     }
 }
