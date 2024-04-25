@@ -19,13 +19,13 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ContaCorrenteMaterial>>> obterTodasContasCorrentes(
             int? idMin = null, int? idMax = null,
-            int? materiaisId = null, 
-            int? pedidosMaterialId = null, 
-            int? utentesId = null, 
+            int? materiaisId = null,
+            int? pedidosMaterialId = null,
+            int? utentesId = null,
             int? funcionariosId = null,
-            DateTime? dataMin = null, DateTime? dataMax = null, 
-            bool tipo = false, 
-            int? quantidadeMovimentoMin = null, int? quantidadeMovimentoMax = null, 
+            DateTime? dataMin = null, DateTime? dataMax = null,
+            bool tipo = false,
+            int? quantidadeMovimentoMin = null, int? quantidadeMovimentoMax = null,
             string observacoesMin = null, string observacoesMax = null)
         {
             IQueryable<ContaCorrenteMaterial> query = _context.ContaCorrenteMaterial;
@@ -36,16 +36,16 @@ namespace WebApplication1.Controllers
             }
 
             if (idMax.HasValue)
-            { 
+            {
                 query = query.Where(d => d.Id <= idMax.Value);
             }
 
-            if (materiaisId.HasValue) 
+            if (materiaisId.HasValue)
             {
                 query = query.Where(d => d.MateriaisId == materiaisId.Value);
             }
 
-            if (pedidosMaterialId.HasValue) 
+            if (pedidosMaterialId.HasValue)
             {
                 query = query.Where(d => d.PedidosMaterialId == pedidosMaterialId.Value);
             }
@@ -64,7 +64,7 @@ namespace WebApplication1.Controllers
             {
                 query = query.Where(d => d.Data <= dataMin.Value);
             }
-            
+
             if (dataMax.HasValue)
             {
                 query = query.Where(d => d.Data >= dataMax.Value);
@@ -72,7 +72,7 @@ namespace WebApplication1.Controllers
 
             query = query.Where(d => d.Tipo == tipo);
 
-            if (quantidadeMovimentoMin.HasValue) 
+            if (quantidadeMovimentoMin.HasValue)
             {
                 query = query.Where(d => d.QuantidadeMovimento >= quantidadeMovimentoMin);
             }
@@ -87,16 +87,16 @@ namespace WebApplication1.Controllers
                 query = query.Where(d => d.Observacoes.CompareTo(observacoesMin) >= 0);
             }
 
-            if (!string.IsNullOrEmpty (observacoesMax)) 
+            if (!string.IsNullOrEmpty(observacoesMax))
             {
                 query = query.Where(d => d.Observacoes.CompareTo(observacoesMax + "ZZZ") <= 0);
             }
 
-            var dados =await query.ToListAsync();
+            var dados = await query.ToListAsync();
             return dados;
         }
 
-        [HttpGet("{id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ContaCorrenteMaterial>> obterContaCorrente(int id)
         {
             var dado = await _context.ContaCorrenteMaterial.FirstOrDefaultAsync(dado => dado.Id == id);

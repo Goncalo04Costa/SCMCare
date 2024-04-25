@@ -96,7 +96,7 @@ namespace WebApplication1.Controllers
             return dados;
         }
 
-        [HttpGet("{id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ContaCorrenteMedicamento>> obterContaCorrente(int id)
         {
             var dado = await _context.ContaCorrenteMedicamento.FirstOrDefaultAsync(dado => dado.Id == id);

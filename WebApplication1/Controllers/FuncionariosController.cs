@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using WebApplication1.Modelos;
+using WebApplication1.Servicos;
+
 
 namespace WebApplication1.Controllers
 {
@@ -89,6 +93,43 @@ namespace WebApplication1.Controllers
 
             return Ok($"Funcionário com o ID {id} removido com sucesso");
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login([FromBody] LoginViewModel loginViewModel)
+        {
+            
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Modelo de login inválido");
+            }
+
+     
+            var funcionario = await _context.Funcionarios.SingleOrDefaultAsync(f => f.Nome == loginViewModel.Username);
+
+            if (funcionario == null)
+            {
+                return Unauthorized("Credenciais inválidas");
+            }
+
+            
+            var passwordHasher = new PasswordHasher<string>();
+            var result = passwordHasher.VerifyHashedPassword(null, funcionario.Nome, loginViewModel.Password);
+
+            
+            if (result == PasswordVerificationResult.Failed)
+            {
+                return Unauthorized("Credenciais inválidas");
+            }
+
+         
+            var jwtService = new JwtService();
+
+            
+            var token = jwtService.GenerateJwtToken(funcionario);
+            return Ok(token);
+        }
+
+
 
     }
 }
