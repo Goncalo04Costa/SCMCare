@@ -25,7 +25,7 @@ namespace WebApplication1.Servicos
 
         public void AcaoCronometroS(object state)
         {
-            //TesteMail();
+            TesteMail();
         }
 
         private void TesteMail()
@@ -34,7 +34,7 @@ namespace WebApplication1.Servicos
             string senderPassword = "cylc quir akgh zqyf";
 
             // Recipient's email address
-            string recipientEmail = "diogoafernandes20@gmail.com";
+            string recipientEmail = "goncalocosta522@gmail.com";
 
             // Email subject and body
             string subject = "Teste Email";
