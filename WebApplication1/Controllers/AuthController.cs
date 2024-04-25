@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
-using WebApplication1.ViewModels;
 using WebApplication1.Servicos;
-
-namespace WebApplication1.Controllers
+using WebApplication1.Modelos; 
+    
+    namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -32,7 +32,7 @@ namespace WebApplication1.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new IdentityUser { UserName = model.UserName, Email = model.Email };
+            var user = new IdentityUser { UserName = model.Username , Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
@@ -57,11 +57,11 @@ namespace WebApplication1.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
-                var user = await _userManager.FindByNameAsync(model.UserName);
+                var user = await _userManager.FindByNameAsync(model.Username);
                 var token = _jwtService.GenerateJwtToken(user);
 
                 return Ok(new { token });
