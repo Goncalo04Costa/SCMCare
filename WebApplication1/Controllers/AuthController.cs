@@ -14,7 +14,7 @@ using WebApplication1.Modelos;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IConfiguration _configuration;
-        private readonly JwtService _jwtService;
+        private  readonly JwtService _jwtService;
 
         public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration, JwtService jwtService)
         {
@@ -62,7 +62,7 @@ using WebApplication1.Modelos;
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByNameAsync(model.Username);
-                var token = _jwtService.GenerateJwtToken(user);
+                var token = _jwtService.CreateJwtToken(user);
 
                 return Ok(new { token });
             }

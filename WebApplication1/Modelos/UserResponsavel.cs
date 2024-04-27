@@ -5,6 +5,7 @@ namespace Modelos
 {
     public class UserResponsavel
     {
+        [Required]
         public int ResponsaveisId { get; set; }
 
         [Required]

@@ -7,11 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using WebApplication1.Modelos;
 
-namespace WebApplication1.Services
+namespace WebApplication1.Servicos
 {
     public class JwtService
     {
-        private const int EXPIRATION_MINUTES = 5;
+        private const int EXPIRATION_MINUTES = 10;
 
         private readonly IConfiguration _configuration;
 
@@ -39,7 +39,7 @@ namespace WebApplication1.Services
             };
         }
 
-        private JwtSecurityToken CreateJwtToken(Claim[] claims, SigningCredentials credentials, DateTime expiration) =>
+        public JwtSecurityToken CreateJwtToken(Claim[] claims, SigningCredentials credentials, DateTime expiration) =>
             new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
@@ -65,5 +65,10 @@ namespace WebApplication1.Services
                 ),
                 SecurityAlgorithms.HmacSha256
             );
+
+        internal object CreateJwtToken(IdentityUser? user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

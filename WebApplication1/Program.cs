@@ -25,7 +25,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHostedService<CronometroServico>();
+//builder.Services.AddHostedService<CronometroServico>();
 
 var app = builder.Build();
 
