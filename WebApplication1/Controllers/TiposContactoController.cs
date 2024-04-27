@@ -22,7 +22,7 @@ namespace WebApplication1.Controllers
             int? idMin = null, int? idMax = null,
             string descMin = null, string descMax = null)
         {
-            IQueryable<TipoContacto> query = _context.TiposContacto;
+            IQueryable<TipoContacto> query = _context.TipoContacto;
 
             if (idMin.HasValue)
             {
@@ -51,7 +51,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TipoContacto>> ObterTipo(int id)
         {
-            var dado = await _context.TiposContacto.FirstOrDefaultAsync(d => d.Id == id);
+            var dado = await _context.TipoContacto.FirstOrDefaultAsync(d => d.Id == id);
             if (dado == null)
             {
                 return NotFound();
@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.TiposContacto.Add(tipoContacto);
+            _context.TipoContacto.Add(tipoContacto);
             await _context.SaveChangesAsync();
 
             return Ok("Tipo de contacto adicionado com sucesso");
@@ -76,7 +76,7 @@ namespace WebApplication1.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizaTipoContacto(int id, [FromBody] TipoContacto novoTipoContacto)
         {
-            var tipoContacto = await _context.TiposContacto.FirstOrDefaultAsync(d => d.Id == id);
+            var tipoContacto = await _context.TipoContacto.FirstOrDefaultAsync(d => d.Id == id);
             if (tipoContacto == null)
             {
                 return NotFound($"Não foi possível encontrar o tipo de contacto com o ID {id}");
@@ -99,13 +99,13 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveTipoContacto(int id)
         {
-            var tipoContacto = await _context.TiposContacto.FirstOrDefaultAsync(d => d.Id == id);
+            var tipoContacto = await _context.TipoContacto.FirstOrDefaultAsync(d => d.Id == id);
             if (tipoContacto == null)
             {
                 return NotFound($"Não foi possível encontrar o tipo de contacto com o ID {id}");
             }
 
-            _context.TiposContacto.Remove(tipoContacto);
+            _context.TipoContacto.Remove(tipoContacto);
             await _context.SaveChangesAsync();
 
             return Ok($"Foi removido tipo de contacto com o ID {id}");

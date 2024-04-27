@@ -24,11 +24,11 @@ namespace WebApplication1.Controllers
             int? utentesId = null,
             int? funcionariosId = null,
             DateTime? dataMin = null, DateTime? dataMax = null,
-            bool tipo = false,
+            bool tipo0 = false, bool tipo1 = false,
             int? quantidadeMovimentoMin = null, int? quantidadeMovimentoMax = null,
             string observacoesMin = null, string observacoesMax = null)
         {
-            IQueryable<ContaCorrenteMedicamento> query = _context.ContaCorrenteMedicamento;
+            IQueryable<ContaCorrenteMedicamento> query = _context.ContaCorrenteMedicamentos;
 
             if (idMin.HasValue)
             {
@@ -70,7 +70,15 @@ namespace WebApplication1.Controllers
                 query = query.Where(d => d.Data >= dataMax.Value);
             }
 
-            query = query.Where(d => d.Tipo == tipo);
+            if (tipo0 && !tipo1)
+            {
+                query = query.Where(d => !d.Tipo);
+            }
+
+            else if (!tipo0 && tipo1)
+            {
+                query = query.Where(d => d.Tipo);
+            }
 
             if (quantidadeMovimentoMin.HasValue)
             {
@@ -99,7 +107,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ContaCorrenteMedicamento>> obterContaCorrente(int id)
         {
-            var dado = await _context.ContaCorrenteMedicamento.FirstOrDefaultAsync(dado => dado.Id == id);
+            var dado = await _context.ContaCorrenteMedicamentos.FirstOrDefaultAsync(dado => dado.Id == id);
 
             if (dado == null)
             {
@@ -116,19 +124,19 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.ContaCorrenteMedicamento.Add(contaCorrente);
+            _context.ContaCorrenteMedicamentos.Add(contaCorrente);
             await _context.SaveChangesAsync();
 
-            return Ok("Conta corrente adicionada com sucesso");
+            return Ok("Adicionado novo registo na conta corrente");
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizaContaCorrente(int id, [FromBody] ContaCorrenteMedicamento novaContaCorrente)
         {
-            var contaCorrente = await _context.ContaCorrenteMedicamento.FirstOrDefaultAsync(d => d.Id == id);
+            var contaCorrente = await _context.ContaCorrenteMedicamentos.FirstOrDefaultAsync(d => d.Id == id);
             if (contaCorrente == null)
             {
-                return NotFound($"Não foi possível encontrar a conta corrente com o ID {id}");
+                return NotFound($"Não foi possível encontrar o registo com o Id {id}");
             }
 
             contaCorrente.Fatura = novaContaCorrente.Fatura;
@@ -145,7 +153,7 @@ namespace WebApplication1.Controllers
             {
                 await _context.SaveChangesAsync();
 
-                return Ok($"Foi atualizada a conta com Id {id}");
+                return Ok($"Foi atualizado o registo com Id {id}");
             }
             catch (Exception e)
             {
@@ -156,108 +164,111 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveContaCorrente(int id)
         {
-            var contaCorrente = await _context.ContaCorrenteMedicamento.FirstOrDefaultAsync(d => d.Id == id);
+            var contaCorrente = await _context.ContaCorrenteMedicamentos.FirstOrDefaultAsync(d => d.Id == id);
             if (contaCorrente == null)
             {
-                return NotFound($"Não foi possível encontrar a conta corrente com o ID {id}");
+                return NotFound($"Não foi possível encontrar o registo com o ID {id}");
             }
 
-            _context.ContaCorrenteMedicamento.Remove(contaCorrente);
+            _context.ContaCorrenteMedicamentos.Remove(contaCorrente);
             await _context.SaveChangesAsync();
 
-            return Ok($"Foi removida a conta corrente com o ID {id}");
+            return Ok($"Foi removido o registo com o Id {id}");
         }
 
 
-        [HttpPost("adicionar-medicamento")]
-        public async Task<ActionResult> AdicionarMedicamento(int medicamentosId, int quantidadeAdicionada, string observacoes)
-        {
-            try
-            {
-                
-                var medicamentoExistente = await _context.Medicamentos.FindAsync(medicamentosId);
+        
+        // !!! Porquê adicionar isto? v v v
 
-                if (medicamentoExistente == null)
-                {
-                    return NotFound("Medicamento não encontrado");
-                }
+        //[HttpPost("adicionar-medicamento")]
+        //public async Task<ActionResult> AdicionarMedicamento(int medicamentosId, int quantidadeAdicionada, string observacoes)
+        //{
+        //    try
+        //    {
+                
+        //        var medicamentoExistente = await _context.Medicamentos.FindAsync(medicamentosId);
+
+        //        if (medicamentoExistente == null)
+        //        {
+        //            return NotFound("Medicamento não encontrado");
+        //        }
 
                
-                var novaContaCorrente = new ContaCorrenteMedicamento
-                {
-                    MedicamentosId = medicamentosId,
-                    Data = DateTime.Now, 
-                    Tipo = false, 
-                    QuantidadeMovimento = quantidadeAdicionada,
-                    Observacoes = observacoes
-                };
+        //        var novaContaCorrente = new ContaCorrenteMedicamento
+        //        {
+        //            MedicamentosId = medicamentosId,
+        //            Data = DateTime.Now, 
+        //            Tipo = false, 
+        //            QuantidadeMovimento = quantidadeAdicionada,
+        //            Observacoes = observacoes
+        //        };
 
              
-                _context.ContaCorrenteMedicamento.Add(novaContaCorrente);
+        //        _context.ContaCorrenteMedicamentos.Add(novaContaCorrente);
 
-                //medicamentoExistente.Stock += quantidadeAdicionada;
+        //        //medicamentoExistente.Stock += quantidadeAdicionada;
 
-                await _context.SaveChangesAsync();
+        //        await _context.SaveChangesAsync();
 
-                return Ok($"Adição de {quantidadeAdicionada} unidades ao stock do medicamento registrada com sucesso");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Ocorreu um erro ao adicionar o medicamento ao stock: {ex.Message}");
-            }
-        }
+        //        return Ok($"Adição de {quantidadeAdicionada} unidades ao stock do medicamento registrada com sucesso");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Ocorreu um erro ao adicionar o medicamento ao stock: {ex.Message}");
+        //    }
+        //}
 
 
 
-        [HttpPost("registrar-utilizacao")]
-        public async Task<ActionResult> RegistrarUtilizacaoMedicamento(int medicamentosId, int funcionariosId, int utentesId, int quantidadeUtilizada, string observacoes)
-        {
-            try
-            {
+        //[HttpPost("registrar-utilizacao")]
+        //public async Task<ActionResult> RegistrarUtilizacaoMedicamento(int medicamentosId, int funcionariosId, int utentesId, int quantidadeUtilizada, string observacoes)
+        //{
+        //    try
+        //    {
                
-                var medicamentoExistente = await _context.Medicamentos.FindAsync(medicamentosId);
-                var funcionarioExistente = await _context.Funcionarios.FindAsync(funcionariosId);
-                var utenteExistente = await _context.Utentes.FindAsync(utentesId);
+        //        var medicamentoExistente = await _context.Medicamentos.FindAsync(medicamentosId);
+        //        var funcionarioExistente = await _context.Funcionarios.FindAsync(funcionariosId);
+        //        var utenteExistente = await _context.Utentes.FindAsync(utentesId);
 
-                if (medicamentoExistente == null || funcionarioExistente == null || utenteExistente == null)
-                {
-                    return NotFound("Medicamento, funcionário ou utente não encontrado");
-                }
+        //        if (medicamentoExistente == null || funcionarioExistente == null || utenteExistente == null)
+        //        {
+        //            return NotFound("Medicamento, funcionário ou utente não encontrado");
+        //        }
 
               
-                /*if (medicamentoExistente.Stock < quantidadeUtilizada)
-                {
-                    return BadRequest("Stock insuficiente para realizar a utilização do medicamento");
-                }*/
+        //        /*if (medicamentoExistente.Stock < quantidadeUtilizada)
+        //        {
+        //            return BadRequest("Stock insuficiente para realizar a utilização do medicamento");
+        //        }*/
 
                 
-                var novaContaCorrente = new ContaCorrenteMedicamento
-                {
-                    MedicamentosId = medicamentosId,
-                    FuncionariosId = funcionariosId,
-                    UtentesId = utentesId,
-                    Data = DateTime.Now, 
-                    Tipo = true, 
-                    QuantidadeMovimento = quantidadeUtilizada,
-                    Observacoes = observacoes
-                };
+        //        var novaContaCorrente = new ContaCorrenteMedicamento
+        //        {
+        //            MedicamentosId = medicamentosId,
+        //            FuncionariosId = funcionariosId,
+        //            UtentesId = utentesId,
+        //            Data = DateTime.Now, 
+        //            Tipo = true, 
+        //            QuantidadeMovimento = quantidadeUtilizada,
+        //            Observacoes = observacoes
+        //        };
 
                
-                _context.ContaCorrenteMedicamento.Add(novaContaCorrente);
+        //        _context.ContaCorrenteMedicamento.Add(novaContaCorrente);
 
                
-                //medicamentoExistente.Stock -= quantidadeUtilizada;
+        //        //medicamentoExistente.Stock -= quantidadeUtilizada;
 
                
-                await _context.SaveChangesAsync();
+        //        await _context.SaveChangesAsync();
 
-                return Ok("Utilização de medicamento registrada com sucesso e stock atualizado");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Ocorreu um erro ao registrar a utilização de medicamento: {ex.Message}");
-            }
-        }
+        //        return Ok("Utilização de medicamento registrada com sucesso e stock atualizado");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Ocorreu um erro ao registrar a utilização de medicamento: {ex.Message}");
+        //    }
+        //}
 
 
     }

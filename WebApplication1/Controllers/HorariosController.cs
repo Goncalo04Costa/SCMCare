@@ -24,6 +24,8 @@ namespace WebApplication1.Controllers
             return Ok(horarios);
         }
 
+
+        // !!! Corrigir
         [HttpGet("{id}")]
         public async Task<ActionResult<Horario>> ObterHorario(int id)
         {
@@ -53,6 +55,7 @@ namespace WebApplication1.Controllers
         }
 
 
+        // !!! Corrigir
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarHorario(int id, [FromBody] Horario novoHorario)
         {
@@ -78,6 +81,7 @@ namespace WebApplication1.Controllers
             }
         }
 
+        // !!! Corrigir
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverHorario(int id)
         {
@@ -136,23 +140,26 @@ namespace WebApplication1.Controllers
             return Ok(horarios);
         }
 
-        [HttpGet("ObterHorariosTodosFuncionarios")]
-        //[RegrasHorario.AutorizacaoHorarios] 
-        public async Task<ActionResult<IEnumerable<Horario>>> ObterHorariosTodosFuncionarios()
-        {
-            var tipoFuncionarioUsuario = 1; 
-            if (tipoFuncionarioUsuario != 1 && tipoFuncionarioUsuario != 2 && tipoFuncionarioUsuario != 3)
-            {
-                return Forbid(); 
-            }
-            var horarios = await _context.Horarios.ToListAsync();
 
-            if (horarios == null || !horarios.Any())
-            {
-                return NotFound("Não foram encontrados horários para nenhum funcionário");
-            }
-                return Ok(horarios);
-        }
+        // !!! Porquê v v v
+
+        //[HttpGet("ObterHorariosTodosFuncionarios")]
+        ////[RegrasHorario.AutorizacaoHorarios] 
+        //public async Task<ActionResult<IEnumerable<Horario>>> ObterHorariosTodosFuncionarios()
+        //{
+        //    var tipoFuncionarioUsuario = 1; 
+        //    if (tipoFuncionarioUsuario != 1 && tipoFuncionarioUsuario != 2 && tipoFuncionarioUsuario != 3)
+        //    {
+        //        return Forbid(); 
+        //    }
+        //    var horarios = await _context.Horarios.ToListAsync();
+
+        //    if (horarios == null || !horarios.Any())
+        //    {
+        //        return NotFound("Não foram encontrados horários para nenhum funcionário");
+        //    }
+        //        return Ok(horarios);
+        //}
 
 
     }

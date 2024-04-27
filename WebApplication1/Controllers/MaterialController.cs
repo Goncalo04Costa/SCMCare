@@ -16,6 +16,9 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+
+        // !!! Mostrar quantidades a partir das contas correntes
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Material>>> ObterTodosMateriais()
         {
@@ -98,22 +101,25 @@ namespace WebApplication1.Controllers
             return _context.Materiais.Any(e => e.Id == id);
         }
 
-        [HttpGet("emrisco")]
-        public async Task<ActionResult<IEnumerable<Material>>> ObterMateriaisRisco(int limite)
-        {
-            try
-            {
-                var materiaisRisco = await _context.Materiais
-                    .Where(m => m.QuantidadeAtual < m.Limite)
-                    .ToListAsync();
 
-                return Ok(materiaisRisco);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno ao obter materiais em risco: {ex.Message}");
-            }
-        }
+        // !!! Rever com o calcular quantidades a partir de conta corrente
+
+        //[HttpGet("emrisco")]
+        //public async Task<ActionResult<IEnumerable<Material>>> ObterMateriaisRisco(int limite)
+        //{
+        //    try
+        //    {
+        //        var materiaisRisco = await _context.Materiais
+        //            .Where(m => m.QuantidadeAtual < m.Limite)
+        //            .ToListAsync();
+
+        //        return Ok(materiaisRisco);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Erro interno ao obter materiais em risco: {ex.Message}");
+        //    }
+        //}
 
     }
 }

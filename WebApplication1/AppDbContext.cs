@@ -10,11 +10,11 @@ namespace WebApplication1
         {
         }
 
-        public DbSet<ContaCorrenteMaterial> ContaCorrenteMaterial { get; set; }
+        public DbSet<ContaCorrenteMaterial> ContaCorrenteMateriais { get; set; }
 
-        public DbSet<ContaCorrenteMedicamento> ContaCorrenteMedicamento { get; set; }
+        public DbSet<ContaCorrenteMedicamento> ContaCorrenteMedicamentos { get; set; }
 
-        public DbSet<Alta> Altas { get; set; }
+        public DbSet<Alta> Alta { get; set; }
 
         public DbSet<Avaliacao> Avaliacoes { get; set; }
 
@@ -50,11 +50,11 @@ namespace WebApplication1
 
         public DbSet<Medicamento> Medicamentos { get; set; }
 
-        public DbSet<MedicamentoPrescricao> MedicamentoPrescricao { get; set; }
+        public DbSet<MedicamentoPrescricao> MedicamentosPrescricao { get; set; }
 
         public DbSet<Mensalidade> Mensalidades { get; set; }
 
-        public DbSet<Menu> Menus { get; set; }
+        public DbSet<Menu> Menu { get; set; }
 
         public DbSet<Notificacao> Notificacoes { get; set; }
 
@@ -88,9 +88,9 @@ namespace WebApplication1
 
         public DbSet<TipoAlergia> TiposAlergia { get; set; }
 
-        public DbSet<TipoAvaliacao> TiposAvaliacao { get; set; }
+        public DbSet<TipoAvaliacao> TipoAvaliacao { get; set; }
 
-        public DbSet<TipoContacto> TiposContacto { get; set; }
+        public DbSet<TipoContacto> TipoContacto { get; set; }
 
         public DbSet<TipoEquipamento> TiposEquipamento { get; set; }
 
@@ -106,11 +106,11 @@ namespace WebApplication1
 
         public DbSet<Utente> Utentes { get; set; }
 
-        public DbSet<UtenteAlergia> UtenteAlergias { get; set; }
+        public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
 
-        public DbSet<UserResponsavel> UsersResponsavel { get; set; }
+        public DbSet<UserResponsavel> UserResponsavel { get; set; }
 
-        public DbSet<UserFuncionario> UsersFuncionario { get; set; }
+        public DbSet<UserFuncionario> UserFuncionario { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -22,7 +22,7 @@ namespace WebApplication1.Controllers
             int? idMin = null, int? idMax = null,
             string descMin = null, string descMax = null)
         {
-            IQueryable<TipoAvaliacao> query = _context.TiposAvaliacao;
+            IQueryable<TipoAvaliacao> query = _context.TipoAvaliacao;
 
             if (idMin.HasValue)
             {
@@ -51,7 +51,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TipoAvaliacao>> ObterTipo(int id)
         {
-            var dado = await _context.TiposAvaliacao.FirstOrDefaultAsync(d => d.Id == id);
+            var dado = await _context.TipoAvaliacao.FirstOrDefaultAsync(d => d.Id == id);
             if (dado == null)
             {
                 return NotFound();
@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.TiposAvaliacao.Add(tipoAvaliacao);
+            _context.TipoAvaliacao.Add(tipoAvaliacao);
             await _context.SaveChangesAsync();
 
             return Ok("Tipo de avaliação adicionado com sucesso");
@@ -76,7 +76,7 @@ namespace WebApplication1.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizaTipoAvaliacao(int id, [FromBody] TipoAvaliacao novoTipoAvaliacao)
         {
-            var tipoAvaliacao = await _context.TiposAvaliacao.FirstOrDefaultAsync(d => d.Id == id);
+            var tipoAvaliacao = await _context.TipoAvaliacao.FirstOrDefaultAsync(d => d.Id == id);
             if (tipoAvaliacao == null)
             {
                 return NotFound($"Não foi possível encontrar o tipo de avaliação com o ID {id}");
@@ -99,13 +99,13 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveTipoAvaliacao(int id)
         {
-            var tipoAvaliacao = await _context.TiposAvaliacao.FirstOrDefaultAsync(d => d.Id == id);
+            var tipoAvaliacao = await _context.TipoAvaliacao.FirstOrDefaultAsync(d => d.Id == id);
             if (tipoAvaliacao == null)
             {
                 return NotFound($"Não foi possível encontrar o tipo de avaliação com o ID {id}");
             }
 
-            _context.TiposAvaliacao.Remove(tipoAvaliacao);
+            _context.TipoAvaliacao.Remove(tipoAvaliacao);
             await _context.SaveChangesAsync();
 
             return Ok($"Foi removido tipo de avaliação com o ID {id}");

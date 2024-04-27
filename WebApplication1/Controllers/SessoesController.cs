@@ -48,13 +48,13 @@ namespace WebApplication1.Controllers
             _context.Sessoes.Add(sessao);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(ObterSessao), new { id = sessao.SessaoId }, sessao);
+            return CreatedAtAction(nameof(ObterSessao), new { id = sessao.Id }, sessao);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarSesao(int id, [FromBody] Sessao sessao)
         {
-            if (id != sessao.SessaoId)
+            if (id != sessao.Id)
             {
                 return BadRequest();
             }
@@ -97,7 +97,7 @@ namespace WebApplication1.Controllers
 
         private bool SessaoExists(int id)
         {
-            return _context.Sessoes.Any(e => e.SessaoId == id);
+            return _context.Sessoes.Any(e => e.Id == id);
         }
     }
 }

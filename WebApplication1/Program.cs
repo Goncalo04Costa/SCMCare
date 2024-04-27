@@ -5,10 +5,10 @@ using WebApplication1.Servicos;
 var builder = WebApplication.CreateBuilder(args);
 
 // Gonçalo
-var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
+//var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
 
 // Diogo
-//var connectionString = builder.Configuration.GetConnectionString("LigacaoDiogo");
+var connectionString = builder.Configuration.GetConnectionString("LigacaoDiogo");
 
 //Sofia
 //var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");

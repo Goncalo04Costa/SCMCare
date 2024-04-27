@@ -101,7 +101,7 @@ namespace WebApplication1.Controllers
         public async Task<ActionResult<Senha>> ReservarSenha(int funcionarioId, int menuId)
         {
             var funcionario = await _context.Funcionarios.FindAsync(funcionarioId);
-            var menu = await _context.Menus.FindAsync(menuId);
+            var menu = await _context.Menu.FindAsync(menuId);
 
             if (funcionario == null || menu == null)
             {

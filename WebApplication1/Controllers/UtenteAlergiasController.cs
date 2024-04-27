@@ -22,7 +22,7 @@ namespace WebApplication1.Controllers
             int? idUtenteMin = null, int? idUtenteMax = null,
             int? idAlergiaMin = null, int? idAlergiaMax = null)
         {
-            IQueryable<UtenteAlergia> query = _context.UtenteAlergias;
+            IQueryable<UtenteAlergia> query = _context.UtentesAlergias;
 
             if (idUtenteMin.HasValue)
             {
@@ -51,7 +51,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Utente>> ObterUtenteAlergias(int id)
         {
-            IQueryable<UtenteAlergia> query = _context.UtenteAlergias;
+            IQueryable<UtenteAlergia> query = _context.UtentesAlergias;
 
             query = query.Where(d => d.UtentesId == id);
 
@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.UtenteAlergias.Add(utAl);
+            _context.UtentesAlergias.Add(utAl);
             await _context.SaveChangesAsync();
 
             return Ok("Alergia adicionada ao utente com sucesso");
@@ -81,7 +81,7 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.UtenteAlergias.Remove(utAl);
+            _context.UtentesAlergias.Remove(utAl);
             await _context.SaveChangesAsync();
 
             return Ok("Alergia removida do utente com sucesso");

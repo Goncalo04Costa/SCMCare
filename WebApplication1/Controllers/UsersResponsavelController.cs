@@ -22,7 +22,7 @@ namespace WebApplication1.Controllers
             int? idMin = null, int? idMax = null,
             string userMin = null, string userMax = null)
         {
-            IQueryable<UserResponsavel> query = _context.UsersResponsavel;
+            IQueryable<UserResponsavel> query = _context.UserResponsavel;
 
             if (idMin.HasValue)
             {
@@ -51,7 +51,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserResponsavel>> ObterUserResponsavel(int id)
         {
-            var dado = await _context.UsersResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
+            var dado = await _context.UserResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
             if (dado == null)
             {
                 return NotFound();
@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.UsersResponsavel.Add(user);
+            _context.UserResponsavel.Add(user);
             await _context.SaveChangesAsync();
 
             return Ok("Utilizador adicionado com sucesso");
@@ -76,7 +76,7 @@ namespace WebApplication1.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizaUserResponsavel(int id, [FromBody] UserResponsavel novoUser)
         {
-            var user = await _context.UsersResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
+            var user = await _context.UserResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
             if (user == null)
             {
                 return NotFound($"Não foi possível encontrar o utilizador com o ID {id}");
@@ -100,13 +100,13 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveUserResponsavel(int id)
         {
-            var user = await _context.UsersResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
+            var user = await _context.UserResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
             if (user == null)
             {
                 return NotFound($"Não foi possível encontrar o utilizador com o ID {id}");
             }
 
-            _context.UsersResponsavel.Remove(user);
+            _context.UserResponsavel.Remove(user);
             await _context.SaveChangesAsync();
 
             return Ok($"Foi removido o utilizador com o ID {id}");

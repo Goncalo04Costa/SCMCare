@@ -22,14 +22,14 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MedicamentoPrescricao>>> ObterTodasMedicamentoPrescricao()
         {
-            var medicamentoPrescricao = await _context.MedicamentoPrescricao.ToListAsync();
+            var medicamentoPrescricao = await _context.MedicamentosPrescricao.ToListAsync();
             return Ok(medicamentoPrescricao);
         }
 
         [HttpGet("{PrescricoesId}/{MedicamentosId}")]
         public async Task<ActionResult<MedicamentoPrescricao>> ObterMedicamentoPrescricao(int PrescricoesId, int MedicamentosId)
         {
-            var medicamentoPrescricao = await _context.MedicamentoPrescricao.FirstOrDefaultAsync(a => a.PrescricoesId == PrescricoesId && a.MedicamentosId == MedicamentosId);
+            var medicamentoPrescricao = await _context.MedicamentosPrescricao.FirstOrDefaultAsync(a => a.PrescricoesId == PrescricoesId && a.MedicamentosId == MedicamentosId);
 
             if (medicamentoPrescricao == null)
             {
@@ -46,7 +46,7 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.MedicamentoPrescricao.Add(medicamentoPrescricao);
+            _context.MedicamentosPrescricao.Add(medicamentoPrescricao);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(ObterMedicamentoPrescricao), new { PrescricoesId = medicamentoPrescricao.PrescricoesId, MedicamentosId = medicamentoPrescricao.MedicamentosId }, medicamentoPrescricao);
@@ -55,7 +55,7 @@ namespace WebApplication1.Controllers
         [HttpPut("{PrescricoesId}/{MedicamentosId}")]
         public async Task<IActionResult> AtualizaMedicamentoPrescricao(int PrescricoesId, int MedicamentosId, [FromBody] MedicamentoPrescricao novaMedicamentoPrescricao)
         {
-            var medicamentoPrescricao = await _context.MedicamentoPrescricao.FirstOrDefaultAsync(a => a.PrescricoesId == PrescricoesId && a.MedicamentosId == MedicamentosId);
+            var medicamentoPrescricao = await _context.MedicamentosPrescricao.FirstOrDefaultAsync(a => a.PrescricoesId == PrescricoesId && a.MedicamentosId == MedicamentosId);
 
             if (medicamentoPrescricao == null)
             {
@@ -74,14 +74,14 @@ namespace WebApplication1.Controllers
         [HttpDelete("{PrescricoesId}/{MedicamentosId}")]
         public async Task<IActionResult> RemoveMedicamentoPrescricao(int PrescricoesId, int MedicamentosId)
         {
-            var medicamentoPrescricao = await _context.MedicamentoPrescricao.FirstOrDefaultAsync(a => a.PrescricoesId == PrescricoesId && a.MedicamentosId == MedicamentosId);
+            var medicamentoPrescricao = await _context.MedicamentosPrescricao.FirstOrDefaultAsync(a => a.PrescricoesId == PrescricoesId && a.MedicamentosId == MedicamentosId);
 
             if (medicamentoPrescricao == null)
             {
                 return NotFound($"Não foi possível encontrar o medicamentoPrescricao com a prescricao ID {PrescricoesId} e medicamento ID {MedicamentosId}");
             }
 
-            _context.MedicamentoPrescricao.Remove(medicamentoPrescricao);
+            _context.MedicamentosPrescricao.Remove(medicamentoPrescricao);
             await _context.SaveChangesAsync();
 
             return Ok($"Foi removida a medicamentoPrescricao com a prescricao ID {PrescricoesId} e medicamento ID {MedicamentosId}");

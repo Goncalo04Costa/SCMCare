@@ -24,11 +24,11 @@ namespace WebApplication1.Controllers
             int? utentesId = null,
             int? funcionariosId = null,
             DateTime? dataMin = null, DateTime? dataMax = null,
-            bool tipo = false,
+            bool tipo0 = false, bool tipo1 = false,
             int? quantidadeMovimentoMin = null, int? quantidadeMovimentoMax = null,
             string observacoesMin = null, string observacoesMax = null)
         {
-            IQueryable<ContaCorrenteMaterial> query = _context.ContaCorrenteMaterial;
+            IQueryable<ContaCorrenteMaterial> query = _context.ContaCorrenteMateriais;
 
             if (idMin.HasValue)
             {
@@ -70,7 +70,15 @@ namespace WebApplication1.Controllers
                 query = query.Where(d => d.Data >= dataMax.Value);
             }
 
-            query = query.Where(d => d.Tipo == tipo);
+            if (tipo0 && !tipo1)
+            {
+                query = query.Where(d => !d.Tipo);
+            }
+
+            else if (!tipo0 && tipo1)
+            {
+                query = query.Where(d => d.Tipo);
+            }
 
             if (quantidadeMovimentoMin.HasValue)
             {
@@ -99,7 +107,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ContaCorrenteMaterial>> obterContaCorrente(int id)
         {
-            var dado = await _context.ContaCorrenteMaterial.FirstOrDefaultAsync(dado => dado.Id == id);
+            var dado = await _context.ContaCorrenteMateriais.FirstOrDefaultAsync(dado => dado.Id == id);
 
             if (dado == null)
             { 
@@ -116,19 +124,19 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.ContaCorrenteMaterial.Add(contaCorrente);
+            _context.ContaCorrenteMateriais.Add(contaCorrente);
             await _context.SaveChangesAsync();
 
-            return Ok("Conta corrente adicionada com sucesso");
+            return Ok("Adicionado novo registo na conta corrente");
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizaContaCorrente(int id, [FromBody] ContaCorrenteMaterial novaContaCorrente)
         {
-            var contaCorrente = await _context.ContaCorrenteMaterial.FirstOrDefaultAsync(d  => d.Id == id);
+            var contaCorrente = await _context.ContaCorrenteMateriais.FirstOrDefaultAsync(d  => d.Id == id);
             if (contaCorrente == null)
             {
-                return NotFound($"Não foi possível encontrar a conta corrente com o ID {id}");
+                return NotFound($"Não foi possível encontrar o registo com o Id {id}");
             }
 
             contaCorrente.Fatura = novaContaCorrente.Fatura;
@@ -145,7 +153,7 @@ namespace WebApplication1.Controllers
             {
                 await _context.SaveChangesAsync();
 
-                return Ok($"Foi atualizada a conta com Id {id}"); 
+                return Ok($"Foi atualizado o registo com Id {id}"); 
             }
             catch ( Exception e) 
             {
@@ -156,16 +164,16 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")] 
         public async Task<IActionResult> RemoveContaCorrente(int id)
         {
-            var contaCorrente = await _context.ContaCorrenteMaterial.FirstOrDefaultAsync(d => d.Id == id);
+            var contaCorrente = await _context.ContaCorrenteMateriais.FirstOrDefaultAsync(d => d.Id == id);
             if (contaCorrente == null)
             {
-                return NotFound($"Não foi possível encontrar a conta corrente com o ID {id}");
+                return NotFound($"Não foi possível encontrar o registo com o ID {id}");
             }
 
-            _context.ContaCorrenteMaterial.Remove(contaCorrente);
+            _context.ContaCorrenteMateriais.Remove(contaCorrente);
             await _context.SaveChangesAsync();
 
-            return Ok($"Foi removida a conta corrente com o ID {id}");
+            return Ok($"Foi removido o registo com o Id {id}");
         }
     }
 }

@@ -21,13 +21,13 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Menu>>> ObterTodosMenus()
         {
-            return await _context.Menus.ToListAsync();
+            return await _context.Menu.ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Menu>> ObterMenu(int id)
         {
-            var menu = await _context.Menus.FindAsync(id);
+            var menu = await _context.Menu.FindAsync(id);
 
             if (menu == null)
             {
@@ -45,7 +45,7 @@ namespace WebApplication1.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Menus.Add(menu);
+            _context.Menu.Add(menu);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(ObterMenu), new { id = menu.Id }, menu);
@@ -83,13 +83,13 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverMenu(int id)
         {
-            var menu = await _context.Menus.FindAsync(id);
+            var menu = await _context.Menu.FindAsync(id);
             if (menu == null)
             {
                 return NotFound();
             }
 
-            _context.Menus.Remove(menu);
+            _context.Menu.Remove(menu);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -97,7 +97,7 @@ namespace WebApplication1.Controllers
 
         private bool MenuExists(int id)
         {
-            return _context.Menus.Any(e => e.Id == id);
+            return _context.Menu.Any(e => e.Id == id);
         }
     }
 }

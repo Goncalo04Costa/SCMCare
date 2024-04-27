@@ -34,7 +34,7 @@ namespace WebApplication1.Servicos
         {
             // Coloque aqui o código para fechar a API
             // Por exemplo, você pode usar Environment.Exit(0) para encerrar o processo da aplicação
-            Environment.Exit(0);
+            //Environment.Exit(0);
         }
 
         // Método chamado para registrar a atividade da aplicação

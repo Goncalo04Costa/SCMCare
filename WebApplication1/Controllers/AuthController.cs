@@ -37,7 +37,7 @@ using WebApplication1.Modelos;
 
             if (result.Succeeded)
             {
-                return Ok("Usuário registrado com sucesso");
+                return Ok("Utilizador registado com sucesso");
             }
             else
             {

@@ -7,11 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using WebApplication1.Modelos;
 
-namespace GolfManager.Services
+namespace WebApplication1.Services
 {
     public class JwtService
     {
-        private const int EXPIRATION_MINUTES = 1;
+        private const int EXPIRATION_MINUTES = 5;
 
         private readonly IConfiguration _configuration;
 
