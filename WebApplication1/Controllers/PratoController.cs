@@ -16,9 +16,66 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Prato>>> ObterTodosPratos()
+        public async Task<ActionResult<IEnumerable<Prato>>> ObterTodosPratos(
+            int? idMin = null, int? idMax = null,
+            string nomeMin = null, string nomeMax = null,
+            string descMin = null, string descMax = null,
+            bool tipo0 = false, bool tipo1 = false,
+            bool ativo0 = false, bool ativo1 = false)
         {
-            return await _context.Pratos.ToListAsync();
+            IQueryable<Prato> query = _context.Pratos;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMin))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMin) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMax + "ZZZ") <= 0);
+            }
+
+            if (!string.IsNullOrEmpty(descMin))
+            {
+                query = query.Where(d => d.Descricao.CompareTo(descMin) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(descMax))
+            {
+                query = query.Where(d => d.Descricao.CompareTo(descMax + "ZZZ") <= 0);
+            }
+
+            if (tipo0 && !tipo1)
+            {
+                query = query.Where(d => !d.Tipo); // Mostra pratos com tipo 0
+            }
+            else if (!tipo0 && tipo1)
+            {
+                query = query.Where(d => d.Tipo); // Mostra pratos com tipo 1
+            }
+
+            if (ativo0 && !ativo1)
+            {
+                query = query.Where(d => !d.Ativo);
+            }
+
+            else if (!ativo0 && ativo1)
+            {
+                query = query.Where(d => d.Ativo);
+            }
+
+            var dados = await query.ToListAsync();
+            return Ok(dados);
         }
 
         [HttpGet("{id}")]

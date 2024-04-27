@@ -19,9 +19,77 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Menu>>> ObterTodosMenus()
+        public async Task<ActionResult<IEnumerable<Menu>>> ObterTodosMenus(
+            int? idMin = null, int? idMax = null,
+            DateTime? diaMin = null, DateTime? diaMax = null,
+            bool horario0 = false, bool horario1 = false,
+            bool tipo0 = false, bool tipo1 = false)
         {
-            return await _context.Menu.ToListAsync();
+            IQueryable<Menu> query = _context.Menu;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (diaMin.HasValue)
+            {
+                query = query.Where(d => d.Dia <= diaMin.Value);
+            }
+
+            if (diaMax.HasValue)
+            {
+                query = query.Where(d => d.Dia >= diaMax.Value);
+            }
+
+            if (horario0 && !horario1)
+            {
+                query = query.Where(d => !d.Horario);
+            }
+            else if (!horario0 && horario1)
+            {
+                query = query.Where(d => d.Horario);
+            }
+
+            if (tipo0 && !tipo1)
+            {
+                query = query.Where(d => !d.Tipo);
+            }
+            else if (!tipo0 && tipo1)
+            {
+                query = query.Where(d => d.Tipo);
+            }
+
+
+            var menusDetalhes = await (
+                from menu in query
+                join sobremesa in _context.Sobremesas on menu.SobremesasId equals sobremesa.Id into sG
+                from sobremesa in sG.DefaultIfEmpty()
+                join prato in _context.Pratos on menu.PratosId equals prato.Id into pG
+                from prato in pG.DefaultIfEmpty()
+                join sopa in _context.Sopas on menu.SopasId equals sopa.Id into soG
+                from sopa in soG.DefaultIfEmpty()
+                select new
+                {
+                    Id = menu.Id,
+                    Dia = menu.Dia,
+                    Horario = menu.Horario,
+                    Tipo = menu.Tipo,
+                    SopasId = menu.SopasId,
+                    Sopa = sopa.Nome,
+                    PratosId = menu.PratosId,
+                    Prato = prato.Nome,
+                    SobremesasId = menu.SobremesasId,
+                    Sobremesa = sobremesa.Nome
+                }
+            ).ToListAsync();
+
+            return Ok(menusDetalhes);
         }
 
         [HttpGet("{id}")]
