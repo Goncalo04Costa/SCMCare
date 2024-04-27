@@ -5,13 +5,13 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Modelos;
+using WebApplication1.Modelos;
 
-namespace WebApplication1.Servicos
+namespace GolfManager.Services
 {
     public class JwtService
     {
-        private const int EXPIRATION_MINUTES = 30;
+        private const int EXPIRATION_MINUTES = 1;
 
         private readonly IConfiguration _configuration;
 
@@ -20,28 +20,50 @@ namespace WebApplication1.Servicos
             _configuration = configuration;
         }
 
-        public string GenerateJwtToken(IdentityUser user)
+        public AuthenticationResponse CreateToken(IdentityUser user)
         {
-            var claims = new[]
+            var expiration = DateTime.UtcNow.AddMinutes(EXPIRATION_MINUTES);
+
+            var token = CreateJwtToken(
+                CreateClaims(user),
+                CreateSigningCredentials(),
+                expiration
+            );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            return new AuthenticationResponse
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email)
-               
+                Token = tokenHandler.WriteToken(token),
+                Expiration = expiration
             };
+        }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
+        private JwtSecurityToken CreateJwtToken(Claim[] claims, SigningCredentials credentials, DateTime expiration) =>
+            new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(EXPIRATION_MINUTES),
-                signingCredentials: creds
+                expires: expiration,
+                signingCredentials: credentials
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        private Claim[] CreateClaims(IdentityUser user) =>
+            new[] {
+                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+        private SigningCredentials CreateSigningCredentials() =>
+            new SigningCredentials(
+                new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+                ),
+                SecurityAlgorithms.HmacSha256
+            );
     }
 }
