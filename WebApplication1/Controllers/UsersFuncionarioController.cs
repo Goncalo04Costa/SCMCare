@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Modelos;
-using System.Threading.Tasks;
 using WebApplication1.Modelos;
 using WebApplication1.Servicos;
 
@@ -10,20 +10,59 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersFuncionarioController : ControllerBase
+    public class UserFuncionarioController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _configuration;
-        private readonly UserManager<ApplicationUser> _userManager; 
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly JwtService _jwtService;
 
-        public UsersFuncionarioController(AppDbContext context, IConfiguration configuration, UserManager<ApplicationUser> userManager, JwtService jwtService)
+        public UserFuncionarioController(
+            UserManager<IdentityUser> userManager,
+            JwtService jwtService
+        )
         {
-            _context = context;
-            _configuration = configuration;
-            _userManager = userManager; 
+            _userManager = userManager;
             _jwtService = jwtService;
         }
+
+        [HttpPost]
+        public async Task<ActionResult<UserFuncionario>> PostUser(UserFuncionario user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _userManager.CreateAsync(
+                new IdentityUser() { UserName = user.User },
+                user.Passe
+            );
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            user.Passe = null;
+            return Created("", user);
+        }
+
+        [HttpGet("{username}")]
+        public async Task<ActionResult<UserFuncionario>> GetUser(string username)
+        {
+            IdentityUser user = await _userManager.FindByNameAsync(username);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return new UserFuncionario
+            {
+                User = user.UserName,
+            };
+        }
+
+        // POST: api/Users/BearerToken
         [HttpPost("BearerToken")]
         public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
         {
@@ -50,5 +89,37 @@ namespace WebApplication1.Controllers
 
             return Ok(token);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<IActionResult>> Login(WebApplication1.Modelos.LoginRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model state");
+            }
+
+            var user = await _userManager.FindByNameAsync(request.UserName);
+
+            if (user == null)
+            {
+                return BadRequest("Invalid username or password");
+            }
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+
+            if (!isPasswordValid)
+            {
+                return BadRequest("Invalid username or password");
+            }
+
+            var token = _jwtService.CreateToken(user);
+
+            return Ok(new AuthenticationResponse
+            {
+                Token = token.Token,
+                Expiration = token.Expiration
+            });
+        }
+
     }
 }

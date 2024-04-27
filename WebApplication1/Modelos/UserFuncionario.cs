@@ -5,6 +5,7 @@ namespace Modelos
 {
     public class UserFuncionario
     {
+        [Required]
         public int FuncionariosId { get; set; }
 
         [Required]
