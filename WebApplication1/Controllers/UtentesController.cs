@@ -152,7 +152,7 @@ namespace WebApplication1.Controllers
             }
 
             
-            bool nifExiste = await _regrasUtentes.VerificarNIFExistente(utente.NIF);
+          bool nifExiste = await _regrasUtentes.VerificarNIFExistente(utente.NIF);
             if (nifExiste)
             {
                 return BadRequest("NIF já existe.");

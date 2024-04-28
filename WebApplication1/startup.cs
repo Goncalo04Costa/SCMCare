@@ -27,10 +27,10 @@ namespace WebApplication1
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-           services.AddDatabaseDeveloperPageExceptionFilter();
+            //services.AddDatabaseDeveloperPageExceptionFilter();
 
-             services.AddDefaultIdentity<AuthController>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<AppDbContext>();
+            //services.AddDefaultIdentity<AuthController>(options => options.SignIn.RequireConfirmedAccount = true)
+              // .AddEntityFrameworkStores<AppDbContext>();
 
             services.AddScoped<JwtService, JwtService>();
 
@@ -43,7 +43,7 @@ namespace WebApplication1
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
+                //app.UseMigrationsEndPoint();
             }
             else
             {
