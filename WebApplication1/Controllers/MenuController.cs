@@ -4,6 +4,7 @@ using Modelos;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Controllers
 {
@@ -95,14 +96,33 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Menu>> ObterMenu(int id)
         {
-            var menu = await _context.Menu.FindAsync(id);
+            IQueryable<Menu> query = _context.Menu;
+            query = query.Where(d => d.Id == id);
 
-            if (menu == null)
-            {
-                return NotFound();
-            }
+            var menusDetalhes = await (
+                from menu in query
+                join sobremesa in _context.Sobremesas on menu.SobremesasId equals sobremesa.Id into sG
+                from sobremesa in sG.DefaultIfEmpty()
+                join prato in _context.Pratos on menu.PratosId equals prato.Id into pG
+                from prato in pG.DefaultIfEmpty()
+                join sopa in _context.Sopas on menu.SopasId equals sopa.Id into soG
+                from sopa in soG.DefaultIfEmpty()
+                select new
+                {
+                    Id = menu.Id,
+                    Dia = menu.Dia,
+                    Horario = menu.Horario,
+                    Tipo = menu.Tipo,
+                    SopasId = menu.SopasId,
+                    Sopa = sopa.Nome,
+                    PratosId = menu.PratosId,
+                    Prato = prato.Nome,
+                    SobremesasId = menu.SobremesasId,
+                    Sobremesa = sobremesa.Nome
+                }
+            ).ToListAsync();
 
-            return menu;
+            return Ok(menusDetalhes);
         }
 
         [HttpPost]
