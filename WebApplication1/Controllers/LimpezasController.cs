@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Controllers
 {
@@ -16,22 +17,99 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Limpeza>>> ObterTodasLimpezas()
+        public async Task<ActionResult<IEnumerable<Limpeza>>> ObterTodasLimpezas(
+            int? idMin = null, int? idMax = null,
+            DateTime? dataMin = null, DateTime? dataMax = null,
+            int? quartosIdMin = null, int? quartosIdMax = null,
+            int? funcIdMin = null, int? funcIdMax = null)
         {
-            return await _context.Limpezas.ToListAsync();
+            IQueryable<Limpeza> query = _context.Limpezas;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (dataMin.HasValue)
+            {
+                query = query.Where(d => d.Data <= dataMin.Value);
+            }
+
+            if (dataMax.HasValue)
+            {
+                query = query.Where(d => d.Data >= dataMax.Value);
+            }
+
+            if (quartosIdMin.HasValue)
+            {
+                query = query.Where(d => d.QuartosId >= quartosIdMin.Value);
+            }
+
+            if (quartosIdMax.HasValue)
+            {
+                query = query.Where(d => d.QuartosId <= quartosIdMax.Value);
+            }
+
+            if (funcIdMin.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId >= funcIdMin.Value);
+            }
+
+            if (funcIdMax.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId <= funcIdMax.Value);
+            }
+
+
+            var limpezaDetalhes = await (
+                from limpeza in query
+                join quarto in _context.Quartos on limpeza.QuartosId equals quarto.Id into sQ
+                from quarto in sQ.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on limpeza.FuncionariosId equals funcionario.Id into fQ
+                from funcionario in fQ.DefaultIfEmpty()
+                select new
+                {
+                    Id = limpeza.Id,
+                    Data = limpeza.Data,
+                    QuartosId = limpeza.QuartosId,
+                    Quarto = quarto.Numero,
+                    FuncionariosId = limpeza.FuncionariosId,
+                    Funcionario = funcionario.Nome
+                }
+            ).ToListAsync();
+
+            return Ok(limpezaDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Limpeza>> ObterLimpeza(int id)
         {
-            var limpeza = await _context.Limpezas.FindAsync(id);
+            IQueryable<Limpeza> query = _context.Limpezas;
+            query = query.Where(d => d.Id == id);
 
-            if (limpeza == null)
-            {
-                return NotFound();
-            }
+            var limpezaDetalhes = await (
+                from limpeza in query
+                join quarto in _context.Quartos on limpeza.QuartosId equals quarto.Id into sQ
+                from quarto in sQ.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on limpeza.FuncionariosId equals funcionario.Id into fQ
+                from funcionario in fQ.DefaultIfEmpty()
+                select new
+                {
+                    Id = limpeza.Id,
+                    Data = limpeza.Data,
+                    QuartosId = limpeza.QuartosId,
+                    Quarto = quarto.Numero,
+                    FuncionariosId = limpeza.FuncionariosId,
+                    Funcionario = funcionario.Nome
+                }
+            ).ToListAsync();
 
-            return limpeza;
+            return Ok(limpezaDetalhes);
         }
 
         [HttpPost]

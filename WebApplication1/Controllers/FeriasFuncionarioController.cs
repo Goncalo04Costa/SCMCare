@@ -1,3 +1,4 @@
+using iText.Kernel.Pdf.Canvas.Wmf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
@@ -18,22 +19,74 @@ namespace WebApplication1.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FeriasFuncionario>>> ObterTodasFeriasFuncionario()
+        public async Task<ActionResult<IEnumerable<FeriasFuncionario>>> ObterTodasFeriasFuncionario(
+            int? idFuncionario = null, int? idFuncionarioAprv = null,
+            int? estado = null)
         {
-            var feriasfuncionarios = await _context.FeriasFuncionario.ToListAsync();
-            return Ok(feriasfuncionarios);
+            IQueryable<FeriasFuncionario> query = _context.FeriasFuncionario;
+
+            if (idFuncionario.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId == idFuncionario.Value);
+            }
+
+            if (idFuncionarioAprv.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosIdValida == idFuncionarioAprv.Value);
+            }
+
+            if (estado.HasValue)
+            {
+                query = query.Where(d => d.Estado == estado.Value);
+            }
+
+            var feriasDetalhes = await (
+                from ferias in query
+                join funcionario in _context.Funcionarios on ferias.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join funcionarioV in _context.Funcionarios on ferias.FuncionariosIdValida equals funcionarioV.Id into fvG
+                from funcionarioV in fvG.DefaultIfEmpty()
+                select new
+                {
+                    Id = ferias.Id,
+                    FuncionariosId = ferias.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    FuncionariosIdValida = ferias.FuncionariosIdValida,
+                    FuncionarioValida = funcionarioV.Nome,
+                    Dia = ferias.Dia,
+                    Estado = ferias.Estado,
+                }
+            ).ToListAsync();
+
+            return Ok(feriasDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<FeriasFuncionario>> ObterFeriaFuncionario(int id)
         {
-            var feriasfuncionario = await _context.FeriasFuncionario.FindAsync(id);
+            IQueryable<FeriasFuncionario> query = _context.FeriasFuncionario;
+            query = query.Where(d => d.Id == id);
+            
 
-            if (feriasfuncionario == null)
-            {
-                return NotFound();
-            }
-            return Ok(feriasfuncionario);
+            var feriaDetalhes = await (
+                from ferias in query
+                join funcionario in _context.Funcionarios on ferias.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join funcionarioV in _context.Funcionarios on ferias.FuncionariosIdValida equals funcionarioV.Id into fvG
+                from funcionarioV in fvG.DefaultIfEmpty()
+                select new
+                {
+                    Id = ferias.Id,
+                    FuncionariosId = ferias.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    FuncionariosIdValida = ferias.FuncionariosIdValida,
+                    FuncionarioValida = funcionarioV.Nome,
+                    Dia = ferias.Dia,
+                    Estado = ferias.Estado,
+                }
+            ).ToListAsync();
+
+            return Ok(feriaDetalhes);
         }
 
         [HttpPost]

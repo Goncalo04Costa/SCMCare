@@ -93,7 +93,6 @@ namespace WebApplication1.Controllers
             {
                 query = query.Where(d => !d.Historico);
             }
-
             else if (!historico0 && historico1)
             {
                 query = query.Where(d => d.Historico);
@@ -103,25 +102,76 @@ namespace WebApplication1.Controllers
             {
                 query = query.Where(d => !d.Tipo);
             }
-
             else if (!tipo0 && tipo1)
             {
                 query = query.Where(d => d.Tipo);
             }
 
-            var dados = await query.ToListAsync();
-            return Ok(dados);
+
+            var utentesDetalhes = await (
+                from utentes in query
+                join tiposadmissao in _context.TiposAdmissao on utentes.TiposAdmissaoId equals tiposadmissao.Id into tG
+                from tiposadmissao in tG.DefaultIfEmpty()
+                select new
+                {
+                    Id = utentes.Id,
+                    Nome = utentes.Nome,
+                    NIF = utentes.NIF,
+                    SNS = utentes.SNS,
+                    DataAdmissao = utentes.DataAdmissao,
+                    DataNascimento = utentes.DataNascimento,
+                    Historico = utentes.Historico,
+                    Tipo = utentes.Tipo,
+                    TiposAdmissaoId = utentes.TiposAdmissaoId,
+                    TipoAdmissao = tiposadmissao.Descricao,
+                    MotivoAdmissao = utentes.MotivoAdmissao,
+                    DiagnosticoAdmissao = utentes.DiagnosticoAdmissao,
+                    Observacoes = utentes.Observacoes,
+                    NotaAdmissao = utentes.NotaAdmissao,
+                    AntecedentesPessoais = utentes.AntecedentesPessoais,
+                    ExameObjetivo = utentes.ExameObjetivo,
+                    Mensalidade = utentes.Mensalidade,
+                    Cofinanciamento = utentes.Cofinanciamento
+                }
+            ).ToListAsync();
+
+            return Ok(utentesDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Utente>> ObterUtente(int id)
         {
-            var dado = await _context.Utentes.FirstOrDefaultAsync(d => d.Id == id);
-            if (dado == null)
-            {
-                return NotFound();
-            }
-            return Ok(dado);
+            IQueryable<Utente> query = _context.Utentes;
+            query = query.Where(d => d.Id == id);
+
+            var utentesDetalhes = await (
+                from utentes in query
+                join tiposadmissao in _context.TiposAdmissao on utentes.TiposAdmissaoId equals tiposadmissao.Id into tG
+                from tiposadmissao in tG.DefaultIfEmpty()
+                select new
+                {
+                    Id = utentes.Id,
+                    Nome = utentes.Nome,
+                    NIF = utentes.NIF,
+                    SNS = utentes.SNS,
+                    DataAdmissao = utentes.DataAdmissao,
+                    DataNascimento = utentes.DataNascimento,
+                    Historico = utentes.Historico,
+                    Tipo = utentes.Tipo,
+                    TiposAdmissaoId = utentes.TiposAdmissaoId,
+                    TipoAdmissao = tiposadmissao.Descricao,
+                    MotivoAdmissao = utentes.MotivoAdmissao,
+                    DiagnosticoAdmissao = utentes.DiagnosticoAdmissao,
+                    Observacoes = utentes.Observacoes,
+                    NotaAdmissao = utentes.NotaAdmissao,
+                    AntecedentesPessoais = utentes.AntecedentesPessoais,
+                    ExameObjetivo = utentes.ExameObjetivo,
+                    Mensalidade = utentes.Mensalidade,
+                    Cofinanciamento = utentes.Cofinanciamento
+                }
+            ).ToListAsync();
+
+            return Ok(utentesDetalhes);
         }
 
         [HttpGet("nome/{nome}")]

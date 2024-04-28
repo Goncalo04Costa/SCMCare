@@ -17,9 +17,34 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Notificacao>>> ObterTodasNotificacoes()
+        public async Task<ActionResult<IEnumerable<Notificacao>>> ObterTodasNotificacoes(
+            int? idMin = null, int? idMax = null,
+            DateTime? dataMin = null, DateTime? dataMax = null)
         {
-            return await _context.Notificacoes.ToListAsync();
+            IQueryable<Notificacao> query = _context.Notificacoes;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (dataMin.HasValue)
+            {
+                query = query.Where(d => d.Data <= dataMin.Value);
+            }
+
+            if (dataMax.HasValue)
+            {
+                query = query.Where(d => d.Data >= dataMax.Value);
+            }
+
+            var dados = await query.ToListAsync();
+            return Ok(dados);
         }
 
         [HttpGet("{id}")]

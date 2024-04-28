@@ -20,22 +20,95 @@ namespace WebApplication1.Controllers
         // !!! Mostrar quantidades a partir das contas correntes
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Material>>> ObterTodosMateriais()
+        public async Task<ActionResult<IEnumerable<Material>>> ObterTodosMateriais(
+            int? idMin = null, int? idMax = null,
+            string? nomeMin = null, string? nomeMax = null,
+            int? tipoMaterial = null,
+            bool ativo0 = false, bool ativo1 = false)
         {
-            return await _context.Materiais.ToListAsync();
+            IQueryable<Material> query = _context.Materiais;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMin))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMin) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMax + "ZZZ") <= 0);
+            }
+
+            if (tipoMaterial.HasValue)
+            {
+                query = query.Where(d => d.TiposMaterialId == tipoMaterial.Value);
+            }
+
+            if (ativo0 && !ativo1)
+            {
+                query = query.Where(d => !d.Ativo);
+            }
+
+            else if (!ativo0 && ativo1)
+            {
+                query = query.Where(d => d.Ativo);
+            }
+
+            var materiaisDetalhes = await (
+                from materiais in query
+                join tipomaterial in _context.TiposMaterial on materiais.TiposMaterialId equals tipomaterial.Id into tG
+                from tipomaterial in tG.DefaultIfEmpty()
+                select new
+                {
+                    Id = materiais.Id,
+                    Nome = materiais.Nome,
+                    Quantidade = _context.ContaCorrenteMateriais
+                        .Where(m => m.MateriaisId == materiais.Id)
+                        .Sum(m => m.Tipo ? m.QuantidadeMovimento : -m.QuantidadeMovimento),
+                    Limite = materiais.Limite,
+                    TipoMaterialId = materiais.TiposMaterialId,
+                    TipoMaterial = tipomaterial.Descricao,
+                    Ativo = materiais.Ativo
+                }
+            ).ToListAsync();
+
+            return Ok(materiaisDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Material>> ObterMaterial(int id)
         {
-            var material = await _context.Materiais.FindAsync(id);
+            IQueryable<Material> query = _context.Materiais;
+            query = query.Where(d => d.Id == id);
 
-            if (material == null)
-            {
-                return NotFound();
-            }
+            var materiaisDetalhes = await (
+                from materiais in query
+                join tipomaterial in _context.TiposMaterial on materiais.TiposMaterialId equals tipomaterial.Id into tG
+                from tipomaterial in tG.DefaultIfEmpty()
+                select new
+                {
+                    Id = materiais.Id,
+                    Nome = materiais.Nome,
+                    Quantidade = _context.ContaCorrenteMateriais
+                        .Where(m => m.MateriaisId == materiais.Id)
+                        .Sum(m => m.Tipo ? m.QuantidadeMovimento : -m.QuantidadeMovimento),
+                    Limite = materiais.Limite,
+                    TipoMaterialId = materiais.TiposMaterialId,
+                    TipoMaterial = tipomaterial.Descricao,
+                    Ativo = materiais.Ativo
+                }
+            ).ToListAsync();
 
-            return material;
+            return Ok(materiaisDetalhes);
         }
 
         [HttpPost]
