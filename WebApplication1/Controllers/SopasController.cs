@@ -21,7 +21,8 @@ namespace WebApplication1.Controllers
             int? idMin = null, int? idMax = null,
             string nomeMin = null, string nomeMax = null,
             string descMin = null, string descMax = null,
-            bool tipo0 = false, bool tipo1 = false)
+            bool tipo0 = false, bool tipo1 = false,
+            bool ativo0 = false, bool ativo1 = false)
         {
             IQueryable<Sopa> query = _context.Sopas;
 
@@ -62,6 +63,16 @@ namespace WebApplication1.Controllers
             else if (!tipo0 && tipo1)
             {
                 query = query.Where(d => d.Tipo); // Mostra sopas com tipo 1
+            }
+
+            if (ativo0 && !ativo1)
+            {
+                query = query.Where(d => !d.Ativo);
+            }
+
+            else if (!ativo0 && ativo1)
+            {
+                query = query.Where(d => d.Ativo);
             }
 
             var dados = await query.ToListAsync();

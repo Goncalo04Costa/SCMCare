@@ -18,12 +18,13 @@ namespace WebApplication1.Controllers
     public class UtentesController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly RegrasUtentes _regrasUtentes; 
+        //private readonly RegrasUtentes _regrasUtentes; 
 
-        public UtentesController(AppDbContext context, RegrasUtentes regrasUtentes)
+        //public UtentesController(AppDbContext context, RegrasUtentes regrasUtentes)
+        public UtentesController(AppDbContext context)
         {
             _context = context;
-            _regrasUtentes = regrasUtentes;
+            //_regrasUtentes = regrasUtentes;
         }
 
         [HttpGet]
@@ -151,12 +152,12 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            
-          bool nifExiste = await _regrasUtentes.VerificarNIFExistente(utente.NIF);
-            if (nifExiste)
-            {
-                return BadRequest("NIF já existe.");
-            }
+
+            //bool nifExiste = await _regrasUtentes.VerificarNIFExistente(utente.NIF);
+            //if (nifExiste)
+            //{
+            //    return BadRequest("NIF já existe.");
+            //}
 
             _context.Utentes.Add(utente);
             await _context.SaveChangesAsync();
@@ -217,7 +218,7 @@ namespace WebApplication1.Controllers
             return Ok($"Foi removido o utente com o ID {id}");
         }
 
-        [HttpGet("{id}/ficha")]
+        [HttpGet("ficha/{id}")]
         public async Task<IActionResult> ImprimirFichaUtente(int id)
         {
             var utente = await _context.Utentes.FindAsync(id);

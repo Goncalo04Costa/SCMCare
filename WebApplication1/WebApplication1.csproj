@@ -10,6 +10,7 @@
     <Compile Remove="Controllers\AuthController.cs" />
     <Compile Remove="Controllers\UserController.cs" />
     <Compile Remove="Controllers\UsersFuncionarioController.cs" />
+    <Compile Remove="startup.cs" />
   </ItemGroup>
 
   <ItemGroup>
