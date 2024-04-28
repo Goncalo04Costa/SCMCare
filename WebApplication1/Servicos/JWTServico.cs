@@ -2,17 +2,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Modelos;
 using WebApplication1.Modelos;
 
 namespace WebApplication1.Servicos
 {
     public class JwtService
     {
-        private const int EXPIRATION_MINUTES = 10;
-
         private readonly IConfiguration _configuration;
 
         public JwtService(IConfiguration configuration)
@@ -20,43 +18,31 @@ namespace WebApplication1.Servicos
             _configuration = configuration;
         }
 
-        public AuthenticationResponse CreateToken(IdentityUser user)
+        public string CreateToken(UserFuncionario user)
         {
-            var expiration = DateTime.UtcNow.AddMinutes(EXPIRATION_MINUTES);
+            var expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpirationMinutes"]));
 
-            var token = CreateJwtToken(
-                CreateClaims(user),
-                CreateSigningCredentials(),
-                expiration
-            );
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            return new AuthenticationResponse
-            {
-                Token = tokenHandler.WriteToken(token),
-                Expiration = expiration
-            };
-        }
-
-        public JwtSecurityToken CreateJwtToken(Claim[] claims, SigningCredentials credentials, DateTime expiration) =>
-            new JwtSecurityToken(
+            var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
-                claims,
+                CreateClaims(user),
                 expires: expiration,
-                signingCredentials: credentials
+                signingCredentials: CreateSigningCredentials()
             );
 
-        private Claim[] CreateClaims(IdentityUser user) =>
-            new[] {
-                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private Claim[] CreateClaims(UserFuncionario user) =>
+     new[]
+     {
+        new Claim(JwtRegisteredClaimNames.Sub, user.FuncionariosId.ToString()),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
+        new Claim("FuncionarioID", user.FuncionariosId.ToString()),
+        new Claim("FuncionarioNome", user.Nome),
+        new Claim("FuncionarioEmail", user.Email)
+     };
 
         private SigningCredentials CreateSigningCredentials() =>
             new SigningCredentials(
@@ -65,10 +51,5 @@ namespace WebApplication1.Servicos
                 ),
                 SecurityAlgorithms.HmacSha256
             );
-
-        internal object CreateJwtToken(IdentityUser? user)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

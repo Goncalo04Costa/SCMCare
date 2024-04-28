@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-using RegrasNegocio; // Importe o namespace onde a classe RegrasUtentes está definida
+using RegrasNegocio; 
 using System;
 using System.Collections.Generic;
 using System.IO;

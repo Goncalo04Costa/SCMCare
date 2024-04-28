@@ -18,9 +18,9 @@ namespace RegrasNegocio
         {
             // Verifica se existe algum utente com o mesmo NIF no banco de dados
             var utenteExistente = await _context.Utentes.AnyAsync(u => u.NIF == nif);
-            return utenteExistente;
+             return utenteExistente;
         }
 
-       
+
     }
 }
