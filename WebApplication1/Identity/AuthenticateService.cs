@@ -1,12 +1,14 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System.Data.Entity;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq.Expressions;
-using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
-using WebApplication1.Account;
+using System.Threading.Tasks;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using WebApplication1.Modelos;
+using Microsoft.Extensions.Configuration;
+using WebApplication1.Account;
 
 namespace WebApplication1.Identity
 {
@@ -21,22 +23,29 @@ namespace WebApplication1.Identity
             _configuration = configuration;
         }
 
-        public async Task<bool> AuthenticteAsync(string email, string password)
+        public async Task<bool> AuthenticateAsync(string email, string password)
         {
-            var UserF = await _context.UserFuncionario.Where(x=>x.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
-            if(UserF == null)
+            var user = await _context.UserFuncionario.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
+            if (user == null)
             {
                 return false;
             }
 
-            using var hmac = new HMACSHA512(UserF.PasseS);
-            var ComputedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            for(int x=0; x<=ComputedHash.Length;x++)
+            using var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(user.SecurityStamp));
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            // Comparando os hashes de senha como strings
+            if (Convert.ToBase64String(computedHash) != user.PasswordHash)
             {
-                if (ComputedHash[x] != UserF.PasseH[x]) return false;
+                return false;
             }
 
             return true;
+        }
+
+        public Task<bool> AuthenticteAsync(string email, string password)
+        {
+            throw new NotImplementedException();
         }
 
         public string GenerateToken(int id, string email)
@@ -45,35 +54,27 @@ namespace WebApplication1.Identity
             {
                 new Claim("id", id.ToString()),
                 new Claim("email", email),
-                new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:secretkey"]));
-
-            var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.HmacSha256);
-
-            var expiration = DateTime.UtcNow.AddMinutes(10);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["jwt:issuer"],
-                audience: _configuration["jwt:audience"],
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: expiration,
-                signingCredentials: credentials
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpirationMinutes"])),
+                signingCredentials: creds
             );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public async Task<bool> UserExists(string email)
         {
-            var UserF = await _context.UserFuncionario.Where(x => x.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
-            if (UserF == null)
-            {
-                return false;
-            }
-
-            return true;
+            var user = await _context.UserFuncionario.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
+            return user != null;
         }
     }
 }

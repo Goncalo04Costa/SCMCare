@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Modelos;
 using WebApplication1.Servicos;
-using WebApplication1.Controllers;
-using WebApplication1.Migrations;
-using WebApplication1.Modelos;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 namespace WebApplication1
 {
     public class Startup
@@ -18,24 +22,26 @@ namespace WebApplication1
             Configuration = configuration;
         }
 
-
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configuração do Entity Framework e do contexto do banco de dados
+            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connectionString));
 
-            //services.AddDatabaseDeveloperPageExceptionFilter();
+            // Configuração do ASP.NET Core Identity
+            services.AddIdentity<UserFuncionario, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
 
-            //services.AddDefaultIdentity<AuthController>(options => options.SignIn.RequireConfirmedAccount = true)
-              // .AddEntityFrameworkStores<AppDbContext>();
+            // Registro dos serviços personalizados
+            services.AddScoped<AuthService>();
+            services.AddScoped<JwtService>();
 
-            services.AddScoped<JwtService, JwtService>();
-
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -43,13 +49,15 @@ namespace WebApplication1
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseMigrationsEndPoint();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -60,10 +68,7 @@ namespace WebApplication1
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
