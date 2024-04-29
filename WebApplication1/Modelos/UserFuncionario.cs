@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using WebApplication1.Excecoes;
+using Microsoft.AspNetCore.Identity;
 namespace Modelos
 {
-    public class UserFuncionario
+    public class UserFuncionario : IdentityUser<string>
     {
         public int FuncionariosId { get; private set; }
 
