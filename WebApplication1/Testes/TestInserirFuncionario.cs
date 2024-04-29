@@ -2,9 +2,8 @@
 using Modelos;
 using WebApplication1.Controllers;
 using Microsoft.EntityFrameworkCore;
-using WebApplication1;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
+using System.Threading.Tasks;
 
 namespace WebApplication1.Testes
 {
@@ -34,13 +33,14 @@ namespace WebApplication1.Testes
         public async Task InserirFuncionario_DeveRetornarOk_QuandoFuncionarioForValido()
         {
             // Arrange 
-            var funcionario = new Funcionario { Nome = "João", TipoFuncionarioId = 1, Historico = false };
+            var funcionario = new Funcionario { Nome = "João",  Historico = false };
 
             // Act 
             var result = await _controller.InserirFuncionario(funcionario);
 
             // Assert
-            Assert.IsInstanceOf > OKObjectResult > (result.Result);
+            Assert.NotNull(result); // Verifica se o resultado não é nulo
+            Assert.IsInstanceOf<OkObjectResult>(result); 
         }
     }
 }
