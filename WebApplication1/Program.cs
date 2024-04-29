@@ -1,5 +1,3 @@
-// No seu arquivo Startup.cs
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
@@ -13,13 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Gonçalo
 //var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-
 //Sofia
 var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");
 
 // Daniela
 //var connectionString = builder.Configuration.GetConnectionString("LigacaoDaniela");
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
