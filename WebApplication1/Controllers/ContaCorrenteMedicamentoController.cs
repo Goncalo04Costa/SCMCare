@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace WebApplication1.Controllers
@@ -26,7 +27,7 @@ namespace WebApplication1.Controllers
             DateTime? dataMin = null, DateTime? dataMax = null,
             bool tipo0 = false, bool tipo1 = false,
             int? quantidadeMovimentoMin = null, int? quantidadeMovimentoMax = null,
-            string observacoesMin = null, string observacoesMax = null)
+            string? observacoesMin = null, string? observacoesMax = null)
         {
             IQueryable<ContaCorrenteMedicamento> query = _context.ContaCorrenteMedicamentos;
 
@@ -100,20 +101,69 @@ namespace WebApplication1.Controllers
                 query = query.Where(d => d.Observacoes.CompareTo(observacoesMax + "ZZZ") <= 0);
             }
 
-            var dados = await query.ToListAsync();
-            return dados;
+
+            var contacorrenteDetalhes = await (
+                from contacorrente in query
+                join medicamento in _context.Materiais on contacorrente.MedicamentosId equals medicamento.Id into mG
+                from medicamento in mG.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on contacorrente.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join utente in _context.Utentes on contacorrente.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                select new
+                {
+                    Id = contacorrente.Id,
+                    Fatura = contacorrente.Fatura,
+                    MedicamentosId = contacorrente.MedicamentosId,
+                    Medicamento = medicamento.Nome,
+                    PedidosId = contacorrente.PedidosMedicamentoId,
+                    FuncionariosId = contacorrente.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    UtentesId = contacorrente.UtentesId,
+                    Utente = utente.Nome,
+                    Data = contacorrente.Data,
+                    Tipo = contacorrente.Tipo,
+                    Quantidade = contacorrente.QuantidadeMovimento,
+                    Obs = contacorrente.Observacoes
+                }
+            ).ToListAsync();
+
+            return Ok(contacorrenteDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ContaCorrenteMedicamento>> obterContaCorrente(int id)
         {
-            var dado = await _context.ContaCorrenteMedicamentos.FirstOrDefaultAsync(dado => dado.Id == id);
+            IQueryable<ContaCorrenteMedicamento> query = _context.ContaCorrenteMedicamentos;
+            query = query.Where(d => d.Id == id);
 
-            if (dado == null)
-            {
-                return NotFound();
-            }
-            return Ok(dado);
+            var contacorrenteDetalhes = await (
+                from contacorrente in query
+                join medicamento in _context.Materiais on contacorrente.MedicamentosId equals medicamento.Id into mG
+                from medicamento in mG.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on contacorrente.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join utente in _context.Utentes on contacorrente.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                select new
+                {
+                    Id = contacorrente.Id,
+                    Fatura = contacorrente.Fatura,
+                    MedicamentosId = contacorrente.MedicamentosId,
+                    Medicamento = medicamento.Nome,
+                    PedidosId = contacorrente.PedidosMedicamentoId,
+                    FuncionariosId = contacorrente.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    UtentesId = contacorrente.UtentesId,
+                    Utente = utente.Nome,
+                    Data = contacorrente.Data,
+                    Tipo = contacorrente.Tipo,
+                    Quantidade = contacorrente.QuantidadeMovimento,
+                    Obs = contacorrente.Observacoes
+                }
+            ).ToListAsync();
+
+            return Ok(contacorrenteDetalhes);
         }
 
         [HttpPost]

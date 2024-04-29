@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace WebApplication1.Controllers
@@ -17,22 +18,74 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Quarto>>> ObterTodosQuartos()
+        public async Task<ActionResult<IEnumerable<Quarto>>> ObterTodosQuartos(
+            int? idMin = null, int? idMax = null,
+            int? numeroMin = null, int? numeroMax = null,
+            int? tipoQuarto = null)
         {
-            return await _context.Quartos.ToListAsync();
+            IQueryable<Quarto> query = _context.Quartos;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (numeroMin.HasValue)
+            {
+                query = query.Where(d => d.Numero >= numeroMin.Value);
+            }
+
+            if (numeroMax.HasValue)
+            {
+                query = query.Where(d => d.Numero <= numeroMax.Value);
+            }
+
+            if (tipoQuarto.HasValue)
+            {
+                query = query.Where(d => d.TiposQuartoId == tipoQuarto.Value);
+            }
+
+            var quartosDetalhes = await (
+                from quartos in query
+                join tipoquarto in _context.TiposQuarto on quartos.TiposQuartoId equals tipoquarto.Id into tG
+                from tipoquarto in tG.DefaultIfEmpty()
+                select new
+                {
+                    Id = quartos.Id,
+                    Numero = quartos.Numero,
+                    TiposQuartoId = quartos.TiposQuartoId,
+                    TiposQuarto = tipoquarto.Descricao
+                }
+            ).ToListAsync();
+
+            return Ok(quartosDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Quarto>> ObterQuarto(int id)
         {
-            var quarto = await _context.Quartos.FindAsync(id);
+            IQueryable<Quarto> query = _context.Quartos;
+            query = query.Where(d => d.Id == id);
 
-            if (quarto == null)
-            {
-                return NotFound();
-            }
+            var quartosDetalhes = await (
+                from quartos in query
+                join tipoquarto in _context.TiposQuarto on quartos.TiposQuartoId equals tipoquarto.Id into tG
+                from tipoquarto in tG.DefaultIfEmpty()
+                select new
+                {
+                    Id = quartos.Id,
+                    Numero = quartos.Numero,
+                    TiposQuartoId = quartos.TiposQuartoId,
+                    TiposQuarto = tipoquarto.Descricao
+                }
+            ).ToListAsync();
 
-            return quarto;
+            return Ok(quartosDetalhes);
         }
 
         [HttpPost]

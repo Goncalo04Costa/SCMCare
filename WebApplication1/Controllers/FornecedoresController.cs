@@ -17,23 +17,66 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Fornecedor>>> ObterTodosFornecedores()
+        public async Task<ActionResult<IEnumerable<Fornecedor>>> ObterTodosFornecedores(
+            int? idMin = null, int? idMax = null,
+            string? nomeMin = null, string? nomeMax = null)
         {
-            var fornecedores = await _context.Fornecedores.ToListAsync();
-            return Ok(fornecedores);
+            IQueryable<Fornecedor> query = _context.Fornecedores;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMin))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMin) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMax + "ZZZ") <= 0);
+            }
+
+            var dados = await query.ToListAsync();
+            return Ok(dados);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Fornecedor>> ObterFornecedor(int id)
         {
-            var fornecedor = await _context.Fornecedores.FindAsync(id);
+            IQueryable<Fornecedor> query = _context.Fornecedores;
+            query = query.Where(d => d.Id == id);
 
-            if (fornecedor == null)
-            {
-                return NotFound();
-            }
+            var fornecedorDetalhes = await (
+                from fornecedor in query
+                select new
+                {
+                    Id = fornecedor.Id,
+                    Nome = fornecedor.Nome,
+                    Contactos = _context.ContactosFornecedores
+                        .Where(cf => cf.FornecedoresId == fornecedor.Id)
+                        .Join(
+                            _context.TipoContacto,
+                            cf => cf.TipoContactoId,
+                            tc => tc.Id,
+                            (cf, tc) => new
+                            {
+                                TipoContactoId = tc.Id,
+                                TipoContacto = tc.Descricao,
+                                Valor = cf.Valor
+                            }
+                        )
+                        .ToList()
+                }
+            ).ToListAsync();
 
-            return Ok(fornecedor);
+            return Ok(fornecedorDetalhes);
         }
 
         [HttpPost]

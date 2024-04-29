@@ -102,6 +102,8 @@ namespace WebApplication1
 
         public DbSet<TipoQuarto> TiposQuarto { get; set; }
 
+        public DbSet<TipoSessao> TiposSessao { get; set; }
+
         public DbSet<Turno> Turnos { get; set; }
 
         public DbSet<Utente> Utentes { get; set; }

@@ -7,7 +7,7 @@ namespace Modelos
     {
         public int Id { get; set; }
 
-        public string Fatura { get; set; }
+        public string? Fatura { get; set; }
 
         [Required]
         public int MedicamentosId { get; set; }
@@ -17,8 +17,7 @@ namespace Modelos
         [Required]
         public int FuncionariosId { get; set; }
 
-        [Required]
-        public int UtentesId { get; set; }
+        public int? UtentesId { get; set; }
 
         [Required]
         public System.DateTime Data { get; set; }
@@ -29,6 +28,6 @@ namespace Modelos
         [Required]
         public int QuantidadeMovimento { get; set; }
 
-        public string Observacoes { get; set; }
+        public string? Observacoes { get; set; }
     }
 }

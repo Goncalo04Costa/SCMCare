@@ -18,26 +18,84 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-
-        // !!! Mostrar quantidades a partir das contas correntes
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Medicamento>>> ObterTodosMedicamentos()
+        public async Task<ActionResult<IEnumerable<Medicamento>>> ObterTodosMedicamentos(
+            int? idMin = null, int? idMax = null,
+            string? nomeMin = null, string? nomeMax = null,
+            bool ativo0 = false, bool ativo1 = false)
         {
-            return await _context.Medicamentos.ToListAsync();
+            IQueryable<Medicamento> query = _context.Medicamentos;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMin))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMin) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMax + "ZZZ") <= 0);
+            }
+
+            if (ativo0 && !ativo1)
+            {
+                query = query.Where(d => !d.Ativo);
+            }
+
+            else if (!ativo0 && ativo1)
+            {
+                query = query.Where(d => d.Ativo);
+            }
+
+            var medicamentosDetalhes = await (
+                from medicamentos in query
+                select new
+                {
+                    Id = medicamentos.Id,
+                    Nome = medicamentos.Nome,
+                    Descricao = medicamentos.Descricao,
+                    Quantidade = _context.ContaCorrenteMedicamentos
+                        .Where(m => m.MedicamentosId == medicamentos.Id)
+                        .Sum(m => m.Tipo ? m.QuantidadeMovimento : -m.QuantidadeMovimento),
+                    Limite = medicamentos.Limite,
+                    Ativo = medicamentos.Ativo
+                }
+            ).ToListAsync();
+
+            return Ok(medicamentosDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Medicamento>> ObterMedicamento(int id)
         {
-            var medicamento = await _context.Medicamentos.FindAsync(id);
+            IQueryable<Medicamento> query = _context.Medicamentos;
+            query = query.Where(d => d.Id == id);
 
-            if (medicamento == null)
-            {
-                return NotFound();
-            }
+            var medicamentosDetalhes = await (
+                from medicamentos in query
+                select new
+                {
+                    Id = medicamentos.Id,
+                    Nome = medicamentos.Nome,
+                    Descricao = medicamentos.Descricao,
+                    Quantidade = _context.ContaCorrenteMedicamentos
+                        .Where(m => m.MedicamentosId == medicamentos.Id)
+                        .Sum(m => m.Tipo ? m.QuantidadeMovimento : -m.QuantidadeMovimento),
+                    Limite = medicamentos.Limite,
+                    Ativo = medicamentos.Ativo
+                }
+            ).ToListAsync();
 
-            return medicamento;
+            return Ok(medicamentosDetalhes);
         }
 
         [HttpPost]

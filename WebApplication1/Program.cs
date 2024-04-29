@@ -1,3 +1,6 @@
+// No seu arquivo Startup.cs
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
 using WebApplication1;
@@ -10,8 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Gonçalo
 //var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
 
-// Diogo
-//var connectionString = builder.Configuration.GetConnectionString("LigacaoDiogo");
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 //Sofia
 var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");
@@ -28,16 +30,14 @@ builder.Services.AddScoped<JwtService>();
 
 // Add services to the container.
 
+// Adicione serviços ao contêiner.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddHostedService<CronometroServico>();
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure o pipeline de solicitação HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -45,10 +45,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
-

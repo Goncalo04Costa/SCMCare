@@ -15,5 +15,7 @@ namespace Modelos
 
         [Required]
         public bool Historico { get; set; }
+
+        //public ICollection<ContactoFuncionario>? Contactos { get; set; }
     }
 }

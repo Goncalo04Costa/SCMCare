@@ -7,7 +7,7 @@ namespace Modelos
     {
         public int Id { get; set; }
 
-        public string Fatura { get; set; }
+        public string? Fatura { get; set; }
 
         [Required]
         public int MateriaisId { get; set; }
@@ -28,6 +28,6 @@ namespace Modelos
         [Required]
         public int QuantidadeMovimento { get; set; }
 
-        public string Observacoes { get; set; }
+        public string? Observacoes { get; set; }
     }
 }

@@ -16,10 +16,44 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hospital>>> ObterTodosHospitais()
+        public async Task<ActionResult<IEnumerable<Hospital>>> ObterTodosHospitais(
+            int? idMin = null, int? idMax = null,
+            string? nomeMin = null, string? nomeMax = null,
+            bool ativo0 = false, bool ativo1 = false)
         {
-            var hospitais = await _context.Hospitais.ToListAsync();
-            return Ok(hospitais);
+            IQueryable<Hospital> query = _context.Hospitais;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMin))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMin) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMax + "ZZZ") <= 0);
+            }
+
+            if (ativo0 && !ativo1)
+            {
+                query = query.Where(d => !d.Ativo);
+            }
+            else if (!ativo0 && ativo1)
+            {
+                query = query.Where(d => d.Ativo);
+            }
+
+            var dados = await query.ToListAsync();
+            return Ok(dados);
         }
 
         [HttpGet("{id}")]

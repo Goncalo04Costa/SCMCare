@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Modelos;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,22 +20,89 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Responsavel>>> ObterTodosResponsaveis()
+        public async Task<ActionResult<IEnumerable<Responsavel>>> ObterTodosResponsaveis(
+            int? idMin = null, int? idMax = null,
+            string? nomeMin = null, string? nomeMax = null,
+            int? utenteId = null)
         {
-            return await _context.Responsaveis.ToListAsync();
+            IQueryable<Responsavel> query = _context.Responsaveis;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMin))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMin) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMax + "ZZZ") <= 0);
+            }
+
+            if (utenteId.HasValue)
+            {
+                query = query.Where(d => d.UtentesId == utenteId.Value);
+            }
+            var responsavelDetalhes = await (
+                from responsavel in query
+                join utente in _context.Utentes on responsavel.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                select new
+                {
+                    Id = responsavel.Id,
+                    Nome = responsavel.Nome,
+                    UtentesId = responsavel.UtentesId,
+                    Utente = utente.Nome,
+                    Morada = responsavel.Morada
+                }
+            ).ToListAsync();
+
+            return Ok(responsavelDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Responsavel>> ObterResponsavel(int id)
         {
-            var responsavel = await _context.Responsaveis.FindAsync(id);
+            IQueryable<Responsavel> query = _context.Responsaveis;
+            query = query.Where(d => d.Id == id); 
+            
+            var responsavelDetalhes = await (
+                from responsavel in query
+                join utente in _context.Utentes on responsavel.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                select new
+                {
+                    Id = responsavel.Id,
+                    Nome = responsavel.Nome,
+                    UtentesId = responsavel.UtentesId,
+                    Utente = utente.Nome,
+                    Morada = responsavel.Morada,
+                    Contactos = _context.ContactosResponsaveis
+                        .Where(cf => cf.ResponsaveisId == responsavel.Id)
+                        .Join(
+                            _context.TipoContacto,
+                            cf => cf.TipoContactoId,
+                            tc => tc.Id,
+                            (cf, tc) => new
+                            {
+                                TipoContactoId = tc.Id,
+                                TipoContacto = tc.Descricao,
+                                Valor = cf.Valor
+                            }
+                        )
+                        .ToList()
+                }
+            ).ToListAsync();
 
-            if (responsavel == null)
-            {
-                return NotFound();
-            }
-
-            return responsavel;
+            return Ok(responsavelDetalhes);
         }
 
         [HttpPost]
