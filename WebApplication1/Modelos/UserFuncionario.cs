@@ -42,7 +42,7 @@ namespace Modelos
             DomainExceptionValidation.When(email.Length == 0, "O eamail é obigatório");
             DomainExceptionValidation.When(nome.Length > 250, "O nome nao pode ultrapassar de 250 caracteres");
             DomainExceptionValidation.When(email.Length > 200, "O email nao pode ultrapassar de 200 caractere");
-            Nome = nome;
+            UserName = nome;
             Email = email;
         }
     }

@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Gonçalo
-//var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
+var connectionString = builder.Configuration.GetConnectionString("LigacaoGoncalo");
 
 //Sofia
-var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");
+//var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");
 
 // Daniela
 //var connectionString = builder.Configuration.GetConnectionString("LigacaoDaniela");
