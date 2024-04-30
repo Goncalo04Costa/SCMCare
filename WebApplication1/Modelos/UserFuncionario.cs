@@ -7,6 +7,7 @@ namespace Modelos
 {
     public class UserFuncionario : IdentityUser<string>
     {
+        [Key]
         public int FuncionariosId { get; private set; }
 
         public string Nome { get; set; }
@@ -50,6 +51,7 @@ namespace Modelos
         public UserFuncionario(string nome, string email)
         {
             ValidateDomain(nome, email);
+            Id = Guid.NewGuid().ToString(); // Generate a unique ID
         }
 
         public void AlterarSenha(byte[] passwordHash, byte[] passwordSalt)

@@ -25,7 +25,7 @@ namespace WebApplication1.Identity
 
         public async Task<bool> AuthenticateAsync(string email, string password)
         {
-            var user = await _context.UserFuncionario.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
+            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
             if (user == null)
             {
                 return false;
@@ -73,7 +73,7 @@ namespace WebApplication1.Identity
 
         public async Task<bool> UserExists(string email)
         {
-            var user = await _context.UserFuncionario.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
+            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
             return user != null;
         }
     }

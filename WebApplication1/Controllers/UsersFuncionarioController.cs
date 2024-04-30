@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
-    //[ApiController]
+    [ApiController]
     public class UserFuncionarioController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -21,7 +24,7 @@ namespace WebApplication1.Controllers
             int? idMin = null, int? idMax = null,
             string nomeMin = null, string nomeMax = null)
         {
-            IQueryable<UserFuncionario> query = _context.UserFuncionario;
+            IQueryable<UserFuncionario> query = _context.UserFuncionarios;
 
             if (idMin.HasValue)
             {
@@ -35,12 +38,12 @@ namespace WebApplication1.Controllers
 
             if (!string.IsNullOrEmpty(nomeMin))
             {
-                query = query.Where(d => d.Nome.CompareTo(nomeMin) >= 0);
+                query = query.Where(d => string.Compare(d.Nome, nomeMin, StringComparison.OrdinalIgnoreCase) >= 0);
             }
 
             if (!string.IsNullOrEmpty(nomeMax))
             {
-                query = query.Where(d => d.Nome.CompareTo(nomeMax + "ZZZ") <= 0);
+                query = query.Where(d => string.Compare(d.Nome, nomeMax, StringComparison.OrdinalIgnoreCase) <= 0);
             }
 
             var dados = await query.ToListAsync();
@@ -50,7 +53,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserFuncionario>> ObterUserFuncionario(int id)
         {
-            var userFuncionario = await _context.UserFuncionario.FirstOrDefaultAsync(d => d.FuncionariosId == id);
+            var userFuncionario = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionariosId == id);
             if (userFuncionario == null)
             {
                 return NotFound();
@@ -66,16 +69,21 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.UserFuncionario.Add(user);
+            // Generate a unique ID
+            user.Id = Guid.NewGuid().ToString();
+
+            _context.UserFuncionarios.Add(user);
             await _context.SaveChangesAsync();
 
             return Ok("Funcionário adicionado com sucesso");
         }
 
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarUserFuncionario(int id, [FromBody] UserFuncionario novoUser)
         {
-            var user = await _context.UserFuncionario.FirstOrDefaultAsync(d => d.FuncionariosId == id);
+            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionariosId == id);
             if (user == null)
             {
                 return NotFound($"Não foi possível encontrar o funcionário com o ID {id}");
@@ -92,20 +100,20 @@ namespace WebApplication1.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                return StatusCode(500, $"Erro ao atualizar o funcionário: {e.Message}");
             }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverUserFuncionario(int id)
         {
-            var user = await _context.UserFuncionario.FirstOrDefaultAsync(d => d.FuncionariosId == id);
+            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionariosId == id);
             if (user == null)
             {
                 return NotFound($"Não foi possível encontrar o funcionário com o ID {id}");
             }
 
-            _context.UserFuncionario.Remove(user);
+            _context.UserFuncionarios.Remove(user);
             await _context.SaveChangesAsync();
 
             return Ok($"Foi removido o funcionário com o ID {id}");
