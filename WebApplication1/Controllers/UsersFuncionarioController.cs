@@ -28,22 +28,26 @@ namespace WebApplication1.Controllers
 
             if (idMin.HasValue)
             {
-                query = query.Where(d => d.FuncionariosId >= idMin.Value);
+                query = query.Where(d => d.FuncionarioId >= idMin.Value);
             }
 
             if (idMax.HasValue)
             {
-                query = query.Where(d => d.FuncionariosId <= idMax.Value);
+                query = query.Where(d => d.FuncionarioId <= idMax.Value);
             }
 
-            if (!string.IsNullOrEmpty(nomeMin))
+            if (!string.IsNullOrEmpty(nomeMin) && !string.IsNullOrEmpty(nomeMax))
             {
-                query = query.Where(d => string.Compare(d.Nome, nomeMin, StringComparison.OrdinalIgnoreCase) >= 0);
+                query = query.Where(d => string.Compare(d.User, nomeMin, StringComparison.OrdinalIgnoreCase) >= 0 &&
+                                          string.Compare(d.User, nomeMax, StringComparison.OrdinalIgnoreCase) <= 0);
             }
-
-            if (!string.IsNullOrEmpty(nomeMax))
+            else if (!string.IsNullOrEmpty(nomeMin))
             {
-                query = query.Where(d => string.Compare(d.Nome, nomeMax, StringComparison.OrdinalIgnoreCase) <= 0);
+                query = query.Where(d => string.Compare(d.User, nomeMin, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            else if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => string.Compare(d.User, nomeMax, StringComparison.OrdinalIgnoreCase) <= 0);
             }
 
             var dados = await query.ToListAsync();
@@ -53,7 +57,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserFuncionario>> ObterUserFuncionario(int id)
         {
-            var userFuncionario = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionariosId == id);
+            var userFuncionario = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionarioId == id);
             if (userFuncionario == null)
             {
                 return NotFound();
@@ -64,33 +68,28 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<ActionResult<UserFuncionario>> InserirUserFuncionario([FromBody] UserFuncionario user)
         {
-            if (user == null)
+            if (user == null || !ModelState.IsValid)
             {
                 return BadRequest("Objeto inválido");
             }
 
-            // Generate a unique ID
-            user.Id = Guid.NewGuid().ToString();
-
             _context.UserFuncionarios.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok("Funcionário adicionado com sucesso");
+            return CreatedAtAction(nameof(ObterUserFuncionario), new { id = user.FuncionarioId }, user);
         }
-
-
 
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarUserFuncionario(int id, [FromBody] UserFuncionario novoUser)
         {
-            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionariosId == id);
+            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionarioId == id);
             if (user == null)
             {
                 return NotFound($"Não foi possível encontrar o funcionário com o ID {id}");
             }
 
-            user.Nome = novoUser.Nome;
-            user.Email = novoUser.Email;
+            user.User = novoUser.User;
+            user.Passe = novoUser.Passe; // Suponho que também precise atualizar a senha
 
             try
             {
@@ -107,7 +106,7 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverUserFuncionario(int id)
         {
-            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionariosId == id);
+            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionarioId == id);
             if (user == null)
             {
                 return NotFound($"Não foi possível encontrar o funcionário com o ID {id}");

@@ -9,6 +9,7 @@ namespace WebApplication1
         {
         }
 
+        // Define as entidades DbSet
         public DbSet<ContaCorrenteMaterial> ContaCorrenteMateriais { get; set; }
         public DbSet<ContaCorrenteMedicamento> ContaCorrenteMedicamentos { get; set; }
         public DbSet<Alta> Alta { get; set; }
@@ -61,11 +62,9 @@ namespace WebApplication1
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
         public DbSet<UserResponsavel> UserResponsavel { get; set; }
         public DbSet<UserFuncionario> UserFuncionarios { get; set; }
-        public object UserFuncionario { get; internal set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Modelação para entidades sem chave primária própria
+            // Configurações das chaves primárias para entidades sem chave primária própria
             modelBuilder.Entity<Alta>().HasKey(c => new { c.UtentesId });
             modelBuilder.Entity<ContactoFornecedor>().HasKey(c => new { c.FornecedoresId, c.TipoContactoId });
             modelBuilder.Entity<ContactoFuncionario>().HasKey(c => new { c.FuncionariosId, c.TipoContactoId });

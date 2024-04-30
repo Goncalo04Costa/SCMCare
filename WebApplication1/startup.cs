@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,14 +27,17 @@ namespace WebApplication1
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Configuração do ASP.NET Core Identity
+            // Registro do ASP.NET Core Identity e configuração do banco de dados
             services.AddIdentity<UserFuncionario, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
 
-            // Registro dos serviços personalizados
-            services.AddScoped<AuthService>();
-            services.AddScoped<JwtService>();
+            // Registro do serviço JwtSettings
+            services.Configure<JwtSettings>(Configuration.GetSection("jwt"));
 
+            // Registro do serviço JwtService
+            services.AddScoped<IJwtService, JwtService>();
+
+            // Outros serviços
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
