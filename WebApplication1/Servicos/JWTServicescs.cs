@@ -24,7 +24,7 @@ namespace WebApplication1.Servicos
         public string GerarToken(string userId, string userName)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.secretKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -42,7 +42,7 @@ namespace WebApplication1.Servicos
         public bool ValidarToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.secretKey);
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters

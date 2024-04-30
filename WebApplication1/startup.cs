@@ -23,7 +23,7 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             // Configuração do Entity Framework e do contexto do banco de dados
-            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
+            var connectionString = Configuration.GetConnectionString("LigacaoSofia");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
@@ -31,6 +31,7 @@ namespace WebApplication1
             services.AddIdentity<UserFuncionario, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
 
+            services.AddSingleton(Configuration.GetSection("jwt").Get<JwtSettings>());
             // Registro do serviço JwtSettings
             services.Configure<JwtSettings>(Configuration.GetSection("jwt"));
 
