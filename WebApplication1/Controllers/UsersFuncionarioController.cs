@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Dtos;
 
 namespace WebApplication1.Controllers
 {
@@ -24,7 +25,7 @@ namespace WebApplication1.Controllers
             int? idMin = null, int? idMax = null,
             string nomeMin = null, string nomeMax = null)
         {
-            IQueryable<UserFuncionario> query = _context.UserFuncionarios;
+            IQueryable<UserFuncionario> query = _context.UserFuncionario;
 
             if (idMin.HasValue)
             {
@@ -57,7 +58,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserFuncionario>> ObterUserFuncionario(int id)
         {
-            var userFuncionario = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionarioId == id);
+            var userFuncionario = await _context.UserFuncionario.FirstOrDefaultAsync(d => d.FuncionarioId == id);
             if (userFuncionario == null)
             {
                 return NotFound();
@@ -73,7 +74,7 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-            _context.UserFuncionarios.Add(user);
+            _context.UserFuncionario.Add(user);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(ObterUserFuncionario), new { id = user.FuncionarioId }, user);
@@ -82,7 +83,7 @@ namespace WebApplication1.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarUserFuncionario(int id, [FromBody] UserFuncionario novoUser)
         {
-            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionarioId == id);
+            var user = await _context.UserFuncionario.FirstOrDefaultAsync(d => d.FuncionarioId == id);
             if (user == null)
             {
                 return NotFound($"Não foi possível encontrar o funcionário com o ID {id}");
@@ -106,16 +107,51 @@ namespace WebApplication1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverUserFuncionario(int id)
         {
-            var user = await _context.UserFuncionarios.FirstOrDefaultAsync(d => d.FuncionarioId == id);
+            var user = await _context.UserFuncionario.FirstOrDefaultAsync(d => d.FuncionarioId == id);
             if (user == null)
             {
                 return NotFound($"Não foi possível encontrar o funcionário com o ID {id}");
             }
 
-            _context.UserFuncionarios.Remove(user);
+            _context.UserFuncionario.Remove(user);
             await _context.SaveChangesAsync();
 
             return Ok($"Foi removido o funcionário com o ID {id}");
         }
+
+
+        [HttpPost("registrar")]
+        public async Task<IActionResult> RegistrarUserFuncionario([FromBody] UserFuncionarioRegistroDto userDto)
+        {
+            if (userDto == null || !ModelState.IsValid)
+            {
+                return BadRequest("Dados de registro inválidos");
+            }
+
+            // Verifique se o usuário já existe
+            var existingUser = await _context.UserFuncionario.FirstOrDefaultAsync(u => u.User == userDto.User);
+            if (existingUser != null)
+            {
+                return Conflict("Usuário já existe");
+            }
+
+            // Crie um novo objeto UserFuncionario com base nos dados recebidos
+            var newUser = new UserFuncionario
+            {
+                User = userDto.User,
+                Passe = userDto.Passe,
+                // Outras propriedades, se houver
+            };
+
+            // Adicione o novo usuário ao contexto do banco de dados e salve as alterações
+            _context.UserFuncionario.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            // Retorne uma resposta de sucesso com os detalhes do novo usuário
+            return CreatedAtAction(nameof(ObterUserFuncionario), new { id = newUser.FuncionarioId }, newUser);
+        }
+
+
+
     }
 }

@@ -61,7 +61,7 @@ namespace WebApplication1
         public DbSet<Utente> Utentes { get; set; }
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
         public DbSet<UserResponsavel> UserResponsavel { get; set; }
-        public DbSet<UserFuncionario> UserFuncionarios { get; set; }
+        public DbSet<UserFuncionario> UserFuncionario { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configurações das chaves primárias para entidades sem chave primária própria
