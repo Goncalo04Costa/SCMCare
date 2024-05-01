@@ -72,6 +72,7 @@ namespace WebApplication1.Controllers
             }
             return Ok(userFuncionario);
         }
+
         [HttpPost("registrar")]
         public async Task<IActionResult> RegistrarUserFuncionario([FromBody] UserFuncionarioRegistroDto userDto)
         {
@@ -80,7 +81,7 @@ namespace WebApplication1.Controllers
                 return BadRequest("Dados de registro inválidos");
             }
 
-            // Crie um novo objeto UserFuncionario com base nos dados recebidos
+            // Crie um novo objeto UserFuncionario sem definir explicitamente a coluna de identidade
             var newUser = new UserFuncionario { UserName = userDto.User };
 
             // Adicione o novo usuário ao contexto do banco de dados e salve as alterações
@@ -93,6 +94,8 @@ namespace WebApplication1.Controllers
             // Retorne uma resposta de sucesso com os detalhes do novo usuário
             return CreatedAtAction(nameof(ObterUserFuncionario), new { id = newUser.Id }, newUser);
         }
+
+
 
 
 
