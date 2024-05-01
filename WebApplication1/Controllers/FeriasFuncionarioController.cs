@@ -42,9 +42,9 @@ namespace WebApplication1.Controllers
 
             var feriasDetalhes = await (
                 from ferias in query
-                join funcionario in _context.Funcionarios on ferias.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on ferias.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
-                join funcionarioV in _context.Funcionarios on ferias.FuncionariosIdValida equals funcionarioV.Id into fvG
+                join funcionarioV in _context.Funcionarios on ferias.FuncionariosIdValida equals funcionarioV.FuncionarioID into fvG
                 from funcionarioV in fvG.DefaultIfEmpty()
                 select new
                 {
@@ -70,9 +70,9 @@ namespace WebApplication1.Controllers
 
             var feriaDetalhes = await (
                 from ferias in query
-                join funcionario in _context.Funcionarios on ferias.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on ferias.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
-                join funcionarioV in _context.Funcionarios on ferias.FuncionariosIdValida equals funcionarioV.Id into fvG
+                join funcionarioV in _context.Funcionarios on ferias.FuncionariosIdValida equals funcionarioV.FuncionarioID into fvG
                 from funcionarioV in fvG.DefaultIfEmpty()
                 select new
                 {

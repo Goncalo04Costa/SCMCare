@@ -70,7 +70,7 @@ namespace WebApplication1.Controllers
                 from limpeza in query
                 join quarto in _context.Quartos on limpeza.QuartosId equals quarto.Id into sQ
                 from quarto in sQ.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on limpeza.FuncionariosId equals funcionario.Id into fQ
+                join funcionario in _context.Funcionarios on limpeza.FuncionariosId equals funcionario.FuncionarioID into fQ
                 from funcionario in fQ.DefaultIfEmpty()
                 select new
                 {
@@ -96,7 +96,7 @@ namespace WebApplication1.Controllers
                 from limpeza in query
                 join quarto in _context.Quartos on limpeza.QuartosId equals quarto.Id into sQ
                 from quarto in sQ.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on limpeza.FuncionariosId equals funcionario.Id into fQ
+                join funcionario in _context.Funcionarios on limpeza.FuncionariosId equals funcionario.FuncionarioID into fQ
                 from funcionario in fQ.DefaultIfEmpty()
                 select new
                 {

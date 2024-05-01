@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Modelos;
 using WebApplication1.Servicos;
-using WebApplication1.Controllers;
-using WebApplication1.Migrations;
-using WebApplication1.Modelos;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using WebApplication1.Services;
+
 namespace WebApplication1
 {
     public class Startup
@@ -18,38 +19,53 @@ namespace WebApplication1
             Configuration = configuration;
         }
 
-
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configuração do Entity Framework e do contexto do banco de dados
+            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connectionString));
 
-            //services.AddDatabaseDeveloperPageExceptionFilter();
+            // Registro do ASP.NET Core Identity e configuração do banco de dados
+            services.AddIdentity<UserFuncionario, IdentityRole>()
+                    .AddEntityFrameworkStores<AppDbContext>()
+                    .AddSignInManager<SignInManager<UserFuncionario>>(); // Adicione esta linha para configurar o SignInManager
 
-            //services.AddDefaultIdentity<AuthController>(options => options.SignIn.RequireConfirmedAccount = true)
-              // .AddEntityFrameworkStores<AppDbContext>();
+            // Registro do serviço JwtSettings
+            services.Configure<JwtSettings>(Configuration.GetSection("jwt"));
 
-            services.AddScoped<JwtService, JwtService>();
+            // Registro do serviço AppSettings
+            services.Configure<AppSettings>(Configuration); // Adicione esta linha para registrar o AppSettings
 
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+
+            // Registro da interface IJwtService e sua implementação JwtService
+            services.AddScoped<IJwtService, JwtService>();
+
+            // Outros serviços
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
         }
+
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseMigrationsEndPoint();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -60,10 +76,7 @@ namespace WebApplication1
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }

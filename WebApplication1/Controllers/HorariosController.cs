@@ -112,7 +112,7 @@ namespace WebApplication1.Controllers
             }
 
 
-            var funcionariosIds = funcionarios.Select(f => f.Id).ToList();
+            var funcionariosIds = funcionarios.Select(f => f.FuncionarioID).ToList();
 
 
             var horarios = await _context.Horarios

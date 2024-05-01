@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Modelos;
-using WebApplication1.Modelos;
-using WebApplication1.Servicos;
+using Microsoft.Extensions.Options;
+using WebApplication1.Dtos;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace WebApplication1.Controllers
 {
@@ -12,113 +15,178 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class UserFuncionarioController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly JwtService _jwtService;
+        private readonly UserManager<UserFuncionario> _userManager;
+        private readonly SignInManager<UserFuncionario> _signInManager;
+        private readonly AppSettings _appSettings;
 
-        public UserFuncionarioController(
-            UserManager<IdentityUser> userManager,
-            JwtService jwtService
-        )
+        public UserFuncionarioController(UserManager<UserFuncionario> userManager, SignInManager<UserFuncionario> signInManager, IOptions<AppSettings> appSettings)
         {
             _userManager = userManager;
-            _jwtService = jwtService;
+            _signInManager = signInManager;
+            _appSettings = appSettings.Value;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<UserFuncionario>> PostUser(UserFuncionario user)
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserFuncionario>>> ObterTodosUsersFuncionario(
+            int? idMin = null, int? idMax = null,
+            string nomeMin = null, string nomeMax = null)
         {
-            if (!ModelState.IsValid)
+            IQueryable<UserFuncionario> query = _userManager.Users;
+
+            if (idMin.HasValue)
             {
-                return BadRequest(ModelState);
+                query = query.Where(d => d.FuncionarioId >= idMin.Value);
             }
 
-            var result = await _userManager.CreateAsync(
-                new IdentityUser() { UserName = user.User },
-                user.Passe
-            );
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.FuncionarioId <= idMax.Value);
+            }
 
+            if (!string.IsNullOrEmpty(nomeMin) && !string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => string.Compare(d.UserName, nomeMin, StringComparison.OrdinalIgnoreCase) >= 0 &&
+                                          string.Compare(d.UserName, nomeMax, StringComparison.OrdinalIgnoreCase) <= 0);
+            }
+            else if (!string.IsNullOrEmpty(nomeMin))
+            {
+                query = query.Where(d => string.Compare(d.UserName, nomeMin, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            else if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => string.Compare(d.UserName, nomeMax, StringComparison.OrdinalIgnoreCase) <= 0);
+            }
+
+            var dados = await query.ToListAsync();
+            return Ok(dados);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserFuncionario>> ObterUserFuncionario(string id)
+        {
+            var userFuncionario = await _userManager.FindByIdAsync(id);
+            if (userFuncionario == null)
+            {
+                return NotFound();
+            }
+            return Ok(userFuncionario);
+        }
+
+        [HttpPost("registrar")]
+        public async Task<IActionResult> RegistrarUserFuncionario([FromBody] UserFuncionarioRegistroDto userDto)
+        {
+            if (userDto == null || !ModelState.IsValid)
+            {
+                return BadRequest("Dados de registro inválidos");
+            }
+
+            // Crie um novo objeto UserFuncionario sem definir explicitamente a coluna de identidade
+            var newUser = new UserFuncionario { UserName = userDto.User };
+
+            // Adicione o novo usuário ao contexto do banco de dados e salve as alterações
+            var result = await _userManager.CreateAsync(newUser, userDto.Passe);
             if (!result.Succeeded)
             {
                 return BadRequest(result.Errors);
             }
 
-            user.Passe = null;
-            return Created("", user);
+            // Retorne uma resposta de sucesso com os detalhes do novo usuário
+            return CreatedAtAction(nameof(ObterUserFuncionario), new { id = newUser.Id }, newUser);
         }
 
-        [HttpGet("{username}")]
-        public async Task<ActionResult<UserFuncionario>> GetUser(string username)
-        {
-            IdentityUser user = await _userManager.FindByNameAsync(username);
 
+
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> AtualizarUserFuncionario(string id, [FromBody] UserFuncionarioRegistroDto userDto)
+        {
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return NotFound($"Não foi possível encontrar o funcionário com o ID {id}");
             }
 
-            return new UserFuncionario
+            user.UserName = userDto.User;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
             {
-                User = user.UserName,
-            };
+                return BadRequest(result.Errors);
+            }
+
+            return Ok($"Foi atualizado o funcionário com o ID {id}");
         }
 
-        // POST: api/Users/BearerToken
-        [HttpPost("BearerToken")]
-        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoverUserFuncionario(string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Bad credentials");
-            }
-
-            var user = await _userManager.FindByNameAsync(request.UserName);
-
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return BadRequest("Bad credentials");
+                return NotFound($"Não foi possível encontrar o funcionário com o ID {id}");
             }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
-
-            if (!isPasswordValid)
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
             {
-                return BadRequest("Bad credentials");
+                return BadRequest(result.Errors);
             }
 
-            var token = _jwtService.CreateToken(user);
-
-            return Ok(token);
+            return Ok($"Foi removido o funcionário com o ID {id}");
         }
+
 
         [HttpPost("login")]
-        public async Task<ActionResult<IActionResult>> Login(WebApplication1.Modelos.LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] UserFuncionarioLoginDto loginDto)
         {
+            // Verifica se os dados de login são válidos
             if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid model state");
+                return BadRequest("Dados de login inválidos");
             }
 
-            var user = await _userManager.FindByNameAsync(request.UserName);
+            // Tenta encontrar o usuário pelo nome de usuário
+            var user = await _userManager.FindByNameAsync(loginDto.UserName);
 
+            // Se o usuário não for encontrado, retorna uma mensagem de erro
             if (user == null)
             {
-                return BadRequest("Invalid username or password");
+                return NotFound("Usuário não encontrado");
             }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            // Verifica se a senha fornecida corresponde à senha do usuário
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: false);
 
-            if (!isPasswordValid)
+            // Se a senha estiver correta, gera um token de autenticação e retorna como resposta
+            if (result.Succeeded)
             {
-                return BadRequest("Invalid username or password");
+                var token = GenerateJwtToken(user); // Implemente a lógica para gerar o token JWT
+                return Ok(new { Token = token });
             }
 
-            var token = _jwtService.CreateToken(user);
+            // Se a senha estiver incorreta, retorna uma mensagem de erro
+            return Unauthorized("Credenciais inválidas");
+        }
 
-            return Ok(new AuthenticationResponse
+        private string GenerateJwtToken(UserFuncionario user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret); // Use uma chave secreta forte
+
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Token = token.Token,
-                Expiration = token.Expiration
-            });
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                new Claim(ClaimTypes.Name, user.UserName),
+                    // Adicione quaisquer outras reivindicações de usuário necessárias aqui
+                }),
+                Expires = DateTime.UtcNow.AddHours(1), // Defina a expiração do token conforme necessário
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
     }

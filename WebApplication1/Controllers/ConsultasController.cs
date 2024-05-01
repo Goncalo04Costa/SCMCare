@@ -157,7 +157,7 @@ namespace WebApplication1.Controllers
             else if (canAttendResult is OkObjectResult)
             {
              
-                funcionario.Id = idFuncionario;
+                funcionario.FuncionarioID = idFuncionario;
 
                 await _context.SaveChangesAsync();
 

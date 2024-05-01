@@ -5,7 +5,7 @@ namespace Modelos
 {
     public class Funcionario
     {
-        public int Id { get; set; }
+        public int FuncionarioID { get; set; } // Renomeado para corresponder à outra tabela
 
         [Required]
         public string Nome { get; set; }
@@ -16,6 +16,7 @@ namespace Modelos
         [Required]
         public bool Historico { get; set; }
 
-        //public ICollection<ContactoFuncionario>? Contactos { get; set; }
+        // Propriedade de navegação para os usuários funcionários relacionados
+        public ICollection<UserFuncionario> UsersFuncionario { get; set; }
     }
 }
