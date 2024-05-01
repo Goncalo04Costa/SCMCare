@@ -59,7 +59,7 @@ namespace WebApplication1.Controllers
                 from alta in query
                 join utente in _context.Utentes on alta.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on alta.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on alta.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
                 select new
                 {
@@ -87,7 +87,7 @@ namespace WebApplication1.Controllers
                 from alta in query
                 join utente in _context.Utentes on alta.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on alta.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on alta.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
                 select new
                 {

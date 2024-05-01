@@ -60,9 +60,9 @@ namespace WebApplication1.Controllers
                 from avaliacao in query
                 join utente in _context.Utentes on avaliacao.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on avaliacao.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on avaliacao.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
-                join tipoAvaliacao in _context.Funcionarios on avaliacao.TipoAvaliacaoId equals tipoAvaliacao.Id into tG
+                join tipoAvaliacao in _context.Funcionarios on avaliacao.TipoAvaliacaoId equals tipoAvaliacao.FuncionarioID into tG
                 from tipoAvaliacao in tG.DefaultIfEmpty()
                 select new
                 {
@@ -95,9 +95,9 @@ namespace WebApplication1.Controllers
                 from avaliacao in query
                 join utente in _context.Utentes on avaliacao.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on avaliacao.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on avaliacao.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
-                join tipoAvaliacao in _context.Funcionarios on avaliacao.TipoAvaliacaoId equals tipoAvaliacao.Id into tG
+                join tipoAvaliacao in _context.TipoAvaliacao on avaliacao.TipoAvaliacaoId equals tipoAvaliacao.Id into tG
                 from tipoAvaliacao in tG.DefaultIfEmpty()
                 select new
                 {
@@ -109,7 +109,7 @@ namespace WebApplication1.Controllers
                     Analise = avaliacao.Analise,
                     Data = avaliacao.Data,
                     TipoAvaliacaoId = avaliacao.TipoAvaliacaoId,
-                    TipoAvaliacao = tipoAvaliacao.Nome,
+                    TipoAvaliacao = tipoAvaliacao.Descricao,
                     AuPulmonar = avaliacao.AuscultacaoPulmonar,
                     AuCardiaca = avaliacao.AuscultacaoCardiaca
                 }

@@ -68,7 +68,7 @@ namespace WebApplication1.Controllers
                 from hospital in tG.DefaultIfEmpty()
                 join utente in _context.Utentes on consulta.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on consulta.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on consulta.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
                 join responsavel in _context.Responsaveis on consulta.ResponsaveisId equals responsavel.Id into rG
                 from responsavel in rG.DefaultIfEmpty()
@@ -104,7 +104,7 @@ namespace WebApplication1.Controllers
                 from hospital in tG.DefaultIfEmpty()
                 join utente in _context.Utentes on consulta.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on consulta.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on consulta.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
                 join responsavel in _context.Responsaveis on consulta.ResponsaveisId equals responsavel.Id into rG
                 from responsavel in rG.DefaultIfEmpty()
