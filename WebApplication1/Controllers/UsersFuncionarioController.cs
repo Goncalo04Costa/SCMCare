@@ -15,20 +15,19 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class UserFuncionarioController : ControllerBase
     {
-        
-            private readonly UserManager<UserFuncionario> _userManager;
-            private readonly SignInManager<UserFuncionario> _signInManager; 
+        private readonly UserManager<UserFuncionario> _userManager;
+        private readonly SignInManager<UserFuncionario> _signInManager;
+        private readonly AppSettings _appSettings;
 
-            private readonly AppSettings _appSettings;
+        public UserFuncionarioController(UserManager<UserFuncionario> userManager, SignInManager<UserFuncionario> signInManager, IOptions<AppSettings> appSettings)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _appSettings = appSettings.Value;
+        }
 
-            public UserFuncionarioController(UserManager<UserFuncionario> userManager, SignInManager<UserFuncionario> signInManager, AppSettings appSettings)
-            {
-                _userManager = userManager;
-                _signInManager = signInManager;
-                _appSettings = appSettings;
-            }
 
-            [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<UserFuncionario>>> ObterTodosUsersFuncionario(
             int? idMin = null, int? idMax = null,
             string nomeMin = null, string nomeMax = null)
@@ -81,13 +80,6 @@ namespace WebApplication1.Controllers
                 return BadRequest("Dados de registro inválidos");
             }
 
-            // Verifique se o usuário já existe
-            var existingUser = await _userManager.FindByNameAsync(userDto.User);
-            if (existingUser != null)
-            {
-                return Conflict("Usuário já existe");
-            }
-
             // Crie um novo objeto UserFuncionario com base nos dados recebidos
             var newUser = new UserFuncionario { UserName = userDto.User };
 
@@ -101,6 +93,7 @@ namespace WebApplication1.Controllers
             // Retorne uma resposta de sucesso com os detalhes do novo usuário
             return CreatedAtAction(nameof(ObterUserFuncionario), new { id = newUser.Id }, newUser);
         }
+
 
 
         [HttpPut("{id}")]

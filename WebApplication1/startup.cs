@@ -8,6 +8,7 @@ using Modelos;
 using WebApplication1.Servicos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using WebApplication1.Services;
 
 namespace WebApplication1
 {
@@ -31,7 +32,6 @@ namespace WebApplication1
             services.AddIdentity<UserFuncionario, IdentityRole>()
                     .AddEntityFrameworkStores<AppDbContext>()
                     .AddSignInManager<SignInManager<UserFuncionario>>(); // Adicione esta linha para configurar o SignInManager
-            services.AddScoped<IJwtService, JwtService>();
 
             // Registro do serviço JwtSettings
             services.Configure<JwtSettings>(Configuration.GetSection("jwt"));
@@ -39,7 +39,10 @@ namespace WebApplication1
             // Registro do serviço AppSettings
             services.Configure<AppSettings>(Configuration); // Adicione esta linha para registrar o AppSettings
 
-            // Registro do serviço JwtService
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+
+            // Registro da interface IJwtService e sua implementação JwtService
             services.AddScoped<IJwtService, JwtService>();
 
             // Outros serviços

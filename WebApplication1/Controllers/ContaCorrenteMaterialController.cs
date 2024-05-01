@@ -106,7 +106,7 @@ namespace WebApplication1.Controllers
                 from contacorrente in query
                 join material in _context.Materiais on contacorrente.MateriaisId equals material.Id into mG
                 from material in mG.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on contacorrente.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on contacorrente.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
                 join utente in _context.Utentes on contacorrente.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
@@ -141,7 +141,7 @@ namespace WebApplication1.Controllers
                 from contacorrente in query
                 join material in _context.Materiais on contacorrente.MateriaisId equals material.Id into mG
                 from material in mG.DefaultIfEmpty()
-                join funcionario in _context.Funcionarios on contacorrente.FuncionariosId equals funcionario.Id into fG
+                join funcionario in _context.Funcionarios on contacorrente.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
                 join utente in _context.Utentes on contacorrente.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
