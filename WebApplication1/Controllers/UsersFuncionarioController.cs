@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using WebApplication1.Dtos;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace WebApplication1.Controllers
 {
@@ -14,14 +15,20 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class UserFuncionarioController : ControllerBase
     {
-        private readonly UserManager<UserFuncionario> _userManager;
+        
+            private readonly UserManager<UserFuncionario> _userManager;
+            private readonly SignInManager<UserFuncionario> _signInManager; 
 
-        public UserFuncionarioController(UserManager<UserFuncionario> userManager)
-        {
-            _userManager = userManager;
-        }
+            private readonly AppSettings _appSettings;
 
-        [HttpGet]
+            public UserFuncionarioController(UserManager<UserFuncionario> userManager, SignInManager<UserFuncionario> signInManager, AppSettings appSettings)
+            {
+                _userManager = userManager;
+                _signInManager = signInManager;
+                _appSettings = appSettings;
+            }
+
+            [HttpGet]
         public async Task<ActionResult<IEnumerable<UserFuncionario>>> ObterTodosUsersFuncionario(
             int? idMin = null, int? idMax = null,
             string nomeMin = null, string nomeMax = null)
@@ -132,5 +139,59 @@ namespace WebApplication1.Controllers
 
             return Ok($"Foi removido o funcionário com o ID {id}");
         }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserFuncionarioLoginDto loginDto)
+        {
+            // Verifica se os dados de login são válidos
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Dados de login inválidos");
+            }
+
+            // Tenta encontrar o usuário pelo nome de usuário
+            var user = await _userManager.FindByNameAsync(loginDto.UserName);
+
+            // Se o usuário não for encontrado, retorna uma mensagem de erro
+            if (user == null)
+            {
+                return NotFound("Usuário não encontrado");
+            }
+
+            // Verifica se a senha fornecida corresponde à senha do usuário
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: false);
+
+            // Se a senha estiver correta, gera um token de autenticação e retorna como resposta
+            if (result.Succeeded)
+            {
+                var token = GenerateJwtToken(user); // Implemente a lógica para gerar o token JWT
+                return Ok(new { Token = token });
+            }
+
+            // Se a senha estiver incorreta, retorna uma mensagem de erro
+            return Unauthorized("Credenciais inválidas");
+        }
+
+        private string GenerateJwtToken(UserFuncionario user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret); // Use uma chave secreta forte
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                new Claim(ClaimTypes.Name, user.UserName),
+                    // Adicione quaisquer outras reivindicações de usuário necessárias aqui
+                }),
+                Expires = DateTime.UtcNow.AddHours(1), // Defina a expiração do token conforme necessário
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
     }
 }

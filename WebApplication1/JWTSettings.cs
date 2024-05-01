@@ -1,6 +1,6 @@
 ﻿namespace WebApplication1
 {
-    public class JwtSettings
+    public class JwtSettings 
     {
         public string secretKey { get; set; }
         public string issuer { get; set; }

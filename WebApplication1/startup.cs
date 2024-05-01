@@ -29,11 +29,15 @@ namespace WebApplication1
 
             // Registro do ASP.NET Core Identity e configuração do banco de dados
             services.AddIdentity<UserFuncionario, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>();
+                    .AddEntityFrameworkStores<AppDbContext>()
+                    .AddSignInManager<SignInManager<UserFuncionario>>(); // Adicione esta linha para configurar o SignInManager
+            services.AddScoped<IJwtService, JwtService>();
 
-            services.AddSingleton(Configuration.GetSection("jwt").Get<JwtSettings>());
             // Registro do serviço JwtSettings
             services.Configure<JwtSettings>(Configuration.GetSection("jwt"));
+
+            // Registro do serviço AppSettings
+            services.Configure<AppSettings>(Configuration); // Adicione esta linha para registrar o AppSettings
 
             // Registro do serviço JwtService
             services.AddScoped<IJwtService, JwtService>();
@@ -43,6 +47,7 @@ namespace WebApplication1
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
         }
+
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
