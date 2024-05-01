@@ -19,8 +19,8 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Sopa>>> ObterTodasSopas(
             int? idMin = null, int? idMax = null,
-            string nomeMin = null, string nomeMax = null,
-            string descMin = null, string descMax = null,
+            string? nomeMin = null, string? nomeMax = null,
+            string? descMin = null, string? descMax = null,
             bool tipo0 = false, bool tipo1 = false,
             bool ativo0 = false, bool ativo1 = false)
         {

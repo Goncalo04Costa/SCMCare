@@ -4,6 +4,7 @@ using Modelos;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Controllers
 {
@@ -19,22 +20,106 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sessao>>> ObterSessoes()
+        public async Task<ActionResult<IEnumerable<Sessao>>> ObterSessoes(
+            int? idMin = null, int? idMax = null,
+            int? tipoSessaoId = null,
+            int? utentesId = null,
+            int? funcionariosId = null,
+            DateTime? diaMin = null, DateTime? diaMax = null)
         {
-            return await _context.Sessoes.ToListAsync();
+            IQueryable<Sessao> query = _context.Sessoes;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (diaMin.HasValue)
+            {
+                query = query.Where(d => d.Dia >= diaMin.Value);
+            }
+
+            if (diaMax.HasValue)
+            {
+                query = query.Where(d => d.Dia <= diaMax.Value);
+            }
+
+            if (tipoSessaoId.HasValue)
+            {
+                query = query.Where(d => d.TiposSessaoId == tipoSessaoId.Value);
+            }
+
+            if (utentesId.HasValue)
+            {
+                query = query.Where(d => d.UtentesId == utentesId.Value);
+            }
+
+            if (funcionariosId.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId == funcionariosId.Value);
+            }
+
+
+            var sessoesDetalhes = await (
+                from sessao in query
+                join tiposessao in _context.TiposSessao on sessao.TiposSessaoId equals tiposessao.Id into tG
+                from tiposessao in tG.DefaultIfEmpty()
+                join utente in _context.Utentes on sessao.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on sessao.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                select new
+                {
+                    Id = sessao.Id,
+                    TipoSessaoId = sessao.TiposSessaoId,
+                    TipoSessao = tiposessao.Descricao,
+                    FuncionarioId = sessao.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    UtenteId = sessao.UtentesId,
+                    Utente = utente.Nome,
+                    Dia = sessao.Dia,
+                    Observacoes = sessao.Observacoes
+                }
+            ).ToListAsync();
+
+            return Ok(sessoesDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Sessao>> ObterSessao(int id)
         {
-            var sessao = await _context.Sessoes.FindAsync(id);
+            IQueryable<Sessao> query = _context.Sessoes;
+            query = query.Where(d => d.Id == id);
 
-            if (sessao == null)
-            {
-                return NotFound();
-            }
 
-            return sessao;
+            var sessaoDetalhes = await (
+                from sessao in query
+                join tiposessao in _context.TiposSessao on sessao.TiposSessaoId equals tiposessao.Id into tG
+                from tiposessao in tG.DefaultIfEmpty()
+                join utente in _context.Utentes on sessao.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on sessao.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                select new
+                {
+                    Id = sessao.Id,
+                    TipoSessaoId = sessao.TiposSessaoId,
+                    TipoSessao = tiposessao.Descricao,
+                    FuncionarioId = sessao.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    UtenteId = sessao.UtentesId,
+                    Utente = utente.Nome,
+                    Dia = sessao.Dia,
+                    Observacoes = sessao.Observacoes
+                }
+            ).ToListAsync();
+
+            return Ok(sessaoDetalhes);
         }
 
         [HttpPost]

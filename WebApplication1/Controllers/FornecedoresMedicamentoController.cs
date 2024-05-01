@@ -1,3 +1,4 @@
+using iText.Kernel.Pdf.Canvas.Wmf;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
@@ -17,10 +18,64 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FornecedorMedicamento>>> ObterTodosFornecedorMedicamento()
+        public async Task<ActionResult<IEnumerable<FornecedorMedicamento>>> ObterTodosFornecedorMedicamento(
+            int? medicamentoId = null,
+            int? fornecedorId = null)
         {
-            var fornecedorMedicamento = await _context.FornecedoresMedicamento.ToListAsync();
-            return Ok(fornecedorMedicamento);
+            IQueryable<FornecedorMedicamento> query = _context.FornecedoresMedicamento;
+
+            if (medicamentoId.HasValue)
+            {
+                query = query.Where(d => d.MedicamentosId == medicamentoId.Value);
+            }
+
+            if (fornecedorId.HasValue)
+            {
+                query = query.Where(d => d.FornecedoresId == fornecedorId.Value);
+            }
+
+
+            var fornecedoresMedicamentosDetalhes = await (
+                from forMed in query
+                join medicamento in _context.Medicamentos on forMed.MedicamentosId equals medicamento.Id into mG
+                from medicamento in mG.DefaultIfEmpty()
+                join fornecedor in _context.Fornecedores on forMed.FornecedoresId equals fornecedor.Id into fG
+                from fornecedor in fG.DefaultIfEmpty()
+                select new
+                {
+                    MedicamentoId = forMed.MedicamentosId,
+                    Medicamento = medicamento.Nome,
+                    FornecedorId = forMed.FornecedoresId,
+                    Fornecedor = fornecedor.Nome
+                }
+            ).ToListAsync();
+
+            return Ok(fornecedoresMedicamentosDetalhes);
+        }
+
+        [HttpGet("{idMedicamento}/{idFornecedor}")]
+        public async Task<ActionResult<FornecedorMedicamento>> ObterFornecedorMedicamento(int idMedicamento, int idFornecedor)
+        {
+            IQueryable<FornecedorMedicamento> query = _context.FornecedoresMedicamento;
+            query = query.Where(d => d.MedicamentosId == idMedicamento && d.FornecedoresId == idFornecedor);
+
+
+            var fornecedorMedicamentoDetalhes = await (
+                from forMed in query
+                join medicamento in _context.Medicamentos on forMed.MedicamentosId equals medicamento.Id into mG
+                from medicamento in mG.DefaultIfEmpty()
+                join fornecedor in _context.Fornecedores on forMed.FornecedoresId equals fornecedor.Id into fG
+                from fornecedor in fG.DefaultIfEmpty()
+                select new
+                {
+                    MedicamentoId = forMed.MedicamentosId,
+                    Medicamento = medicamento.Nome,
+                    FornecedorId = forMed.FornecedoresId,
+                    Fornecedor = fornecedor.Nome
+                }
+            ).ToListAsync();
+
+            return Ok(fornecedorMedicamentoDetalhes);
         }
 
         [HttpPost]

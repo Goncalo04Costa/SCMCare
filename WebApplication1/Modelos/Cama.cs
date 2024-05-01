@@ -7,7 +7,7 @@ namespace Modelos
     {
         public int UtentesId { get; set; }
         public int QuartosId { get; set; }
-        public int Id { get; set; }
+        public string Id { get; set; }
     }
 
 }

@@ -40,12 +40,12 @@ namespace WebApplication1.Controllers
 
             if (diaMin.HasValue)
             {
-                query = query.Where(d => d.Dia <= diaMin.Value);
+                query = query.Where(d => d.Dia >= diaMin.Value);
             }
 
             if (diaMax.HasValue)
             {
-                query = query.Where(d => d.Dia >= diaMax.Value);
+                query = query.Where(d => d.Dia <= diaMax.Value);
             }
 
             if (horario0 && !horario1)

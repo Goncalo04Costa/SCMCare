@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Controllers
 {
@@ -16,24 +17,91 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Alta>>> ObterTodasAltas()
+        public async Task<ActionResult<IEnumerable<Alta>>> ObterTodasAltas(
+            int? utentesIdMin = null, int? utentesIdMax = null,
+            int? funcionariosIdMin = null, int? funcionariosIdMax = null,
+            DateTime? dataMin = null, DateTime? dataMax = null)
         {
-            var altas = await _context.Alta.ToListAsync();
-            return Ok(altas);
+            IQueryable<Alta> query = _context.Alta;
+
+            if (utentesIdMin.HasValue)
+            {
+                query = query.Where(d => d.UtentesId >= utentesIdMin.Value);
+            }
+
+            if (utentesIdMax.HasValue)
+            {
+                query = query.Where(d => d.UtentesId <= utentesIdMax.Value);
+            }
+
+            if (funcionariosIdMin.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId >= funcionariosIdMin.Value);
+            }
+
+            if (funcionariosIdMax.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId <= funcionariosIdMax.Value);
+            }
+
+            if (dataMin.HasValue)
+            {
+                query = query.Where(d => d.Data >= dataMin.Value);
+            }
+
+            if (dataMax.HasValue)
+            {
+                query = query.Where(d => d.Data <= dataMax.Value);
+            }
+
+
+            var altasDetalhes = await (
+                from alta in query
+                join utente in _context.Utentes on alta.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on alta.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                select new
+                {
+                    UtentesId = alta.UtentesId,
+                    Utentes = utente.Nome,
+                    FuncionarioId = alta.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    Data = alta.Data,
+                    Motivo = alta.Motivo,
+                    Destino = alta.Destino
+                }
+            ).ToListAsync();
+
+            return Ok(altasDetalhes);
         }
 
         [HttpGet("{utenteId}/{funcionarioId}")]
-        public async Task<ActionResult<Alta>> ObterAlta(int utenteId, int funcionarioId)
+        public async Task<ActionResult<Alta>> ObterAlta(int utentesId, int funcionarioId)
         {
-            var alta = await _context.Alta
-                .FirstOrDefaultAsync(a => a.UtentesId == utenteId && a.FuncionariosId == funcionarioId);
+            IQueryable<Alta> query = _context.Alta;
+            query = query.Where(d => d.UtentesId == utentesId && d.FuncionariosId == funcionarioId);
 
-            if (alta == null)
-            {
-                return NotFound();
-            }
 
-            return Ok(alta);
+            var altasDetalhes = await (
+                from alta in query
+                join utente in _context.Utentes on alta.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on alta.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                select new
+                {
+                    UtentesId = alta.UtentesId,
+                    Utentes = utente.Nome,
+                    FuncionarioId = alta.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    Data = alta.Data,
+                    Motivo = alta.Motivo,
+                    Destino = alta.Destino
+                }
+            ).ToListAsync();
+
+            return Ok(altasDetalhes);
         }
 
         [HttpPost]

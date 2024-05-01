@@ -16,9 +16,6 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
-
-        // !!! Mostrar quantidades a partir das contas correntes
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Material>>> ObterTodosMateriais(
             int? idMin = null, int? idMax = null,

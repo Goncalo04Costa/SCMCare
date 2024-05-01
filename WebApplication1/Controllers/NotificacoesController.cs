@@ -35,12 +35,12 @@ namespace WebApplication1.Controllers
 
             if (dataMin.HasValue)
             {
-                query = query.Where(d => d.Data <= dataMin.Value);
+                query = query.Where(d => d.Data >= dataMin.Value);
             }
 
             if (dataMax.HasValue)
             {
-                query = query.Where(d => d.Data >= dataMax.Value);
+                query = query.Where(d => d.Data <= dataMax.Value);
             }
 
             var dados = await query.ToListAsync();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace WebApplication1.Controllers
@@ -17,23 +18,77 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cama>>> ObterTodasCamas()
+        public async Task<ActionResult<IEnumerable<Cama>>> ObterTodasCamas(
+            string? idMin = null, string? idMax = null,
+            int? utenteId = null,
+            int? quartoId = null)
         {
-            var camas = await _context.Camas.ToListAsync();
-            return Ok(camas);
-        }
+            IQueryable<Cama> query = _context.Camas;
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Cama>> ObterCama(int id)
-        {
-            var cama = await _context.Camas.FindAsync(id);
-
-            if (cama == null)
+            if (!string.IsNullOrEmpty(idMin))
             {
-                return NotFound();
+                query = query.Where(d => d.Id.CompareTo(idMin) >= 0);
             }
 
-            return Ok(cama);
+            if (!string.IsNullOrEmpty(idMax))
+            {
+                query = query.Where(d => d.Id.CompareTo(idMax + "ZZZ") <= 0);
+            }
+
+            if (utenteId.HasValue)
+            {
+                query = query.Where(d => d.UtentesId == utenteId.Value);
+            }
+
+            if (quartoId.HasValue)
+            {
+                query = query.Where(d => d.QuartosId == quartoId.Value);
+            }
+
+
+            var camasDetalhes = await (
+                from cama in query
+                join utente in _context.Utentes on cama.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join quarto in _context.Quartos on cama.QuartosId equals quarto.Id into qG
+                from quarto in qG.DefaultIfEmpty()
+                select new
+                {
+                    Id = cama.Id,
+                    UtentesId = cama.UtentesId,
+                    Utentes = utente.Nome,
+                    QuartoId = cama.QuartosId,
+                    Quarto = quarto.Numero
+                }
+            ).ToListAsync();
+
+            return Ok(camasDetalhes);
+        }
+
+        [HttpGet("{idUtente}")]
+        public async Task<ActionResult<Cama>> ObterCama(int idUtente)
+        {
+            IQueryable<Cama> query = _context.Camas;
+            query = query.Where(d => d.UtentesId == idUtente);
+
+
+            var camaDetalhes = await (
+                from cama in query
+                join utente in _context.Utentes on cama.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join quarto in _context.Quartos on cama.QuartosId equals quarto.Id into qG
+                from quarto in qG.DefaultIfEmpty()
+                select new
+                {
+                    Id = cama.Id,
+                    UtentesId = cama.UtentesId,
+                    Utentes = utente.Nome,
+                    QuartoId = cama.QuartosId,
+                    Quarto = quarto.Numero
+                }
+            ).ToListAsync();
+
+            return Ok(camaDetalhes);
         }
 
         [HttpPost]

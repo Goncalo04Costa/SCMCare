@@ -17,26 +17,116 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Consulta>>> ObterTodasConsultas()
+        public async Task<ActionResult<IEnumerable<Consulta>>> ObterTodasConsultas(
+            int? idMin = null, int? idMax = null,
+            int? hospitaisId = null,
+            int? utentesId = null,
+            int? funcionariosId = null,
+            DateTime? dataMin = null, DateTime? dataMax = null)
         {
-            var consultas = await _context.Consultas.ToListAsync();
-            return Ok(consultas);
+            IQueryable<Consulta> query = _context.Consultas;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (dataMin.HasValue)
+            {
+                query = query.Where(d => d.Data >= dataMin.Value);
+            }
+
+            if (dataMax.HasValue)
+            {
+                query = query.Where(d => d.Data <= dataMax.Value);
+            }
+
+            if (hospitaisId.HasValue)
+            {
+                query = query.Where(d => d.HospitaisId == hospitaisId.Value);
+            }
+
+            if (utentesId.HasValue)
+            {
+                query = query.Where(d => d.UtentesId == utentesId.Value);
+            }
+
+            if (funcionariosId.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId == funcionariosId.Value);
+            }
+
+
+            var consultasDetalhes = await (
+                from consulta in query
+                join hospital in _context.TiposSessao on consulta.HospitaisId equals hospital.Id into tG
+                from hospital in tG.DefaultIfEmpty()
+                join utente in _context.Utentes on consulta.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on consulta.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join responsavel in _context.Responsaveis on consulta.ResponsaveisId equals responsavel.Id into rG
+                from responsavel in rG.DefaultIfEmpty()
+                select new
+                {
+                    Id = consulta.Id,
+                    HospitalId = consulta.HospitaisId,
+                    Hospital = hospital.Descricao,
+                    FuncionarioId = consulta.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    UtenteId = consulta.UtentesId,
+                    Utente = utente.Nome,
+                    ResponsavelId = consulta.ResponsaveisId,
+                    Responsavel = responsavel.Nome,
+                    Data = consulta.Data,
+                    Descricao = consulta.Descricao
+                }
+            ).ToListAsync();
+
+            return Ok(consultasDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Consulta>> ObterConsulta(int id)
         {
-            var consulta = await _context.Consultas.FindAsync(id);
+            IQueryable<Consulta> query = _context.Consultas;
+            query = query.Where(d => d.Id == id);
 
-            if (consulta == null)
-            {
-                return NotFound();
-            }
 
-            return Ok(consulta);
+            var consultaDetalhes = await (
+                from consulta in query
+                join hospital in _context.TiposSessao on consulta.HospitaisId equals hospital.Id into tG
+                from hospital in tG.DefaultIfEmpty()
+                join utente in _context.Utentes on consulta.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join funcionario in _context.Funcionarios on consulta.FuncionariosId equals funcionario.Id into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join responsavel in _context.Responsaveis on consulta.ResponsaveisId equals responsavel.Id into rG
+                from responsavel in rG.DefaultIfEmpty()
+                select new
+                {
+                    Id = consulta.Id,
+                    HospitalId = consulta.HospitaisId,
+                    Hospital = hospital.Descricao,
+                    FuncionarioId = consulta.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    UtenteId = consulta.UtentesId,
+                    Utente = utente.Nome,
+                    ResponsavelId = consulta.ResponsaveisId,
+                    Responsavel = responsavel.Nome,
+                    Data = consulta.Data,
+                    Descricao = consulta.Descricao
+                }
+            ).ToListAsync();
+
+            return Ok(consultaDetalhes);
         }
 
-        [HttpPost]
         [HttpPost]
         public async Task<IActionResult> RegistrarConsulta(int idConsulta, int idFuncionario, int idResponsavel, DateTime dataConsulta)
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace WebApplication1.Controllers
@@ -17,22 +18,92 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Mensalidade>>> ObterTodasMensalidades()
+        public async Task<ActionResult<IEnumerable<Mensalidade>>> ObterTodasMensalidades(
+            int? utentesIdMin = null, int? utentesIdMax = null,
+            int? tiposPagamentoId = null,
+            int? estado = null,
+            DateTime? mesMin = null, DateTime? mesMax = null)
         {
-            return await _context.Mensalidades.ToListAsync();
+            IQueryable<Mensalidade> query = _context.Mensalidades;
+
+            if (utentesIdMin.HasValue)
+            {
+                query = query.Where(d => d.UtentesId >= utentesIdMin.Value);
+            }
+
+            if (utentesIdMax.HasValue)
+            {
+                query = query.Where(d => d.UtentesId <= utentesIdMax.Value);
+            }
+
+            if (mesMin.HasValue)
+            {
+                query = query.Where(d => d.Mes >= mesMin.Value);
+            }
+
+            if (mesMax.HasValue)
+            {
+                query = query.Where(d => d.Mes <= mesMax.Value);
+            }
+
+            if (tiposPagamentoId.HasValue)
+            {
+                query = query.Where(d => d.TiposPagamentoId == tiposPagamentoId.Value);
+            }
+
+            if (estado.HasValue)
+            {
+                query = query.Where(d => d.Estado == estado.Value);
+            }
+
+
+            var mensalidadesDetalhes = await (
+                from mensalidade in query
+                join utente in _context.Utentes on mensalidade.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join tipoPagamento in _context.TiposPagamento on mensalidade.TiposPagamentoId equals tipoPagamento.Id into tG
+                from tipoPagamento in tG.DefaultIfEmpty()
+                select new
+                {
+                    Mes = mensalidade.Mes,
+                    DataPagamento = mensalidade.DataPagamento,
+                    UtentesId = mensalidade.UtentesId,
+                    Utentes = utente.Nome,
+                    TiposPagamentoId = mensalidade.TiposPagamentoId,
+                    TiposPagamento = tipoPagamento.Descricao,
+                    Estado = mensalidade.Estado
+                }
+            ).ToListAsync();
+
+            return Ok(mensalidadesDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Mensalidade>> ObterMensalidade(DateTime mes, int utentesId)
         {
-            var mensalidade = await _context.Mensalidades.FirstOrDefaultAsync(m => m.Mes == mes && m.UtentesId == utentesId);
+            IQueryable<Mensalidade> query = _context.Mensalidades;
+            query = query.Where(d => d.UtentesId == utentesId && d.Mes == mes);
 
-            if (mensalidade == null)
-            {
-                return NotFound();
-            }
 
-            return mensalidade;
+            var mensalidadeDetalhes = await (
+                from mensalidade in query
+                join utente in _context.Utentes on mensalidade.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                join tipoPagamento in _context.TiposPagamento on mensalidade.TiposPagamentoId equals tipoPagamento.Id into tG
+                from tipoPagamento in tG.DefaultIfEmpty()
+                select new
+                {
+                    Mes = mensalidade.Mes,
+                    DataPagamento = mensalidade.DataPagamento,
+                    UtentesId = mensalidade.UtentesId,
+                    Utentes = utente.Nome,
+                    TiposPagamentoId = mensalidade.TiposPagamentoId,
+                    TiposPagamento = tipoPagamento.Descricao,
+                    Estado = mensalidade.Estado
+                }
+            ).ToListAsync();
+
+            return Ok(mensalidadeDetalhes);
         }
 
         [HttpPost]
