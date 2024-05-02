@@ -50,6 +50,7 @@ namespace WebApplication1
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddScoped<NotificacoesServico>();
         }
 
 

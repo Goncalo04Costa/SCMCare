@@ -4,6 +4,8 @@ using Modelos;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Controllers
 {
@@ -20,22 +22,63 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MedicamentoPrescricao>>> ObterTodasMedicamentoPrescricao()
+        public async Task<ActionResult<IEnumerable<MedicamentoPrescricao>>> ObterTodosMedicamentoPrescricao(
+            int? prescricaoId = null,
+            int? medicamentoId = null)
         {
-            var medicamentoPrescricao = await _context.MedicamentosPrescricao.ToListAsync();
-            return Ok(medicamentoPrescricao);
+            IQueryable<MedicamentoPrescricao> query = _context.MedicamentosPrescricao;
+
+            if (prescricaoId.HasValue)
+            {
+                query = query.Where(d => d.PrescricoesId == prescricaoId.Value);
+            }
+
+            if (medicamentoId.HasValue)
+            {
+                query = query.Where(d => d.MedicamentosId == medicamentoId.Value);
+            }
+
+
+            var medicamentoPrescricaoDetalhes = await (
+                from medPre in query
+                join medicamento in _context.Medicamentos on medPre.MedicamentosId equals medicamento.Id into mG
+                from medicamento in mG.DefaultIfEmpty()
+                select new
+                {
+                    PrescricaoId = medPre.PrescricoesId,
+                    MedicamentoId = medPre.MedicamentosId,
+                    Medicamento = medicamento.Nome,
+                    QuantidadePI = medPre.QuantidadePIntervalo,
+                    Intervalo = medPre.IntervaloHoras,
+                    Intrucoes = medPre.Instrucoes
+                }
+            ).ToListAsync();
+
+            return Ok(medicamentoPrescricaoDetalhes);
         }
 
         [HttpGet("{PrescricoesId}/{MedicamentosId}")]
         public async Task<ActionResult<MedicamentoPrescricao>> ObterMedicamentoPrescricao(int PrescricoesId, int MedicamentosId)
         {
-            var medicamentoPrescricao = await _context.MedicamentosPrescricao.FirstOrDefaultAsync(a => a.PrescricoesId == PrescricoesId && a.MedicamentosId == MedicamentosId);
+            IQueryable<MedicamentoPrescricao> query = _context.MedicamentosPrescricao;
+            query = query.Where(d => d.PrescricoesId == PrescricoesId && d.MedicamentosId == MedicamentosId);
 
-            if (medicamentoPrescricao == null)
-            {
-                return NotFound();
-            }
-            return Ok(medicamentoPrescricao);
+            var medicamentoPrescricaoDetalhes = await (
+                from medPre in query
+                join medicamento in _context.Medicamentos on medPre.MedicamentosId equals medicamento.Id into mG
+                from medicamento in mG.DefaultIfEmpty()
+                select new
+                {
+                    PrescricaoId = medPre.PrescricoesId,
+                    MedicamentoId = medPre.MedicamentosId,
+                    Medicamento = medicamento.Nome,
+                    QuantidadePI = medPre.QuantidadePIntervalo,
+                    Intervalo = medPre.IntervaloHoras,
+                    Intrucoes = medPre.Instrucoes
+                }
+            ).ToListAsync();
+
+            return Ok(medicamentoPrescricaoDetalhes);
         }
 
         [HttpPost]

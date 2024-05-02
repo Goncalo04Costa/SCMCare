@@ -5,10 +5,9 @@ namespace Modelos
 {
     public class NotificacaoFuncionario
     {
-        public int NotificacaoId { get; set; }
+        public int FuncionariosId { get; set; }
 
-        [Required]
-        public int FuncionarioId { get; set; }
+        public int NotificacoesId { get; set; }
 
         public int Estado { get; set; }
     }

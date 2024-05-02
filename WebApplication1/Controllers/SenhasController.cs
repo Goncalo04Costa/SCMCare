@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-using RegrasNegocio;
+//using RegrasNegocio;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Controllers
 {
@@ -12,31 +13,85 @@ namespace WebApplication1.Controllers
     public class SenhasController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly RegrasSenhas _regrasSenhas;
 
-        public SenhasController(AppDbContext context, RegrasSenhas regrasSenhas)
+        // !!! Rever o funcionamento das regras
+        //private readonly RegrasSenhas _regrasSenhas;
+
+        //public SenhasController(AppDbContext context, RegrasSenhas regrasSenhas)
+        public SenhasController(AppDbContext context)
         {
             _context = context;
-            _regrasSenhas = regrasSenhas;
+            //_regrasSenhas = regrasSenhas;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Senha>>> ObterTodasSenhas()
+        public async Task<ActionResult<IEnumerable<Senha>>> ObterTodasSenhas(
+            int? funcionarioId = null, int? menuId = null, int? estado = null)
         {
-            return await _context.Senhas.ToListAsync();
+            IQueryable<Senha> query = _context.Senhas;
+
+            if (funcionarioId.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId == funcionarioId.Value);
+            }
+
+            if (menuId.HasValue)
+            {
+                query = query.Where(d => d.MenuId == menuId.Value);
+            }
+
+            if (estado.HasValue)
+            {
+                query = query.Where(d => d.Estado == estado.Value);
+            }
+
+
+            var senhasDetalhes = await (
+                from senha in query
+                join funcionario in _context.Funcionarios on senha.FuncionariosId equals funcionario.FuncionarioID into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join menu in _context.Menu on senha.MenuId equals menu.Id into mG
+                from menu in mG.DefaultIfEmpty()
+                select new
+                {
+                    FuncionarioId = senha.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    MenuId = senha.MenuId,
+                    MenuDia = menu.Dia,
+                    MenuHorario = menu.Horario,
+                    MenuTipo = menu.Tipo,
+                    Estado = senha.Estado
+                }
+            ).ToListAsync();
+
+            return Ok(senhasDetalhes);
         }
 
         [HttpGet("{funcionariosId}/{menuId}")]
         public async Task<ActionResult<Senha>> ObterSenha(int funcionariosId, int menuId)
         {
-            var senha = await _context.Senhas.FindAsync(funcionariosId, menuId);
+            IQueryable<Senha> query = _context.Senhas;
+            query = query.Where(d => d.FuncionariosId == funcionariosId && d.MenuId == menuId);
 
-            if (senha == null)
-            {
-                return NotFound();
-            }
+            var senhaDetalhes = await (
+                from senha in query
+                join funcionario in _context.Funcionarios on senha.FuncionariosId equals funcionario.FuncionarioID into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join menu in _context.Menu on senha.MenuId equals menu.Id into mG
+                from menu in mG.DefaultIfEmpty()
+                select new
+                {
+                    FuncionarioId = senha.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    MenuId = senha.MenuId,
+                    MenuDia = menu.Dia,
+                    MenuHorario = menu.Horario,
+                    MenuTipo = menu.Tipo,
+                    Estado = senha.Estado
+                }
+            ).ToListAsync();
 
-            return senha;
+            return Ok(senhaDetalhes);
         }
 
         [HttpPost]
@@ -108,11 +163,11 @@ namespace WebApplication1.Controllers
                 return NotFound("Funcionário ou menu não encontrado.");
             }
 
-            var senhaReservada = await _regrasSenhas.VerificarReservaExistente(funcionarioId, menuId);
-            if (senhaReservada)
-            {
-                return Conflict("A senha já está reservada para este funcionário.");
-            }
+            //var senhaReservada = await _regrasSenhas.VerificarReservaExistente(funcionarioId, menuId);
+            //if (senhaReservada)
+            //{
+            //    return Conflict("A senha já está reservada para este funcionário.");
+            //}
 
             var senha = new Senha
             {

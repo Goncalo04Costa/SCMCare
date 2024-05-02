@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 
@@ -18,25 +20,89 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Horario>>> ObterTodosHorarios()
+        public async Task<ActionResult<IEnumerable<Horario>>> ObterTodosHorarios(
+            int? funcionarioIdMin = null, int? funcionarioIdMax = null,
+            int? turnoIdMin = null, int? turnoIdMax = null,
+            DateTime? diaMin = null, DateTime? diaMax = null)
         {
-            var horarios = await _context.Horarios.ToListAsync();
-            return Ok(horarios);
+            IQueryable<Horario> query = _context.Horarios;
+
+            if (funcionarioIdMin.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId >= funcionarioIdMin.Value);
+            }
+
+            if (funcionarioIdMax.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId <= funcionarioIdMax.Value);
+            }
+
+            if (turnoIdMin.HasValue)
+            {
+                query = query.Where(d => d.TurnosId >= turnoIdMin.Value);
+            }
+
+            if (turnoIdMin.HasValue)
+            {
+                query = query.Where(d => d.TurnosId <= turnoIdMin.Value);
+            }
+
+            if (diaMin.HasValue)
+            {
+                query = query.Where(d => d.Dia >= diaMin.Value);
+            }
+
+            if (diaMax.HasValue)
+            {
+                query = query.Where(d => d.Dia <= diaMax.Value);
+            }
+
+
+            var horariosDetalhes = await (
+                from horario in query
+                join funcionario in _context.Funcionarios on horario.FuncionariosId equals funcionario.FuncionarioID into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join turno in _context.Turnos on horario.TurnosId equals turno.Id into tG
+                from turno in tG.DefaultIfEmpty()
+                select new
+                {
+                    FuncionariosId = horario.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    TurnoId = horario.TurnosId,
+                    TurnoInicio = turno.HoraFim,
+                    TurnoFim = turno.HoraFim,
+                    Dia = horario.Dia
+                }
+            ).ToListAsync();
+
+            return Ok(horariosDetalhes);
         }
 
 
-        // !!! Corrigir
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Horario>> ObterHorario(int id)
+        [HttpGet("{funcionarioId}/{turnoId}/{dia}")]
+        public async Task<ActionResult<Horario>> ObterHorario(int funcionarioId, int turnoId, DateTime dia)
         {
-            var horario = await _context.Horarios.FindAsync(id); // !!! verificar se funciona
+            IQueryable<Horario> query = _context.Horarios;
+            query = query.Where(d => d.FuncionariosId == funcionarioId && d.TurnosId == turnoId && d.Dia == dia);
 
-            if (horario == null)
-            {
-                return NotFound();
-            }
+            var horariosDetalhes = await (
+                from horario in query
+                join funcionario in _context.Funcionarios on horario.FuncionariosId equals funcionario.FuncionarioID into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join turno in _context.Turnos on horario.TurnosId equals turno.Id into tG
+                from turno in tG.DefaultIfEmpty()
+                select new
+                {
+                    FuncionariosId = horario.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    TurnoId = horario.TurnosId,
+                    TurnoInicio = turno.HoraFim,
+                    TurnoFim = turno.HoraFim,
+                    Dia = horario.Dia
+                }
+            ).ToListAsync();
 
-            return Ok(horario);
+            return Ok(horariosDetalhes);
         }
 
         [HttpPost]
@@ -55,15 +121,14 @@ namespace WebApplication1.Controllers
         }
 
 
-        // !!! Corrigir
-        [HttpPut("{id}")]
-        public async Task<IActionResult> AtualizarHorario(int id, [FromBody] Horario novoHorario)
+        [HttpPut("{funcionarioId}/{turnoId}/{dia}")]
+        public async Task<IActionResult> AtualizarHorario(int funcionarioId, int turnoId, DateTime dia, [FromBody] Horario novoHorario)
         {
-            var horario = await _context.Horarios.FindAsync(id);
+            var horario = await _context.Horarios.FirstOrDefaultAsync(d => d.FuncionariosId == funcionarioId && d.TurnosId == turnoId && d.Dia == dia);
 
             if (horario == null)
             {
-                return NotFound($"Não foi possível encontrar o horário com o ID {id}");
+                return NotFound($"Não foi possível encontrar o horário do funcionário com o ID {funcionarioId}, para o turno {turnoId} no dia {dia}");
             }
 
             horario.FuncionariosId = novoHorario.FuncionariosId;
@@ -73,7 +138,7 @@ namespace WebApplication1.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok($"Horário atualizado com sucesso para o ID {id}");
+                return Ok($"Horário atualizado com sucesso");
             }
             catch (Exception e)
             {
@@ -81,21 +146,20 @@ namespace WebApplication1.Controllers
             }
         }
 
-        // !!! Corrigir
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoverHorario(int id)
+        [HttpDelete("{funcionarioId}/{turnoId}/{dia}")]
+        public async Task<IActionResult> RemoverHorario(int funcionarioId, int turnoId, DateTime dia)
         {
-            var horario = await _context.Horarios.FindAsync(id);
+            var horario = await _context.Horarios.FirstOrDefaultAsync(d => d.FuncionariosId == funcionarioId && d.TurnosId == turnoId && d.Dia == dia);
 
             if (horario == null)
             {
-                return NotFound($"Horário com o ID {id} não encontrado");
+                return NotFound($"Não foi possível encontrar o horário do funcionário com o ID {funcionarioId}, para o turno {turnoId} no dia {dia}");
             }
 
             _context.Horarios.Remove(horario);
             await _context.SaveChangesAsync();
 
-            return Ok($"Horário com o ID {id} removido com sucesso");
+            return Ok($"Horário removido com sucesso");
         }
 
         [HttpGet("ObterHorariosPorCat/{tipoFuncionarioId}")]

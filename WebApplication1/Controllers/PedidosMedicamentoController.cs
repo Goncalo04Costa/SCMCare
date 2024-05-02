@@ -17,10 +17,94 @@ namespace WebApplication1.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PedidoMedicamento>>> ObterTodosPedidoMedicamento()
+        public async Task<ActionResult<IEnumerable<PedidoMedicamento>>> ObterTodosPedidoMedicamento(
+            int? idMin = null, int? idMax = null,
+            int? medicamentoId = null,
+            int? funcionarioId = null,
+            int? quantidadeMin = null, int? quantidadeMax = null,
+            DateTime? dataMin = null, DateTime? dataMax = null,
+            int? estado = null,
+            DateTime? dataConclusaoMin = null, DateTime? dataConclusaoMax = null)
         {
-            var pedidoMedicamento = await _context.PedidosMedicamento.ToListAsync();
-            return Ok(pedidoMedicamento);
+            IQueryable<PedidoMedicamento> query = _context.PedidosMedicamento;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (medicamentoId.HasValue)
+            {
+                query = query.Where(d => d.MedicamentosId == medicamentoId.Value);
+            }
+
+            if (funcionarioId.HasValue)
+            {
+                query = query.Where(d => d.FuncionariosId == funcionarioId.Value);
+            }
+
+            if (quantidadeMin.HasValue)
+            {
+                query = query.Where(d => d.Quantidade >= quantidadeMin.Value);
+            }
+
+            if (quantidadeMax.HasValue)
+            {
+                query = query.Where(d => d.Quantidade <= quantidadeMax.Value);
+            }
+
+            if (dataMin.HasValue)
+            {
+                query = query.Where(d => d.DataPedido >= dataMin.Value);
+            }
+
+            if (dataMax.HasValue)
+            {
+                query = query.Where(d => d.DataPedido <= dataMax.Value);
+            }
+
+            if (estado.HasValue)
+            {
+                query = query.Where(d => d.Estado == estado.Value);
+            }
+
+            if (dataConclusaoMin.HasValue)
+            {
+                query = query.Where(d => d.DataConclusao >= dataConclusaoMin.Value);
+            }
+
+            if (dataConclusaoMax.HasValue)
+            {
+                query = query.Where(d => d.DataConclusao <= dataConclusaoMax.Value);
+            }
+
+
+            var pedidosDetalhes = await (
+                from pedido in query
+                join funcionario in _context.Funcionarios on pedido.FuncionariosId equals funcionario.FuncionarioID into fG
+                from funcionario in fG.DefaultIfEmpty()
+                join medicamento in _context.Materiais on pedido.MedicamentosId equals medicamento.Id into mG
+                from medicamento in mG.DefaultIfEmpty()
+                select new
+                {
+                    Id = pedido.Id,
+                    MedicamentoId = pedido.MedicamentosId,
+                    Medicamento = medicamento.Nome,
+                    FuncionarioId = pedido.FuncionariosId,
+                    Funcionario = funcionario.Nome,
+                    QuantidadePedido = pedido.Quantidade,
+                    DataPedido = pedido.DataPedido,
+                    Estado = pedido.Estado,
+                    DataConclusao = pedido.DataConclusao
+                }
+            ).ToListAsync();
+
+            return Ok(pedidosDetalhes);
         }
 
         [HttpGet("{id}")]

@@ -78,7 +78,7 @@ namespace WebApplication1.Controllers
         {
             if (userDto == null || !ModelState.IsValid)
             {
-                return BadRequest("Dados de registro inválidos");
+                return BadRequest("Dados de registo inválidos");
             }
 
             // Crie um novo objeto UserFuncionario sem definir explicitamente a coluna de identidade

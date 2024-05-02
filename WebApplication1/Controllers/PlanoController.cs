@@ -4,6 +4,8 @@ using Modelos;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Controllers
 {
@@ -19,22 +21,126 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Plano>>> ObterTodosPlanos()
+        public async Task<ActionResult<IEnumerable<Plano>>> ObterTodosPlanos(
+            int? idMin = null, int? idMax = null,
+            int? utenteId = null,
+            DateTime? dataInicioMin = null, DateTime? dataInicioMax = null,
+            DateTime? dataFimMin = null, DateTime? dataFimMax = null)
         {
-            return await _context.Planos.ToListAsync();
+            IQueryable<Plano> query = _context.Planos;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (utenteId.HasValue)
+            {
+                query = query.Where(d => d.UtentesId == utenteId.Value);
+            }
+
+            if (dataInicioMin.HasValue)
+            {
+                query = query.Where(d => d.DataInicio >= dataInicioMin.Value);
+            }
+
+            if (dataInicioMax.HasValue)
+            {
+                query = query.Where(d => d.DataInicio <= dataInicioMax.Value);
+            }
+
+            if (dataFimMin.HasValue)
+            {
+                query = query.Where(d => d.DataFim >= dataFimMin.Value);
+            }
+
+            if (dataFimMax.HasValue)
+            {
+                query = query.Where(d => d.DataFim <= dataFimMax.Value);
+            }
+
+
+            var planosDetalhes = await (
+                from plano in query
+                join utente in _context.Utentes on plano.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                select new
+                {
+                    Id = plano.Id,
+                    UtenteId = plano.UtentesId,
+                    Utente = utente.Nome,
+
+                    Materiais = _context.MateriaisPlano
+                        .Where(cp => cp.PlanosId == plano.Id)
+                        .Join(
+                            _context.Materiais,
+                            cp => cp.MateriaisId,
+                            m => m.Id,
+                            (cp, m) => new
+                            {
+                                MaterialId = m.Id,
+                                Material = m.Nome,
+                                QuantidadePI = cp.QuantidadePIntervalo,
+                                Intervalo = cp.IntervaloHoras,
+                                Intrucoes = cp.Instrucoes
+                            }
+                        )
+                        .ToList(),
+
+                    DataInicio = plano.DataInicio,
+                    DataFim = plano.DataFim,
+                    Observacoes = plano.Observacoes
+                }
+            ).ToListAsync();
+
+            return Ok(planosDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Plano>> ObterPlano(int id)
         {
-            var plano = await _context.Planos.FindAsync(id);
+            IQueryable<Plano> query = _context.Planos;
+            query = query.Where(d => d.Id == id);
 
-            if (plano == null)
-            {
-                return NotFound();
-            }
+            var planoDetalhes = await (
+                from plano in query
+                join utente in _context.Utentes on plano.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                select new
+                {
+                    Id = plano.Id,
+                    UtenteId = plano.UtentesId,
+                    Utente = utente.Nome,
 
-            return plano;
+                    Materiais = _context.MateriaisPlano
+                        .Where(cp => cp.PlanosId == plano.Id)
+                        .Join(
+                            _context.Materiais,
+                            cp => cp.MateriaisId,
+                            m => m.Id,
+                            (cp, m) => new
+                            {
+                                MaterialId = m.Id,
+                                Material = m.Nome,
+                                QuantidadePI = cp.QuantidadePIntervalo,
+                                Intervalo = cp.IntervaloHoras,
+                                Intrucoes = cp.Instrucoes
+                            }
+                        )
+                        .ToList(),
+
+                    DataInicio = plano.DataInicio,
+                    DataFim = plano.DataFim,
+                    Observacoes = plano.Observacoes
+                }
+            ).ToListAsync();
+
+            return Ok(planoDetalhes);
         }
 
         [HttpPost]

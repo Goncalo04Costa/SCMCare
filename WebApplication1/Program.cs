@@ -51,7 +51,7 @@ app.Run();
 */
 
  
- ﻿using System;
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 

@@ -19,22 +19,126 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Prescricao>>> ObterTodasPrescricoes()
+        public async Task<ActionResult<IEnumerable<Prescricao>>> ObterTodasPrescricoes(
+            int? idMin = null, int? idMax = null,
+            int? utenteId = null,
+            DateTime? dataInicioMin = null, DateTime? dataInicioMax = null,
+            DateTime? dataFimMin = null, DateTime? dataFimMax = null)
         {
-            return await _context.Prescricoes.ToListAsync();
+            IQueryable<Prescricao> query = _context.Prescricoes;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.Id >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.Id <= idMax.Value);
+            }
+
+            if (utenteId.HasValue)
+            {
+                query = query.Where(d => d.UtentesId == utenteId.Value);
+            }
+
+            if (dataInicioMin.HasValue)
+            {
+                query = query.Where(d => d.DataInicio >= dataInicioMin.Value);
+            }
+
+            if (dataInicioMax.HasValue)
+            {
+                query = query.Where(d => d.DataInicio <= dataInicioMax.Value);
+            }
+
+            if (dataFimMin.HasValue)
+            {
+                query = query.Where(d => d.DataFim >= dataFimMin.Value);
+            }
+
+            if (dataFimMax.HasValue)
+            {
+                query = query.Where(d => d.DataFim <= dataFimMax.Value);
+            }
+
+
+            var prescricoesDetalhes = await (
+                from prescricao in query
+                join utente in _context.Utentes on prescricao.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                select new
+                {
+                    Id = prescricao.Id,
+                    UtenteId = prescricao.UtentesId,
+                    Utente = utente.Nome,
+
+                    Medicamentos = _context.MedicamentosPrescricao
+                        .Where(cp => cp.PrescricoesId == prescricao.Id)
+                        .Join(
+                            _context.Medicamentos,
+                            cp => cp.MedicamentosId,
+                            m => m.Id,
+                            (cp, m) => new
+                            {
+                                MedicamentoId = m.Id,
+                                Medicamento = m.Nome,
+                                QuantidadePI = cp.QuantidadePIntervalo,
+                                Intervalo = cp.IntervaloHoras,
+                                Intrucoes = cp.Instrucoes
+                            }
+                        )
+                        .ToList(),
+
+                    DataInicio = prescricao.DataInicio,
+                    DataFim = prescricao.DataFim,
+                    Observacoes = prescricao.Observacoes
+                }
+            ).ToListAsync();
+
+            return Ok(prescricoesDetalhes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Prescricao>> ObterPrescricao(int id)
         {
-            var prescricao = await _context.Prescricoes.FindAsync(id);
+            IQueryable<Prescricao> query = _context.Prescricoes;
+            query = query.Where(d => d.Id == id);
 
-            if (prescricao == null)
-            {
-                return NotFound();
-            }
+            var prescricaoDetalhes = await (
+                from prescricao in query
+                join utente in _context.Utentes on prescricao.UtentesId equals utente.Id into uG
+                from utente in uG.DefaultIfEmpty()
+                select new
+                {
+                    Id = prescricao.Id,
+                    UtenteId = prescricao.UtentesId,
+                    Utente = utente.Nome,
 
-            return prescricao;
+                    Medicamentos = _context.MedicamentosPrescricao
+                        .Where(cp => cp.PrescricoesId == prescricao.Id)
+                        .Join(
+                            _context.Medicamentos,
+                            cp => cp.MedicamentosId,
+                            m => m.Id,
+                            (cp, m) => new
+                            {
+                                MedicamentoId = m.Id,
+                                Medicamento = m.Nome,
+                                QuantidadePI = cp.QuantidadePIntervalo,
+                                Intervalo = cp.IntervaloHoras,
+                                Intrucoes = cp.Instrucoes
+                            }
+                        )
+                        .ToList(),
+
+                    DataInicio = prescricao.DataInicio,
+                    DataFim = prescricao.DataFim,
+                    Observacoes = prescricao.Observacoes
+                }
+            ).ToListAsync();
+
+            return Ok(prescricaoDetalhes);
         }
 
         [HttpPost]

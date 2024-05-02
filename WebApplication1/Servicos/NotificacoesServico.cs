@@ -47,12 +47,12 @@ namespace WebApplication1.Servicos
             {
                 var notificacaoFuncionario = new NotificacaoFuncionario
                 {
-                    NotificacaoId = NotificacaoId,
-                    FuncionarioId = funcionario.FuncionarioID,
+                    NotificacoesId = NotificacaoId,
+                    FuncionariosId = funcionario.FuncionarioID,
                     Estado = 0
                 };
 
-                _context.NotificacoesFuncionario.Add(notificacaoFuncionario);
+                _context.NotificacoesFuncionarios.Add(notificacaoFuncionario);
             }
             await _context.SaveChangesAsync();
 
