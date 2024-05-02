@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Testes\**" />
-    <Content Remove="Testes\**" />
-    <EmbeddedResource Remove="Testes\**" />
-    <None Remove="Testes\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Controllers\UserController.cs" />
     <Compile Remove="Controllers\UserFuncionarioDTO.cs" />
   </ItemGroup>

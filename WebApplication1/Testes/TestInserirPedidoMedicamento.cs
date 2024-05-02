@@ -40,7 +40,7 @@ namespace WebApplication1.Testes
                 FuncionariosId = 1,
                 Quantidade = 10,
                 DataPedido = DateTime.Now,
-                Estado = "Pendente",
+                Estado = 0,
                 DataConclusao = null
             };
 
@@ -52,7 +52,7 @@ namespace WebApplication1.Testes
             Assert.IsInstanceOf<OkObjectResult>(result.Result); // Verifica se o resultado é um OkObjectResult
 
             var okResult = result.Result as OkObjectResult;
-            Assert.AreEqual("pedidoMedicamento adicionado com sucesso", okResult.Value); // Verifica a mensagem de sucesso
+            Assert.Equals("pedidoMedicamento adicionado com sucesso", okResult.Value); // Verifica a mensagem de sucesso
         }
 
         [Test]
