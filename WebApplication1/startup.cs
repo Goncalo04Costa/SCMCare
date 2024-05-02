@@ -24,8 +24,10 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             // Configuração do Entity Framework e do contexto do banco de dados
-            //var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
-            var connectionString = Configuration.GetConnectionString("LigacaoDiogo");
+            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
+            //var connectionString = Configuration.GetConnectionString("LigacaoDiogo");
+            //var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");
+            //var connectionString = builder.Configuration.GetConnectionString("LigacaoDaniela");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 

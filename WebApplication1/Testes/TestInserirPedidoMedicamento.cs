@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
 using WebApplication1.Controllers;
@@ -8,14 +8,12 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Testes
 {
-    [TestFixture]
     public class TestInserirPedidoMedicamento
     {
         private PedidosMedicamentoController _controller;
         private DbContextOptions<AppDbContext> _options;
 
-        [SetUp]
-        public void Setup()
+        public TestInserirPedidoMedicamento()
         {
             _options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: "test_database")
@@ -23,14 +21,14 @@ namespace WebApplication1.Testes
 
             using (var context = new AppDbContext(_options))
             {
-                
+
             }
 
             var dbContext = new AppDbContext(_options);
             _controller = new PedidosMedicamentoController(dbContext);
         }
 
-        [Test]
+        [Fact]
         public async Task InserirPedidoMedicamento_DeveRetornarOk_QuandoPedidoMedicamentoForValido()
         {
             // Arrange
@@ -40,7 +38,7 @@ namespace WebApplication1.Testes
                 FuncionariosId = 1,
                 Quantidade = 10,
                 DataPedido = DateTime.Now,
-                Estado = "Pendente",
+                Estado = 0,
                 DataConclusao = null
             };
 
@@ -49,13 +47,13 @@ namespace WebApplication1.Testes
 
             // Assert
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsInstanceOf<OkObjectResult>(result.Result); // Verifica se o resultado é um OkObjectResult
+            Assert.IsType<OkObjectResult>(result.Result); // Verifica se o resultado é um OkObjectResult
 
             var okResult = result.Result as OkObjectResult;
-            Assert.AreEqual("pedidoMedicamento adicionado com sucesso", okResult.Value); // Verifica a mensagem de sucesso
+            Assert.Equal("pedidoMedicamento adicionado com sucesso", okResult.Value); // Verifica a mensagem de sucesso
         }
 
-        [Test]
+        [Fact]
         public async Task InserirPedidoMedicamento_DeveRetornarBadRequest_QuandoPedidoMedicamentoForNulo()
         {
             // Arrange
@@ -66,12 +64,12 @@ namespace WebApplication1.Testes
 
             // Assert 
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result); // Verifica se o resultado é um BadRequestObjectResult
+            Assert.IsType<BadRequestObjectResult>(result.Result); // Verifica se o resultado é um BadRequestObjectResult
 
             var badRequestResult = result.Result as BadRequestObjectResult;
-            Assert.AreEqual("Objeto inválido", badRequestResult.Value); // Verifica a mensagem de erro
+            Assert.Equal("Objeto inválido", badRequestResult.Value); // Verifica a mensagem de erro
         }
 
-        // Implemente outros métodos de teste para as operações restantes (Atualizar, Remover, ObterPorId) conforme necessário
+        
     }
 }

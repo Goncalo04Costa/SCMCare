@@ -140,48 +140,47 @@ namespace WebApplication1.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserFuncionarioLoginDto loginDto)
         {
-            // Verifica se os dados de login são válidos
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest("Dados de login inválidos");
             }
 
-            // Tenta encontrar o usuário pelo nome de usuário
             var user = await _userManager.FindByNameAsync(loginDto.UserName);
 
-            // Se o usuário não for encontrado, retorna uma mensagem de erro
+            
             if (user == null)
             {
                 return NotFound("Usuário não encontrado");
             }
 
-            // Verifica se a senha fornecida corresponde à senha do usuário
+            
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: false);
 
-            // Se a senha estiver correta, gera um token de autenticação e retorna como resposta
+            
             if (result.Succeeded)
             {
-                var token = GenerateJwtToken(user); // Implemente a lógica para gerar o token JWT
+                var token = GenerateJwtToken(user); 
                 return Ok(new { Token = token });
             }
 
-            // Se a senha estiver incorreta, retorna uma mensagem de erro
+            
             return Unauthorized("Credenciais inválidas");
         }
 
         private string GenerateJwtToken(UserFuncionario user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret); // Use uma chave secreta forte
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret); 
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                 new Claim(ClaimTypes.Name, user.UserName),
-                    // Adicione quaisquer outras reivindicações de usuário necessárias aqui
+                   
                 }),
-                Expires = DateTime.UtcNow.AddHours(1), // Defina a expiração do token conforme necessário
+                Expires = DateTime.UtcNow.AddHours(1), 
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

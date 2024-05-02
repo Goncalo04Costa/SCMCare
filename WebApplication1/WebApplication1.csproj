@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Testes\**" />
-    <Content Remove="Testes\**" />
-    <EmbeddedResource Remove="Testes\**" />
-    <None Remove="Testes\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Controllers\UserController.cs" />
     <Compile Remove="Controllers\UserFuncionarioDTO.cs" />
   </ItemGroup>
@@ -36,8 +29,10 @@
     <PackageReference Include="NUnit" Version="4.1.0" />
     <PackageReference Include="NUnit.Console" Version="3.17.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+    <PackageReference Include="xunit" Version="2.8.0" />
   </ItemGroup>
 
 </Project>

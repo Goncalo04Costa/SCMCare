@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
 using WebApplication1.Controllers;
@@ -8,14 +8,12 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Testes
 {
-    [TestFixture]
     public class TestInserirUtente
     {
         private UtentesController _controller;
         private DbContextOptions<AppDbContext> _options;
 
-        [SetUp]
-        public void Setup()
+        public TestInserirUtente()
         {
             _options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: "test_database")
@@ -23,14 +21,14 @@ namespace WebApplication1.Testes
 
             using (var context = new AppDbContext(_options))
             {
-                
+
             }
 
             var dbContext = new AppDbContext(_options);
             _controller = new UtentesController(dbContext);
         }
 
-        [Test]
+        [Fact]
         public async Task InserirUtente_DeveRetornarOk_QuandoUtenteForValido()
         {
             // Arrange
@@ -48,13 +46,13 @@ namespace WebApplication1.Testes
 
             // Assert
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsInstanceOf<OkObjectResult>(result.Result); // Verifica se o resultado é um OkObjectResult
+            Assert.IsType<OkObjectResult>(result.Result); // Verifica se o resultado é do tipo OkObjectResult
 
             var okResult = result.Result as OkObjectResult;
-            Assert.AreEqual("Utente adicionado com sucesso", okResult.Value); // Verifica a mensagem de sucesso
+            Assert.Equal("Utente adicionado com sucesso", okResult.Value); // Verifica a mensagem de sucesso
         }
 
-        [Test]
+        [Fact]
         public async Task InserirUtente_DeveRetornarBadRequest_QuandoUtenteForNulo()
         {
             // Arrange
@@ -65,10 +63,10 @@ namespace WebApplication1.Testes
 
             // Assert 
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result); // Verifica se o resultado é um BadRequestObjectResult
+            Assert.IsType<BadRequestObjectResult>(result.Result); // Verifica se o resultado é do tipo BadRequestObjectResult
 
             var badRequestResult = result.Result as BadRequestObjectResult;
-            Assert.AreEqual("Objeto inválido", badRequestResult.Value); // Verifica a mensagem de erro
+            Assert.Equal("Objeto inválido", badRequestResult.Value); // Verifica a mensagem de erro
         }
     }
 }
