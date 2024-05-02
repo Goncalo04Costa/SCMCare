@@ -70,6 +70,6 @@ namespace WebApplication1.Testes
             Assert.Equal("Objeto inválido", badRequestResult.Value); // Verifica a mensagem de erro
         }
 
-        // Implemente outros métodos de teste para as operações restantes (Atualizar, Remover, ObterPorId) conforme necessário
+        
     }
 }
