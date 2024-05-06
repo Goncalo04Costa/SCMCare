@@ -7,7 +7,10 @@ namespace Modelos
     {
         public int FuncionarioId { get; set; }
 
-        // Propriedade de navegação para o funcionário correspondente
-        public Funcionario Funcionario { get; set; }
+        [Required]
+        public string User { get; set; }
+
+        [Required]
+        public string Passe { get; set; }
     }
 }

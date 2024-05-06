@@ -49,11 +49,13 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 */
-
- 
-using System;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
+using WebApplication1.Modelos;
 
 namespace WebApplication1
 {
@@ -69,6 +71,22 @@ namespace WebApplication1
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddDbContext<UCCIContext>(options =>
+                        options.UseSqlServer(hostContext.Configuration.GetConnectionString("LigacaoGoncalo")));
+
+                    services.AddIdentityCore<IdentityUser>(options =>
+                    {
+                        options.SignIn.RequireConfirmedAccount = false;
+                        options.User.RequireUniqueEmail = true;
+                        options.Password.RequireDigit = false;
+                        options.Password.RequiredLength = 6;
+                        options.Password.RequireNonAlphanumeric = false;
+                        options.Password.RequireUppercase = false;
+                        options.Password.RequireLowercase = false;
+                    }).AddEntityFrameworkStores<UCCIContext>();
                 });
     }
 }

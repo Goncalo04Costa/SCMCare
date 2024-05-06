@@ -1,115 +1,68 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Modelos;
 
 namespace WebApplication1.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersResponsavelController : Controller
+    public class UserResponsavelController : ControllerBase
     {
-        private readonly AppDbContext _context;
 
-        public UsersResponsavelController(AppDbContext context)
+
+
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public UserResponsavelController(
+                    UserManager<IdentityUser> userManager
+                )
         {
-            _context = context;
+            _userManager = userManager;
         }
 
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserResponsavel>>> ObterTodosUsersResponsavel(
-            int? idMin = null, int? idMax = null,
-            string userMin = null, string userMax = null)
+        [HttpPost]
+        public async Task<ActionResult<UserResponsavel>> PostUser(UserResponsavel user)
         {
-            IQueryable<UserResponsavel> query = _context.UserResponsavel;
-
-            if (idMin.HasValue)
+            if (!ModelState.IsValid)
             {
-                query = query.Where(d => d.ResponsaveisId >= idMin.Value);
+                return BadRequest(ModelState);
             }
 
-            if (idMax.HasValue)
+            var result = await _userManager.CreateAsync(
+                new IdentityUser() { UserName = user.User },
+                user.Passe
+            );
+
+            if (!result.Succeeded)
             {
-                query = query.Where(d => d.ResponsaveisId <= idMax.Value);
+                return BadRequest(result.Errors);
             }
 
-            if (!string.IsNullOrEmpty(userMin))
-            {
-                query = query.Where(d => d.User.CompareTo(userMin) >= 0);
-            }
-
-            if (!string.IsNullOrEmpty(userMax))
-            {
-                query = query.Where(d => d.User.CompareTo(userMax + "ZZZ") <= 0);
-            }
-
-            var dados = await query.ToListAsync();
-            return Ok(dados);
+            user.Passe = null;
+            return Created("", user);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserResponsavel>> ObterUserResponsavel(int id)
+
+        // GET: api/Users/username
+        [HttpGet("{username}")]
+        public async Task<ActionResult<UserResponsavel>> GetUser(string username)
         {
-            var dado = await _context.UserResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
-            if (dado == null)
+            IdentityUser user = await _userManager.FindByNameAsync(username);
+
+            if (user == null)
             {
                 return NotFound();
             }
-            return Ok(dado);
-        }
 
-        [HttpPost]
-        public async Task<ActionResult<UserResponsavel>> InserirUserResponsavel([FromBody] UserResponsavel user)
-        {
-            if (user == null)
+            return new UserResponsavel
             {
-                return BadRequest("Objeto inválido");
-            }
-
-            _context.UserResponsavel.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok("Utilizador adicionado com sucesso");
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> AtualizaUserResponsavel(int id, [FromBody] UserResponsavel novoUser)
-        {
-            var user = await _context.UserResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
-            if (user == null)
-            {
-                return NotFound($"Não foi possível encontrar o utilizador com o ID {id}");
-            }
-
-            user.User = novoUser.User;
-            user.Passe = novoUser.Passe;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-
-                return Ok($"Foi atualizado o utilizador com o ID {id}");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveUserResponsavel(int id)
-        {
-            var user = await _context.UserResponsavel.FirstOrDefaultAsync(d => d.ResponsaveisId == id);
-            if (user == null)
-            {
-                return NotFound($"Não foi possível encontrar o utilizador com o ID {id}");
-            }
-
-            _context.UserResponsavel.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return Ok($"Foi removido o utilizador com o ID {id}");
+                User = user.UserName,
+            };
         }
     }
+
 }
+
+
+
