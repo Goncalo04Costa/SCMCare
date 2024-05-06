@@ -56,6 +56,32 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using WebApplication1.Modelos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+//services.AddScoped<Services.JwtService>();
+
+//services
+//      .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//      .AddJwtBearer(options =>
+//      {
+//          options.TokenValidationParameters = new TokenValidationParameters()
+//          {
+//              ValidateIssuer = true,
+//              ValidateAudience = true,
+//              ValidateLifetime = true,
+//              ValidateIssuerSigningKey = true,
+//              ValidAudience = Configuration["Jwt:Audience"],
+//              ValidIssuer = Configuration["Jwt:Issuer"],
+//              IssuerSigningKey = new SymmetricSecurityKey(
+//                  Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])
+//                  )
+//          };
+//      });
+
+//app.UseAuthentication();
+
 
 namespace WebApplication1
 {
