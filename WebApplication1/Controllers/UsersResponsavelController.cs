@@ -73,13 +73,13 @@ namespace WebApplication1.Controllers
             {
                 return BadRequest("Bad credentials");
             }
-            var user = await _userManager.FindByNameAsync(request.UserName);
+            var user = await _userManager.FindByNameAsync(request.User);
             if (user == null)
             {
                 return BadRequest("Bad credentials");
             }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Passe);
 
             if (!isPasswordValid)
             {
