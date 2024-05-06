@@ -67,19 +67,21 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost("BearerToken")]
-        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationResponse request)
+        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Bad credentials");
             }
-            var user = await _userManager.FindByNameAsync(request.User);
+
+            var user = await _userManager.FindByNameAsync(request.Username);
+
             if (user == null)
             {
                 return BadRequest("Bad credentials");
             }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Passe);
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
 
             if (!isPasswordValid)
             {
@@ -92,7 +94,6 @@ namespace WebApplication1.Controllers
         }
 
     }
-
 }
 
 

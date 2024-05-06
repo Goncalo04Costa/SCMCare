@@ -1,17 +1,15 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using WebApplication1.Modelos;
-
 
 namespace WebApplication1.Servicos
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private const int EXPIRATION_MINUTES = 1;
 

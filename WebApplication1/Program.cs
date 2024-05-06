@@ -83,13 +83,71 @@ using System.Text;
 //app.UseAuthentication();
 
 
-namespace WebApplication1
+//namespace WebApplication1
+//{
+//    public class Program
+//    {
+//        public static void Main(string[] args)
+//        {
+//            CreateHostBuilder(args).Build().Run();
+//        }
+
+//        public static IHostBuilder CreateHostBuilder(string[] args) =>
+//            Host.CreateDefaultBuilder(args)
+//                .ConfigureWebHostDefaults(webBuilder =>
+//                {
+//                    webBuilder.UseStartup<Startup>();
+//                })
+//                .ConfigureServices((hostContext, services) =>
+//                {
+//                    services.AddDbContext<UCCIContext>(options =>
+//                        options.UseSqlServer(hostContext.Configuration.GetConnectionString("LigacaoGoncalo")));
+
+//                    services.AddIdentityCore<IdentityUser>(options =>
+//                    {
+//                        options.SignIn.RequireConfirmedAccount = false;
+//                        options.User.RequireUniqueEmail = true;
+//                        options.Password.RequireDigit = false;
+//                        options.Password.RequiredLength = 6;
+//                        options.Password.RequireNonAlphanumeric = false;
+//                        options.Password.RequireUppercase = false;
+//                        options.Password.RequireLowercase = false;
+//                    }).AddEntityFrameworkStores<UCCIContext>();
+//                });
+//    }
+//}
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using System;
+using WebApplication1;
+
+namespace YourNamespace
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            // Configurar o banco de dados antes de iniciar a aplicação
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var dbContext = services.GetRequiredService<AppDbContext>();
+                    dbContext.Database.Migrate(); // Aplica as migrações pendentes
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Erro ao configurar o banco de dados: " + ex.Message);
+                }
+            }
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -97,22 +155,7 @@ namespace WebApplication1
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddDbContext<UCCIContext>(options =>
-                        options.UseSqlServer(hostContext.Configuration.GetConnectionString("LigacaoGoncalo")));
-
-                    services.AddIdentityCore<IdentityUser>(options =>
-                    {
-                        options.SignIn.RequireConfirmedAccount = false;
-                        options.User.RequireUniqueEmail = true;
-                        options.Password.RequireDigit = false;
-                        options.Password.RequiredLength = 6;
-                        options.Password.RequireNonAlphanumeric = false;
-                        options.Password.RequireUppercase = false;
-                        options.Password.RequireLowercase = false;
-                    }).AddEntityFrameworkStores<UCCIContext>();
                 });
     }
 }
+
