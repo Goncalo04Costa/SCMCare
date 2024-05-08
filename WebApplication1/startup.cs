@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Modelos;
 using WebApplication1.Servicos;
 
@@ -16,12 +17,15 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configuração do Entity Framework e do contexto do banco de dados
-            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
+            // Configuração do Entity Framework e do contexto da base de dados
+            //var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
+            var connectionString = Configuration.GetConnectionString("LigacaoDiogo2");
+            //var connectionString = builder.Configuration.GetConnectionString("LigacaoSofia");
+            //var connectionString = builder.Configuration.GetConnectionString("LigacaoDaniela");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Registo do ASP.NET Core Identity e configuração do banco de dados
+            // Registo do ASP.NET Core Identity e configuração da base de dados
             services.AddIdentity<UserFuncionario, IdentityRole>()
                     .AddEntityFrameworkStores<AppDbContext>()
                     .AddSignInManager<SignInManager<UserFuncionario>>();
@@ -32,7 +36,7 @@ namespace WebApplication1
             // Registo do serviço AppSettings
             services.Configure<AppSettings>(Configuration);
 
-            // Registo da interface IJwtService e sua implementação JwtService
+            // Registo da interface IJwtService e a sua implementação JwtService
             services.AddScoped<IJwtService, JwtService>();
 
             // Outros serviços
@@ -58,7 +62,11 @@ namespace WebApplication1
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(env.ContentRootPath, "HTML"))
+            });
 
             app.UseRouting();
 
