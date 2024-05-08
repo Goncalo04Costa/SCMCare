@@ -20,24 +20,16 @@ namespace WebApplication1
             // Configuração do Entity Framework e do contexto da base de dados
             //var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
             //var connectionString = Configuration.GetConnectionString("LigacaoDiogo2");
-            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
+            var connectionString = Configuration.GetConnectionString("LigacaoSofia");
             //var connectionString = Configuration.GetConnectionString("LigacaoDaniela");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Registo do ASP.NET Core Identity e configuração da base de dados
-            services.AddIdentity<UserFuncionario, IdentityRole>()
-                    .AddEntityFrameworkStores<AppDbContext>()
-                    .AddSignInManager<SignInManager<UserFuncionario>>();
-
-            // Registo do serviço JwtSettings
-            services.Configure<JwtSettings>(Configuration.GetSection("jwt"));
-
+           
             // Registo do serviço AppSettings
             services.Configure<AppSettings>(Configuration);
 
-            // Registo da interface IJwtService e a sua implementação JwtService
-            services.AddScoped<IJwtService, JwtService>();
+            
 
             // Outros serviços
             services.AddControllers();

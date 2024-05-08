@@ -61,8 +61,7 @@ namespace WebApplication1
         public DbSet<Turno> Turnos { get; set; }
         public DbSet<Utente> Utentes { get; set; }
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
-        public DbSet<UserResponsavel> UserResponsavel { get; set; }
-        public DbSet<UserFuncionario> UserFuncionario { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configurações das chaves primárias para entidades sem chave primária própria
@@ -79,7 +78,6 @@ namespace WebApplication1
             modelBuilder.Entity<NotificacaoResponsavel>().HasKey(c => new { c.ResponsaveisId, c.NotificacoesId });
             modelBuilder.Entity<Senha>().HasKey(c => new { c.FuncionariosId, c.MenuId });
             modelBuilder.Entity<UtenteAlergia>().HasKey(c => new { c.UtentesId, c.TiposAlergiaId });
-            modelBuilder.Entity<UserResponsavel>().HasKey(c => new { c.ResponsaveisId });
         }
     }
 }

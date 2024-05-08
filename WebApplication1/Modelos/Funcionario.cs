@@ -5,7 +5,7 @@ namespace Modelos
 {
     public class Funcionario
     {
-        public int FuncionarioID { get; set; } // Renomeado para corresponder à outra tabela
+        public int FuncionarioID { get; set; } 
 
         [Required]
         public string Nome { get; set; }
