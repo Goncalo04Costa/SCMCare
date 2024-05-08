@@ -16,7 +16,5 @@ namespace Modelos
         [Required]
         public bool Historico { get; set; }
 
-        // Propriedade de navegação para os usuários funcionários relacionados
-        public ICollection<UserFuncionario> UsersFuncionario { get; set; }
     }
 }
