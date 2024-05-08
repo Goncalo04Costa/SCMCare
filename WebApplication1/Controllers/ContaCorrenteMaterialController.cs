@@ -166,6 +166,8 @@ namespace WebApplication1.Controllers
             return Ok(contacorrenteDetalhes);
         }
 
+
+        // inserir uma conta corrente
         [HttpPost]
         public async Task<ActionResult<ContaCorrenteMaterial>> InserirContaCorrente([FromBody] ContaCorrenteMaterial contaCorrente)
         {
@@ -180,6 +182,7 @@ namespace WebApplication1.Controllers
             return Ok("Adicionado novo registo na conta corrente");
         }
 
+        // Atualizar os dados de uma conta correte
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizaContaCorrente(int id, [FromBody] ContaCorrenteMaterial novaContaCorrente)
         {
@@ -211,6 +214,8 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+        //Remover a conta corrente
         [HttpDelete("{id}")] 
         public async Task<IActionResult> RemoveContaCorrente(int id)
         {
