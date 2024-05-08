@@ -20,6 +20,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+        // Obter todas as avaliações com filtros especiais
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Avaliacao>>> ObterTodasAvaliacoes(
             int? idMin = null, int? idMax = null,
@@ -30,6 +31,7 @@ namespace WebApplication1.Controllers
         {
             IQueryable<Avaliacao> query = _context.Avaliacoes;
 
+            // adicionar filtros especiais
             if (idMin.HasValue)
             {
                 query = query.Where(d => d.Id >= idMin.Value);
@@ -84,6 +86,7 @@ namespace WebApplication1.Controllers
 
         }
 
+        // Metodo para obter uma avaliação a partir do id
         [HttpGet("{id}")]
         public async Task<ActionResult<Avaliacao>> ObterAvaliacao(int id)
         {
@@ -118,6 +121,8 @@ namespace WebApplication1.Controllers
             return Ok(avaliacaoDetalhes);
         }
 
+
+        //Metodo para  inserir uma nova avaliação
         [HttpPost]
         public async Task<ActionResult<Avaliacao>> InserirAvaliacao([FromBody] Avaliacao avaliacao)
         {
@@ -132,6 +137,8 @@ namespace WebApplication1.Controllers
             return Ok("Avaliação adicionada com sucesso");
         }
 
+
+        //Metodo para atualizar os dados da Avaliação
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarAvaliacao(int id, [FromBody] Avaliacao novaAvaliacao)
         {
@@ -165,6 +172,8 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+        //Metodo para remover uma Avaliação
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverAvaliacao(int id)
         {

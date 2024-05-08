@@ -29,6 +29,7 @@ namespace WebApplication1.Controllers
             _notificacoesService = notificacoesService;
         }
 
+        // Metodo para obter todas as avarias com filtros especificos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Avaria>>> ObterTodasAvarias(
             int? idMin = null, int? idMax = null,
@@ -87,6 +88,8 @@ namespace WebApplication1.Controllers
             return Ok(avariasDetalhes);
         }
 
+
+        // Metodo para obter uma avaria existente pelo ID
         [HttpGet("{id}")]
         public async Task<ActionResult<Avaria>> ObterAvaria(int id)
         {
@@ -112,6 +115,8 @@ namespace WebApplication1.Controllers
             return Ok(avariaDetalhes);
         }
 
+
+        //Metodo para inserir uma nova avaria
         [HttpPost]
         public async Task<ActionResult<Avaria>> InserirAvaria([FromBody] Avaria avaria)
         {
@@ -140,6 +145,8 @@ namespace WebApplication1.Controllers
                 return Ok("Avaria adicionada com sucesso, com erro de notificação");
         }
 
+
+        //Metodo para atualizar dados de uma avaria
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarAvaria(int id, [FromBody] Avaria novaAvaria)
         {
@@ -166,6 +173,8 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+        //Metodo para remover uma avaria
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverAvaria(int id)
         {
@@ -182,6 +191,7 @@ namespace WebApplication1.Controllers
             return Ok($"Avaria com o ID {id} removida com sucesso");
         }
         
+        //Metodo para mudar a data de agendamentto da avaria
         [HttpPut("AtualizarDataAvaria/{id}")]
         public async Task<IActionResult> AtualizarDataAvaria(int id, DateTime data)
         {

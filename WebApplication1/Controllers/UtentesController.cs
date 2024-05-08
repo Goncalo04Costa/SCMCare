@@ -27,6 +27,8 @@ namespace WebApplication1.Controllers
             //_regrasUtentes = regrasUtentes;
         }
 
+
+        //Metodo para ver todos os utentes com filtros
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utente>>> ObterTodosUtentes(
             int? idMin = null, int? idMax = null,
@@ -138,6 +140,8 @@ namespace WebApplication1.Controllers
             return Ok(utentesDetalhes);
         }
 
+
+        //Metodo para obter um utente pelo seu id
         [HttpGet("{id}")]
         public async Task<ActionResult<Utente>> ObterUtente(int id)
         {
@@ -174,6 +178,8 @@ namespace WebApplication1.Controllers
             return Ok(utentesDetalhes);
         }
 
+
+        //Metodo para obter utente por Nome
         [HttpGet("nome/{nome}")]
         public async Task<ActionResult<Utente>> ObterUtentePorNome(string nome)
         {
@@ -194,6 +200,7 @@ namespace WebApplication1.Controllers
             }
         }
 
+        //Metodo para inserir um novo utente
         [HttpPost]
         public async Task<ActionResult<Utente>> InserirUtente([FromBody] Utente utente)
         {
@@ -202,19 +209,13 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
-
-            //bool nifExiste = await _regrasUtentes.VerificarNIFExistente(utente.NIF);
-            //if (nifExiste)
-            //{
-            //    return BadRequest("NIF já existe.");
-            //}
-
             _context.Utentes.Add(utente);
             await _context.SaveChangesAsync();
 
             return Ok("Utente adicionado com sucesso");
         }
 
+        //Metodos para atualizar dados de um utente
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizaUtente(int id, [FromBody] Utente novoUtente)
         {
@@ -253,6 +254,8 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+        //Metodo para remover um utente
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveUtente(int id)
         {
@@ -268,6 +271,8 @@ namespace WebApplication1.Controllers
             return Ok($"Foi removido o utente com o ID {id}");
         }
 
+
+        //imprimir ficha de utente
         [HttpGet("ficha/{id}")]
         public async Task<IActionResult> ImprimirFichaUtente(int id)
         {

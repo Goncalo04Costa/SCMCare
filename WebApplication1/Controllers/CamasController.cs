@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using iText.Kernel.Pdf.Canvas.Wmf;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -17,6 +18,8 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+
+        // Metodo para obter todas as camas com filtros especificos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cama>>> ObterTodasCamas(
             string? idMin = null, string? idMax = null,
@@ -65,6 +68,8 @@ namespace WebApplication1.Controllers
             return Ok(camasDetalhes);
         }
 
+
+        //Metodo para obter cama
         [HttpGet("{idUtente}")]
         public async Task<ActionResult<Cama>> ObterCama(int idUtente)
         {
@@ -91,6 +96,8 @@ namespace WebApplication1.Controllers
             return Ok(camaDetalhes);
         }
 
+
+        // Metodo para inserir uma nova cama
         [HttpPost]
         public async Task<ActionResult<Cama>> InserirCama([FromBody] Cama cama)
         {
@@ -105,6 +112,8 @@ namespace WebApplication1.Controllers
             return Ok("Cama adicionada com sucesso");
         }
 
+
+        // Metodo para atualizar dados de uma cama
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarCama(int id, [FromBody] Cama novaCama)
         {
@@ -129,6 +138,8 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+        //Metodo para remover uma cama
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverCama(int id)
         {
