@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Modelos;
+using WebApplication1.Dtos;
 using WebApplication1.Modelos;
 using WebApplication1.Servicos;
 
@@ -26,7 +27,7 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<UserFuncionario>> PostUser(UserFuncionario user)
+        public async Task<ActionResult<UserFuncionario>> PostUser([FromBody] UserFuncionarioDto userDto)
         {
             if (!ModelState.IsValid)
             {
@@ -34,8 +35,8 @@ namespace WebApplication1.Controllers
             }
 
             var result = await _userManager.CreateAsync(
-                new IdentityUser() { UserName = user.User},
-                user.Passe
+                new IdentityUser() { UserName = userDto.User},
+                userDto.Passe
             );
 
             if (!result.Succeeded)
@@ -43,8 +44,8 @@ namespace WebApplication1.Controllers
                 return BadRequest(result.Errors);
             }
 
-            user.Passe = null;
-            return Created("", user);
+            userDto.Passe = null;
+            return Created("", userDto);
         }
 
 
