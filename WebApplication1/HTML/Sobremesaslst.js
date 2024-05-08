@@ -72,15 +72,15 @@ function CriarTabela(dados) {
 }
 
 function adicionar(id) {
-    window.open("../Sobremesasedt.html?opr=add", "_blank");
+    window.open("../Sobremesasedt.html?opr=add", "_self");
 }
 
 function ver(id) {
-    window.open("../Sobremesasedt.html?opr=ver&id="+id, "_blank");
+    window.open("../Sobremesasedt.html?opr=ver&id=" + id, "_self");
 }
 
 function editar(id) {
-    window.open("../Sobremesasedt.html?opr=edt&id=" + id, "_blank");
+    window.open("../Sobremesasedt.html?opr=edt&id=" + id, "_self");
 }
 
 function remover(id) {

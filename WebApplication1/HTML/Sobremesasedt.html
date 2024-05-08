@@ -11,6 +11,56 @@
     <script src="Sobremesasedt.js" type="text/javascript"></script>
 </head>
 <body>
+    <div class="container border py-4">
+        <h1 class="py-3">Sobremesa</h1>
+        <div class="row">
+            <div class="col-sm-4 form-section">
+                <label for="id">Id:</label>
+                <div class="input-group">
+                    <input type="number" class="form-control col-6" id="id" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10 form-section">
+                <label for="nome">Nome:</label>
+                <input type="text" class="form-control" id="nome">
+
+                <label for="desc">Descrição:</label>
+                <textarea class="form-control" rows="5" id="desc"></textarea>
+            </div>
+
+            <div class="col-2 form-section">
+                <label class="mt-5">Dieta:</label>
+                <div>
+                    <div class="form-check form-check-inline input-group">
+                        <input class="form-check-input" type="radio" name="dietaOptions" id="inlineRadio1" value="1">
+                        <label class="form-check-label mr-2" for="inlineRadio1">Sim</label>
+                        <input class="form-check-input ml-2" type="radio" name="dietaOptions" id="inlineRadio2" value="0">
+                        <label class="form-check-label" for="inlineRadio2">Não</label>
+                    </div>
+                </div>
+                <label class="mt-5">Ativo:</label>
+                <div>
+                    <div class="form-check form-check-inline input-group">
+                        <input class="form-check-input" type="radio" name="ativoOptions" id="inlineRadio3" value="1">
+                        <label class="form-check-label mr-2" for="inlineRadio3">Sim</label>
+                        <input class="form-check-input ml-2" type="radio" name="ativoOptions" id="inlineRadio4" value="0">
+                        <label class="form-check-label" for="inlineRadio4">Não</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="row">
+            <div class="col-sm-12 pt-3 text-right">
+                <a onclick="Acao();" id="btnAcao" class="btn btn-primary">Executar</a>
+                <a href="Sobremesaslst.html" class="btn btn-danger">Cancelar</a>
+                <!--<a onclick="window.close()" class="btn btn-danger">Cancelar</a>-->
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
