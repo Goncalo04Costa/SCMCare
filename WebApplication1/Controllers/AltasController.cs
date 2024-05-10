@@ -16,6 +16,7 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+        // Método para obter todas as altas com filtros opcionais
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Alta>>> ObterTodasAltas(
             int? utentesIdMin = null, int? utentesIdMax = null,
@@ -24,6 +25,7 @@ namespace WebApplication1.Controllers
         {
             IQueryable<Alta> query = _context.Alta;
 
+            // Aplicar filtros opcionais
             if (utentesIdMin.HasValue)
             {
                 query = query.Where(d => d.UtentesId >= utentesIdMin.Value);
@@ -54,7 +56,7 @@ namespace WebApplication1.Controllers
                 query = query.Where(d => d.Data <= dataMax.Value);
             }
 
-
+            // Realizar a consulta com os filtros aplicados e para retornar os detalhes das altas
             var altasDetalhes = await (
                 from alta in query
                 join utente in _context.Utentes on alta.UtentesId equals utente.Id into uG
@@ -76,13 +78,14 @@ namespace WebApplication1.Controllers
             return Ok(altasDetalhes);
         }
 
+        // Método para obter uma alta específica com base no ID do utente e do funcionário
         [HttpGet("{utenteId}/{funcionarioId}")]
         public async Task<ActionResult<Alta>> ObterAlta(int utentesId, int funcionarioId)
         {
             IQueryable<Alta> query = _context.Alta;
             query = query.Where(d => d.UtentesId == utentesId && d.FuncionariosId == funcionarioId);
 
-
+            // Realizar a consulta e retornar os detalhes da alta
             var altasDetalhes = await (
                 from alta in query
                 join utente in _context.Utentes on alta.UtentesId equals utente.Id into uG
@@ -104,6 +107,7 @@ namespace WebApplication1.Controllers
             return Ok(altasDetalhes);
         }
 
+        // Método para inserir uma nova alta
         [HttpPost]
         public async Task<ActionResult<Alta>> InserirAlta([FromBody] Alta alta)
         {
@@ -112,12 +116,14 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
+            // Adicionar a nova alta ao contexto e guardar as alterações
             _context.Alta.Add(alta);
             await _context.SaveChangesAsync();
 
             return Ok("Alta adicionada com sucesso");
         }
 
+        // Método para atualizar uma alta existente
         [HttpPut("{utenteId}/{funcionarioId}")]
         public async Task<IActionResult> AtualizarAlta(int utenteId, int funcionarioId, [FromBody] Alta novaAlta)
         {
@@ -129,12 +135,14 @@ namespace WebApplication1.Controllers
                 return NotFound($"Não foi possível encontrar a alta para o utente ID {utenteId} e funcionário ID {funcionarioId}");
             }
 
+            // Atualizar os detalhes da alta com os novos valores fornecidos
             alta.Data = novaAlta.Data;
             alta.Motivo = novaAlta.Motivo;
             alta.Destino = novaAlta.Destino;
 
             try
             {
+                // Salvar as alterações no contexto
                 await _context.SaveChangesAsync();
 
                 return Ok($"Alta atualizada para o utente ID {utenteId} e funcionário ID {funcionarioId}");
@@ -145,6 +153,7 @@ namespace WebApplication1.Controllers
             }
         }
 
+        // Método para remover uma alta existente
         [HttpDelete("{utenteId}/{funcionarioId}")]
         public async Task<IActionResult> RemoverAlta(int utenteId, int funcionarioId)
         {
@@ -156,6 +165,7 @@ namespace WebApplication1.Controllers
                 return NotFound($"Não foi possível encontrar a alta para o utente ID {utenteId} e funcionário ID {funcionarioId}");
             }
 
+            // Remover a alta do contexto e guardar as alterações
             _context.Alta.Remove(alta);
             await _context.SaveChangesAsync();
 

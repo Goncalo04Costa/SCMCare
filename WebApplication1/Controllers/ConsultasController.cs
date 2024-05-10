@@ -16,6 +16,8 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+
+        //Metodo para obter todas as camas com filtros especificos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Consulta>>> ObterTodasConsultas(
             int? idMin = null, int? idMax = null,
@@ -91,6 +93,8 @@ namespace WebApplication1.Controllers
             return Ok(consultasDetalhes);
         }
 
+
+        //Obter consulta pelo ID
         [HttpGet("{id}")]
         public async Task<ActionResult<Consulta>> ObterConsulta(int id)
         {
@@ -127,8 +131,10 @@ namespace WebApplication1.Controllers
             return Ok(consultaDetalhes);
         }
 
+
+        // Metodo para registar uma nova consulta, e seja com funcionario ou responsavel a acompanhar
         [HttpPost]
-        public async Task<IActionResult> RegistrarConsulta(int idConsulta, int idFuncionario, int idResponsavel, DateTime dataConsulta)
+        public async Task<IActionResult> RegistarConsulta(int idConsulta, int idFuncionario, int idResponsavel, DateTime dataConsulta)
         {
             var consulta = await _context.Consultas.FindAsync(idConsulta);
             if (consulta == null)
@@ -171,6 +177,7 @@ namespace WebApplication1.Controllers
 
 
 
+        // Metodo para atualizar os dados de uma consulta
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarConsulta(int id, [FromBody] Consulta novaConsulta)
         {
@@ -199,6 +206,8 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+        // Metodo para remover uma consulta
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoverConsulta(int id)
         {
@@ -216,6 +225,8 @@ namespace WebApplication1.Controllers
         }
 
 
+
+        //Metodo para acompanhante
         [HttpGet("CanAttendConsulta")]
         public async Task<IActionResult> CanAttendConsulta(int responsavelId, DateTime consultaData)
         {

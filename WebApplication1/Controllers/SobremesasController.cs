@@ -144,7 +144,7 @@ namespace WebApplication1.Controllers
             _context.Sobremesas.Remove(sobremesa);
             await _context.SaveChangesAsync();
 
-            return Ok($"Foi removida a sobremesa com o ID {id}");
+            return Ok(id);
         }
     }
 }

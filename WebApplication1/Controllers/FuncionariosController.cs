@@ -32,6 +32,8 @@ namespace WebApplication1.Controllers
             return Ok(funcionario);
         }
 
+
+        //Metodo para inserir um novo funcnionario
         [HttpPost]
         public async Task<ActionResult<Funcionario>> PostFuncionario([FromBody] Funcionario funcionario)
         {
@@ -46,6 +48,8 @@ namespace WebApplication1.Controllers
             return CreatedAtAction(nameof(GetFuncionario), new { id = funcionario.FuncionarioID }, funcionario);
         }
 
+
+        //Metodo para apresentar um funcionario
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFuncionario(int id, [FromBody] Funcionario funcionarioAtualizado)
         {
@@ -65,6 +69,7 @@ namespace WebApplication1.Controllers
             return Ok($"Funcionário com o ID {id} atualizado com sucesso");
         }
 
+        //Metodo para remover um funcionario
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFuncionario(int id)
         {

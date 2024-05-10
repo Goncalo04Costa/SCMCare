@@ -14,7 +14,7 @@
         public string ThirdPartyApiKey { get; set; } // Chave de API de terceiros
         public string ThirdPartyApiUrl { get; set; } // URL da API de terceiros
 
-        public bool EnableLogging { get; set; } // Habilitar/desabilitar o registro de logs
+        public bool EnableLogging { get; set; } // Habilitar/desabilitar o registo de logs
 
         // Adicione outras propriedades de configuração, conforme necessário
     }

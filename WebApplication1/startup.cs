@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
 using Modelos;
 using WebApplication1.Servicos;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using WebApplication1.Services;
 
 namespace WebApplication1
 {
@@ -32,22 +26,11 @@ namespace WebApplication1
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Registro do ASP.NET Core Identity e configuração do banco de dados
-            services.AddIdentity<UserFuncionario, IdentityRole>()
-                    .AddEntityFrameworkStores<AppDbContext>()
-                    .AddSignInManager<SignInManager<UserFuncionario>>(); // Adicione esta linha para configurar o SignInManager
+           
+            // Registo do serviço AppSettings
+            services.Configure<AppSettings>(Configuration);
 
-            // Registro do serviço JwtSettings
-            services.Configure<JwtSettings>(Configuration.GetSection("jwt"));
-
-            // Registro do serviço AppSettings
-            services.Configure<AppSettings>(Configuration); // Adicione esta linha para registrar o AppSettings
-
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-
-
-            // Registro da interface IJwtService e sua implementação JwtService
-            services.AddScoped<IJwtService, JwtService>();
+            
 
             // Outros serviços
             services.AddControllers();
@@ -72,7 +55,11 @@ namespace WebApplication1
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(env.ContentRootPath, "HTML"))
+            });
 
             app.UseRouting();
 
