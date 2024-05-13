@@ -106,7 +106,7 @@ namespace WebApplication1.Testes
 
             // Assert 
             Assert.NotNull(result);
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
 
