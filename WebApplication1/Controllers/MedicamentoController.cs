@@ -170,8 +170,8 @@ namespace WebApplication1.Controllers
 
                 var medicamentosDetalhes = await (
                     from medicamentos in query
-                    let quantidadeAtual = _context.ContaCorrenteMateriais
-                        .Where(m => m.MateriaisId == medicamentos.Id)
+                    let quantidadeAtual = _context.ContaCorrenteMedicamentos
+                        .Where(m => m.MedicamentosId == medicamentos.Id)
                         .Sum(m => m.Tipo ? m.QuantidadeMovimento : -m.QuantidadeMovimento)
                     where quantidadeAtual < medicamentos.Limite
                     select new
