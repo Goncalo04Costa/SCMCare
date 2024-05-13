@@ -227,15 +227,16 @@ namespace WebApplication1.Controllers
         }
 
 
-        
+
         // !!! Porquê adicionar isto? v v v
+        // Já existe o InserirContaCorrente, mas podemos aproveitar a verificação de quantidade para as regras
 
         //[HttpPost("adicionar-medicamento")]
         //public async Task<ActionResult> AdicionarMedicamento(int medicamentosId, int quantidadeAdicionada, string observacoes)
         //{
         //    try
         //    {
-                
+
         //        var medicamentoExistente = await _context.Medicamentos.FindAsync(medicamentosId);
 
         //        if (medicamentoExistente == null)
@@ -243,7 +244,7 @@ namespace WebApplication1.Controllers
         //            return NotFound("Medicamento não encontrado");
         //        }
 
-               
+
         //        var novaContaCorrente = new ContaCorrenteMedicamento
         //        {
         //            MedicamentosId = medicamentosId,
@@ -253,7 +254,7 @@ namespace WebApplication1.Controllers
         //            Observacoes = observacoes
         //        };
 
-             
+
         //        _context.ContaCorrenteMedicamentos.Add(novaContaCorrente);
 
         //        //medicamentoExistente.Stock += quantidadeAdicionada;
@@ -275,7 +276,7 @@ namespace WebApplication1.Controllers
         //{
         //    try
         //    {
-               
+
         //        var medicamentoExistente = await _context.Medicamentos.FindAsync(medicamentosId);
         //        var funcionarioExistente = await _context.Funcionarios.FindAsync(funcionariosId);
         //        var utenteExistente = await _context.Utentes.FindAsync(utentesId);
@@ -285,13 +286,13 @@ namespace WebApplication1.Controllers
         //            return NotFound("Medicamento, funcionário ou utente não encontrado");
         //        }
 
-              
+
         //        /*if (medicamentoExistente.Stock < quantidadeUtilizada)
         //        {
         //            return BadRequest("Stock insuficiente para realizar a utilização do medicamento");
         //        }*/
 
-                
+
         //        var novaContaCorrente = new ContaCorrenteMedicamento
         //        {
         //            MedicamentosId = medicamentosId,
@@ -303,13 +304,13 @@ namespace WebApplication1.Controllers
         //            Observacoes = observacoes
         //        };
 
-               
+
         //        _context.ContaCorrenteMedicamento.Add(novaContaCorrente);
 
-               
+
         //        //medicamentoExistente.Stock -= quantidadeUtilizada;
 
-               
+
         //        await _context.SaveChangesAsync();
 
         //        return Ok("Utilização de medicamento registrada com sucesso e stock atualizado");

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using System.ComponentModel;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 
 namespace WebApplication1.Controllers
@@ -171,25 +173,40 @@ namespace WebApplication1.Controllers
             return _context.Materiais.Any(e => e.Id == id);
         }
 
+        [HttpGet("emrisco")]
+        public async Task<ActionResult<IEnumerable<Material>>> ObterMateriaisRisco()
+        {
+            try
+            {
+                IQueryable<Material> query = _context.Materiais;
 
-        // !!! Rever com o calcular quantidades a partir de conta corrente
+                var materiaisDetalhes = await (
+                    from materiais in query
+                    join tipomaterial in _context.TiposMaterial on materiais.TiposMaterialId equals tipomaterial.Id into tG
+                    from tipomaterial in tG.DefaultIfEmpty()
+                    let quantidadeAtual = _context.ContaCorrenteMateriais
+                        .Where(m => m.MateriaisId == materiais.Id)
+                        .Sum(m => m.Tipo ? m.QuantidadeMovimento : -m.QuantidadeMovimento)
+                    where quantidadeAtual < materiais.Limite
+                    select new
+                    {
+                        Id = materiais.Id,
+                        Nome = materiais.Nome,
+                        Quantidade = quantidadeAtual,
+                        Limite = materiais.Limite,
+                        TipoMaterialId = materiais.TiposMaterialId,
+                        TipoMaterial = tipomaterial.Descricao,
+                        Ativo = materiais.Ativo
+                    }
+                ).ToListAsync();
 
-        //[HttpGet("emrisco")]
-        //public async Task<ActionResult<IEnumerable<Material>>> ObterMateriaisRisco(int limite)
-        //{
-        //    try
-        //    {
-        //        var materiaisRisco = await _context.Materiais
-        //            .Where(m => m.QuantidadeAtual < m.Limite)
-        //            .ToListAsync();
-
-        //        return Ok(materiaisRisco);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Erro interno ao obter materiais em risco: {ex.Message}");
-        //    }
-        //}
+                return Ok(materiaisDetalhes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno ao obter materiais em risco: {ex.Message}");
+            }
+        }
 
     }
 }

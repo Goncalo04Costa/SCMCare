@@ -161,24 +161,36 @@ namespace WebApplication1.Controllers
             return _context.Medicamentos.Any(e => e.Id == id);
         }
 
+        [HttpGet("emrisco")]
+        public async Task<ActionResult<IEnumerable<Medicamento>>> ObterMedicamentoRisco()
+        {
+            try
+            {
+                IQueryable<Medicamento> query = _context.Medicamentos;
 
-        // !!! Rever com o calcular quantidades a partir de conta corrente
+                var medicamentosDetalhes = await (
+                    from medicamentos in query
+                    let quantidadeAtual = _context.ContaCorrenteMateriais
+                        .Where(m => m.MateriaisId == medicamentos.Id)
+                        .Sum(m => m.Tipo ? m.QuantidadeMovimento : -m.QuantidadeMovimento)
+                    where quantidadeAtual < medicamentos.Limite
+                    select new
+                    {
+                        Id = medicamentos.Id,
+                        Nome = medicamentos.Nome,
+                        Descricao = medicamentos.Descricao,
+                        Quantidade = quantidadeAtual,
+                        Limite = medicamentos.Limite,
+                        Ativo = medicamentos.Ativo
+                    }
+                ).ToListAsync();
 
-        //[HttpGet("emrisco")]
-        //public async Task<ActionResult<IEnumerable<Medicamento>>> ObterMedicamentoRisco(int limite)
-        //{
-        //    try
-        //    {
-        //        var medicamentoRisco = await _context.Medicamentos
-        //            .Where(m => m.QuantidadeAtual < m.Limite)
-        //            .ToListAsync();
-
-        //        return Ok(medicamentoRisco);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Erro interno ao obter medicamentos em risco: {ex.Message}");
-        //    }
-        //}
+                return Ok(medicamentosDetalhes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno ao obter medicamentos em risco: {ex.Message}");
+            }
+        }
     }
 }

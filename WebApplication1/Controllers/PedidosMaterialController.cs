@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using WebApplication1.Servicos;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApplication1.Controllers
@@ -11,10 +12,22 @@ namespace WebApplication1.Controllers
     public class PedidosMaterialController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly TiposFuncionarioServico _tiposFuncionarioService;
+        private readonly NotificacoesServico _notificacoesService;
 
         public PedidosMaterialController(AppDbContext context)
         {
             _context = context;
+        }
+
+        public PedidosMaterialController(TiposFuncionarioServico tiposFuncionarioService)
+        {
+            _tiposFuncionarioService = tiposFuncionarioService;
+        }
+
+        public PedidosMaterialController(NotificacoesServico notificacoesService)
+        {
+            _notificacoesService = notificacoesService;
         }
 
         [HttpGet]
@@ -148,7 +161,23 @@ namespace WebApplication1.Controllers
             _context.PedidosMaterial.Add(pedidoMaterial);
             await _context.SaveChangesAsync();
 
-            return Ok("PedidoMaterial adicionado com sucesso");
+            int i = await _tiposFuncionarioService.ObterTipoPorNome("Diretor(a)");
+
+            if (i == -1)
+                return Ok("Pedido de materiais adicionado com sucesso, com erro de notificação");
+
+            var material = await _context.Materiais.FindAsync(pedidoMaterial.MateriaisId);
+
+            Notificacao notificacao = new Notificacao();
+            notificacao.Mensagem = $"Novo pedido de materiais com o id {pedidoMaterial.Id}: São requisitadas {pedidoMaterial.QuantidadeTotal} unidade(s) do material {material.Nome} com Id {pedidoMaterial.MateriaisId}.";
+            notificacao.Data = DateTime.Now;
+
+            int n = await _notificacoesService.InserirNotificacao(notificacao);
+
+            if (n == 1)
+                return Ok("Pedido de materiais e notificação adicionados com sucesso.");
+            else
+                return Ok("Pedido de materiais adicionado com sucesso, com erro de notificação");
         }
 
         [HttpPut("{id}")]
