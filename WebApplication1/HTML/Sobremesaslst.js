@@ -24,6 +24,44 @@ function CarregarDados() {
     });
 }
 
+function AplicarFiltros() {
+    var idMin = $("#id_de").val();
+    var idMax = $("#id_ate").val();
+    var nomeMin = $("#nome_de").val();
+    var nomeMax = $("#nome_ate").val();
+    var descMin = $("#desc_de").val();
+    var descMax = $("#desc_ate").val();
+    var tipo1 = $("#tipo1").prop('checked');
+    var tipo0 = $("#tipo0").prop('checked');
+    var ativo1 = $("#ativo1").prop('checked');
+    var ativo0 = $("#ativo0").prop('checked');
+
+    $.ajax({
+        url: '/api/Sobremesas',
+        method: 'GET',
+        data: {
+            idMin: idMin,
+            idMax: idMax,
+            nomeMin: nomeMin,
+            nomeMax: nomeMax,
+            descMin: descMin,
+            descMax: descMax,
+            tipo1: tipo1,
+            tipo0: tipo0,
+            ativo1: ativo1,
+            ativo0: ativo0
+        },
+        dataType: 'json',
+        success: function (response) {
+            CriarTabela(response);
+        },
+        error: function (xhr, status, error) {
+            // Handle error
+            console.error(xhr.responseText);
+        }
+    });
+}
+
 function CriarTabela(dados) {
     var tabela = document.getElementById('tabela');
     tabela.innerHTML = ''; // Limpa a tabela antes de criar novamente

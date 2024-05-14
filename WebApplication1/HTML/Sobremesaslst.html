@@ -22,13 +22,55 @@ LESI-IPCA -->
     <div class="container border">
         <h1 class="py-3" id="titulo">Sobremesas</h1>
         <div class="text-right">
-            <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Filtros</button>
+            <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseFiltros">Filtros</button>
             <button type="button" class="btn btn-danger" onclick="adicionar()">Adicionar</button>
         </div>
 
         <div class="collapse " id="collapseFiltros">
-            <div class="card card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+            <div class="row">
+                <div class="col-2 form-section">
+                    <label for="id_de">Id de:</label>
+                    <input type="number" class="form-control" id="id_de">
+                    <label for="id_ate">Id até:</label>
+                    <input type="number" class="form-control" id="id_ate">
+                </div>
+                <div class="col-2 form-section">
+                    <label for="nome_de">Nome de:</label>
+                    <input type="text" class="form-control" id="nome_de">
+                    <label for="nome_ate">Nome até:</label>
+                    <input type="text" class="form-control" id="nome_ate">
+                </div>
+                <div class="col-2 form-section">
+                    <label for="desc_de">Descrição de:</label>
+                    <input type="text" class="form-control" id="desc_de">
+                    <label for="desc_ate">Descrição até:</label>
+                    <input type="text" class="form-control" id="desc_ate">
+                </div>
+                <div class="col-2 form-section">
+                    <label>Dieta:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="tipo1" checked>
+                        <label class="form-check-label" for="tipo1">Sim</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="tipo0" checked>
+                        <label class="form-check-label" for="tipo0">Não</label>
+                    </div>
+                </div>
+                <div class="col-2 form-section">
+                    <label>Ativo:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="ativo1" checked>
+                        <label class="form-check-label" for="ativo1">Sim</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="ativo0" checked>
+                        <label class="form-check-label" for="ativo0">Não</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-right">
+                <button type="button" class="btn btn-success" onclick="AplicarFiltros()">Aplicar</button>
             </div>
         </div>
 
