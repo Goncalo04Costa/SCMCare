@@ -17,7 +17,7 @@ namespace WebApplication1.Controllers
         }
 
 
-        //Metodo para obter todas as camas com filtros especificos
+        //Metodo para obter todas as consultas com filtros especificos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Consulta>>> ObterTodasConsultas(
             int? idMin = null, int? idMax = null,
