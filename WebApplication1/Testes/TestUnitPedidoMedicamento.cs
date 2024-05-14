@@ -5,15 +5,16 @@ using WebApplication1.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using WebApplication1.Servicos;
 
 namespace WebApplication1.Testes
 {
-    public class TestInserirPedidoMedicamento
+    public class TestUnitPedidoMedicamento
     {
         private PedidosMedicamentoController _controller;
         private DbContextOptions<AppDbContext> _options;
 
-        public TestInserirPedidoMedicamento()
+        public TestUnitPedidoMedicamento()
         {
             _options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: "test_database")
@@ -23,9 +24,17 @@ namespace WebApplication1.Testes
             {
 
             }
-
+            /*
             var dbContext = new AppDbContext(_options);
-            _controller = new PedidosMedicamentoController(dbContext);
+            _controller = new PedidosMedicamentoController(dbContext);*/
+
+            var dbContext = new AppDbContext(_options); 
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext); 
+            var notificacoesService = new NotificacoesServico(dbContext); 
+
+            _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService); 
+
         }
 
         // Método para testar a inserção de um pedido de medicamento válido

@@ -9,12 +9,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Testes
 {
-    public class TestInserirUtente
+    public class TestUnitUtente
     {
         private UtentesController _controller;
         private DbContextOptions<AppDbContext> _options;
 
-        public TestInserirUtente()
+        public TestUnitUtente()
         {
             _options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: "test_database")

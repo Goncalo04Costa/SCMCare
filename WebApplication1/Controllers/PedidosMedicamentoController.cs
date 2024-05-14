@@ -14,6 +14,7 @@ namespace WebApplication1.Controllers
         private readonly TiposFuncionarioServico _tiposFuncionarioService;
         private readonly NotificacoesServico _notificacoesService;
 
+        /*
         public PedidosMedicamentoController(AppDbContext context)
         {
             _context = context;
@@ -28,6 +29,14 @@ namespace WebApplication1.Controllers
         {
             _notificacoesService = notificacoesService;
         }
+        */
+        public PedidosMedicamentoController(AppDbContext context, TiposFuncionarioServico tiposFuncionarioService, NotificacoesServico notificacoesService)
+        {
+            _context = context;
+            _tiposFuncionarioService = tiposFuncionarioService;
+            _notificacoesService = notificacoesService;
+        }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PedidoMedicamento>>> ObterTodosPedidoMedicamento(
