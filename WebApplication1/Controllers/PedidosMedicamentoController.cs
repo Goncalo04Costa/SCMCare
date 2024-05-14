@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using WebApplication1.Servicos;
 
 namespace WebApplication1.Controllers
 {
@@ -10,12 +11,24 @@ namespace WebApplication1.Controllers
     public class PedidosMedicamentoController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly TiposFuncionarioServico _tiposFuncionarioService;
+        private readonly NotificacoesServico _notificacoesService;
 
         public PedidosMedicamentoController(AppDbContext context)
         {
             _context = context;
         }
-        
+
+        public PedidosMedicamentoController(TiposFuncionarioServico tiposFuncionarioService)
+        {
+            _tiposFuncionarioService = tiposFuncionarioService;
+        }
+
+        public PedidosMedicamentoController(NotificacoesServico notificacoesService)
+        {
+            _notificacoesService = notificacoesService;
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PedidoMedicamento>>> ObterTodosPedidoMedicamento(
             int? idMin = null, int? idMax = null,
@@ -130,7 +143,23 @@ namespace WebApplication1.Controllers
             _context.PedidosMedicamento.Add(pedidoMedicamento);
             await _context.SaveChangesAsync();
 
-            return Ok("pedidoMedicamento adicionado com sucesso");
+            int i = await _tiposFuncionarioService.ObterTipoPorNome("Diretor(a)");
+
+            if (i == -1)
+                return Ok("Pedido de medicamentos adicionado com sucesso, com erro de notificação");
+
+            var medicamento = await _context.Medicamentos.FindAsync(pedidoMedicamento.MedicamentosId);
+
+            Notificacao notificacao = new Notificacao();
+            notificacao.Mensagem = $"Novo pedido de medicamentos com o id {pedidoMedicamento.Id}: São requisitadas {pedidoMedicamento.Quantidade} unidade(s) do medicamento {medicamento.Nome} com Id {pedidoMedicamento.MedicamentosId}.";
+            notificacao.Data = DateTime.Now;
+
+            int n = await _notificacoesService.InserirNotificacao(notificacao);
+
+            if (n == 1)
+                return Ok("Pedido de medicamentos e notificação adicionados com sucesso.");
+            else
+                return Ok("Pedido de medicamentos adicionado com sucesso, com erro de notificação");
         }
 
         [HttpPut("{id}")]
@@ -178,5 +207,9 @@ namespace WebApplication1.Controllers
             return Ok($"Foi removido o pedidoMedicamento com o ID {id}");
         }
 
+        internal async Task<object?> ObterPedidoMedicamento(object id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

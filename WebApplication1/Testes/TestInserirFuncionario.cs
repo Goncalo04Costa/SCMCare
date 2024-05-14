@@ -30,22 +30,22 @@ namespace WebApplication1.Testes
 
         // -------------- Testes para verificar o comportamento dos métodos HTTP (GET, POST, PUT, DELETE). 
 
-        // Método de teste para verificar se um funcionário pode ser inserido com sucesso (POST)
+        // Método para testar se um funcionário pode ser inserido com sucesso (POST)
         [Fact]
         public async Task TestInserirFuncionarioValido()
         {
             // Arrange 
-            var funcionario = new Funcionario { Nome = "João", Historico = false };
+            var funcionario = new Funcionario { Nome = "João", TiposFuncionarioId = 1, Historico = false };
 
             // Act 
             var result = await _controller.PostFuncionario(funcionario);
 
             // Assert
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsType<OkObjectResult>(result); // Verifica se o resultado é do tipo OkObjectResult
+            Assert.IsType<ActionResult<Funcionario>>(result); // Verifica se o resultado é do tipo OkObjectResult
         }
 
-        // Método de teste para verificar se um funcionário existente pode ser recuperado pelo ID (GET)
+        // Método para testar se é possível obter um funcionário existente através do ID (GET)
         [Fact]
         public async Task TestGetFuncionarioIdValido()
         {
@@ -72,7 +72,7 @@ namespace WebApplication1.Testes
         }
 
 
-        // Método de teste para verificar se um funcionário existente pode ser atualizado com sucesso (PUT)
+        // Método para testar se um funcionário existente pode ser atualizado com sucesso (PUT)
         [Fact]
         public async Task TestAtualizarFuncionarioExistente()
         {
@@ -91,7 +91,7 @@ namespace WebApplication1.Testes
             Assert.IsType<OkObjectResult>(result); // Verifica se o resultado é do tipo OkObjectResult
         }
 
-        // Método de teste para verificar se um funcionário existente pode ser removido com sucesso (DELETE)
+        // Método para testar se um funcionário existente pode ser removido com sucesso (DELETE)
         [Fact]
         public async Task TestRemoverFuncionarioExistente()
         {
