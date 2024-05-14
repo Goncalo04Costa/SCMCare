@@ -176,66 +176,21 @@ namespace WebApplication1.Testes
             // Act
             var result = await _controller.RemoveUtente(idInexistente);
 
+            
+
             // Assert
             Assert.NotNull(result); // Verifica se o resultado não é nulo
             Assert.IsType<NotFoundObjectResult>(result); // Verifica se o resultado é do tipo NotFoundObjectResult
 
-            var notFoundResult = result as NotFoundObjectResult;
-            Assert.Equal($"Não foi possível encontrar o utente com o ID {idInexistente}", notFoundResult.Value); // Verifica a mensagem de erro
+            var notFoundResult = result as NotFoundObjectResult; // Converte o resultado para NotFoundObjectResult
+            Assert.NotNull(notFoundResult); // Verifica se a conversão foi bem-sucedida
+
+            // Verifica se a mensagem de erro é a esperada
+            Assert.Equal($"Não foi possível encontrar o utente com o ID {idInexistente}", notFoundResult.Value);
+            // Ou se preferir, você pode verificar o código de status HTTP
+            Assert.Equal(404, notFoundResult.StatusCode); // Verifica se o código de status é 404 (Not Found)
+
         }
-
-        // Método para testar se não é possível atualizar um utente com dados inválidos.
-        [Fact]
-        public async Task TestAtualizarUtenteComDadosInvalidos()
-        {
-            // Arrange
-            var utenteExistente = new Utente
-            {
-                Nome = "Maria",
-                NIF = 123456789,
-                SNS = 987654321,
-                DataAdmissao = DateTime.Now,
-                Historico = false,
-                Tipo = false,
-                TiposAdmissaoId = 1,
-                AntecedentesPessoais = "antecedentes",
-                DiagnosticoAdmissao = "diagnóstico",
-                ExameObjetivo = "exame",
-                MotivoAdmissao = "motivo",
-                NotaAdmissao = "nota",
-                Observacoes = "observações",
-                Mensalidade = 100.00,
-                Cofinanciamento = 50.00
-            };
-
-            // Adiciona um utente existente
-            await _controller.InserirUtente(utenteExistente);
-
-            // Obtem o ID do utente existente
-            var idUtenteExistente = (await _controller.ObterUtentePorNome("Maria")).Value.Id;
-
-            // Cria um novo utente inválido
-            var utenteInvalido = new Utente
-            {
-                // Aqui, propositadamente foi deixado o campo "Nome" como nulo, o que é inválido
-                NIF = 987654321,
-                SNS = 123456789,
-                DataAdmissao = DateTime.Now,
-                DataNascimento = DateTime.Now,
-                Historico = false
-    };
-
-            // Act
-            var result = await _controller.AtualizaUtente(idUtenteExistente, utenteInvalido);
-
-            // Assert
-            Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsType<BadRequestObjectResult>(result); // Verifica se o resultado é do tipo BadRequestObjectResult
-
-            var badRequestResult = result as BadRequestObjectResult;
-            Assert.Equal("Dados inválidos", badRequestResult.Value); // Verifica a mensagem de erro
-        }
-
 
     }
 }

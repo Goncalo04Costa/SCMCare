@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
+using WebApplication1.Servicos;
 
 namespace WebApplication1.Testes
 {
@@ -25,7 +26,10 @@ namespace WebApplication1.Testes
             }
 
             var dbContext = new AppDbContext(_options);
-            _controller = new PedidosMedicamentoController(dbContext);
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext); 
+            var notificacoesService = new NotificacoesServico(dbContext); 
+
+            _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
         }
 
         [Fact]

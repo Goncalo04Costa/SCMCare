@@ -5,27 +5,29 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
+using WebApplication1.Servicos;
 
 namespace WebApplication1.Testes
 {
     public class TesteInserirPedidoMedicamento
     {
-        private PedidosMedicamentoController _controller;
-        private DbContextOptions<AppDbContext> _options;
+        private readonly PedidosMedicamentoController _controller;
 
         public TesteInserirPedidoMedicamento()
         {
-            _options = new DbContextOptionsBuilder<AppDbContext>()
+            var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: "test_database")
                 .Options;
 
-            using (var context = new AppDbContext(_options))
-            {
+            var dbContext = new AppDbContext(options);
 
-            }
+            // Instantiate TiposFuncionarioServico with the required AppDbContext parameter
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
 
-            var dbContext = new AppDbContext(_options);
-            _controller = new PedidosMedicamentoController(dbContext);
+            // Instantiate NotificacoesServico with the required AppDbContext parameter
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
         }
 
         [Fact]
@@ -69,13 +71,13 @@ namespace WebApplication1.Testes
             var atualizarResultado = await _controller.AtualizaPedidoMedicamento(pedidoMedicamentoInserido.Id, pedidoMedicamentoInserido);
             var atualizarOkResult = atualizarResultado as OkObjectResult;
             Assert.NotNull(atualizarOkResult);
-            Assert.Equal($"Pedido de medicamento atualizado com sucesso", atualizarOkResult.Value);
+            Assert.Equal($"Foi atualizado o pedidoMedicamento com o ID {pedidoMedicamentoInserido.Id}", atualizarOkResult.Value);
 
             // Remover
             var removerResultado = await _controller.RemovePedidoMedicamento(pedidoMedicamentoInserido.Id);
             var removerOkResult = removerResultado as OkObjectResult;
             Assert.NotNull(removerOkResult);
-            Assert.Equal($"Pedido de medicamento removido com sucesso", removerOkResult.Value);
+            Assert.Equal($"Foi removido o pedidoMedicamento com o ID {pedidoMedicamentoInserido.Id}", removerOkResult.Value);
         }
     }
 }
