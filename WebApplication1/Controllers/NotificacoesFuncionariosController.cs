@@ -77,28 +77,7 @@ namespace WebApplication1.Controllers
             return Ok("Funcionário notificado com sucesso");
         }
 
-        //[HttpPut("{NotificacoesId}/{FuncionariosId}")]
-        //public async Task<IActionResult> AtualizarNotificacaoFuncionario(int NotificacoesId, int FuncionariosId, [FromBody] NotificacaoFuncionario novaNotificacaoFuncionario)
-        //{
-        //    var notificacaoFuncionario = await _context.NotificacoesFuncionario.FirstOrDefaultAsync(a => a.NotificacoesId == NotificacoesId && a.FuncionariosId == FuncionariosId);
-
-        //    if (notificacaoFuncionario == null)
-        //    {
-        //        return NotFound($"Não foi possível encontrar a notificacaoFuncionario com a notificacao ID {NotificacoesId} e o funcionario ID {FuncionariosId}");
-        //    }
-
-        //    notificacaoFuncionario.Estado = novaNotificacaoFuncionario.Estado;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //        return Ok($"NotificacaoFuncionario atualizada com sucesso para a notificacao ID {NotificacoesId} e o funcionario ID {FuncionariosId}");
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw e;
-        //    }
-        //}
+        
 
         [HttpDelete("{NotificacoesId}/{FuncionariosId}")]
         public async Task<IActionResult> RemoverNotificacaoFuncionario(int NotificacoesId, int FuncionariosId)

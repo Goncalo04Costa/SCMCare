@@ -5,6 +5,7 @@ using WebApplication1.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Testes
 {
@@ -39,7 +40,17 @@ namespace WebApplication1.Testes
                 NIF = 123456789,
                 SNS = 987654321,
                 DataAdmissao = DateTime.Now,
-                Historico = false
+                Historico = false,
+                Tipo = false,
+                TiposAdmissaoId = 1,
+                AntecedentesPessoais = "antecedentes",
+                DiagnosticoAdmissao = "diagnóstico",
+                ExameObjetivo = "exame",
+                MotivoAdmissao = "motivo",
+                NotaAdmissao = "nota",
+                Observacoes = "observações",
+                Mensalidade = 100.00,
+                Cofinanciamento = 50.00
             };
 
             // Act
@@ -82,7 +93,17 @@ namespace WebApplication1.Testes
                 NIF = 123456789,
                 SNS = 987654321,
                 DataAdmissao = DateTime.Now,
-                Historico = false
+                Historico = false,
+                Tipo = false,
+                TiposAdmissaoId = 1,
+                AntecedentesPessoais = "antecedentes",
+                DiagnosticoAdmissao = "diagnóstico",
+                ExameObjetivo = "exame",
+                MotivoAdmissao = "motivo",
+                NotaAdmissao = "nota",
+                Observacoes = "observações",
+                Mensalidade = 100.00,
+                Cofinanciamento = 50.00
             };
 
             // Inserindo o primeiro utente
@@ -95,7 +116,17 @@ namespace WebApplication1.Testes
                 NIF = 123456789, // NIF duplicado
                 SNS = 123456789,
                 DataAdmissao = DateTime.Now,
-                Historico = false
+                Historico = false,
+                Tipo = false,
+                TiposAdmissaoId = 1,
+                AntecedentesPessoais = "antecedentes",
+                DiagnosticoAdmissao = "diagnóstico",
+                ExameObjetivo = "exame",
+                MotivoAdmissao = "motivo",
+                NotaAdmissao = "nota",
+                Observacoes = "observações",
+                Mensalidade = 100.00,
+                Cofinanciamento = 50.00
             };
 
             // Act
@@ -164,7 +195,17 @@ namespace WebApplication1.Testes
                 NIF = 123456789,
                 SNS = 987654321,
                 DataAdmissao = DateTime.Now,
-                Historico = false
+                Historico = false,
+                Tipo = false,
+                TiposAdmissaoId = 1,
+                AntecedentesPessoais = "antecedentes",
+                DiagnosticoAdmissao = "diagnóstico",
+                ExameObjetivo = "exame",
+                MotivoAdmissao = "motivo",
+                NotaAdmissao = "nota",
+                Observacoes = "observações",
+                Mensalidade = 100.00,
+                Cofinanciamento = 50.00
             };
 
             // Adiciona um utente existente
@@ -180,8 +221,9 @@ namespace WebApplication1.Testes
                 NIF = 987654321,
                 SNS = 123456789,
                 DataAdmissao = DateTime.Now,
+                DataNascimento = DateTime.Now,
                 Historico = false
-            };
+    };
 
             // Act
             var result = await _controller.AtualizaUtente(idUtenteExistente, utenteInvalido);

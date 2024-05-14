@@ -207,5 +207,9 @@ namespace WebApplication1.Controllers
             return Ok($"Foi removido o pedidoMedicamento com o ID {id}");
         }
 
+        internal async Task<object?> ObterPedidoMedicamento(object id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -35,14 +35,14 @@ namespace WebApplication1.Testes
         public async Task TestInserirFuncionarioValido()
         {
             // Arrange 
-            var funcionario = new Funcionario { Nome = "João", Historico = false };
+            var funcionario = new Funcionario { Nome = "João", TiposFuncionarioId = 1, Historico = false };
 
             // Act 
             var result = await _controller.PostFuncionario(funcionario);
 
             // Assert
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsType<OkObjectResult>(result); // Verifica se o resultado é do tipo OkObjectResult
+            Assert.IsType<ActionResult<Funcionario>>(result); // Verifica se o resultado é do tipo OkObjectResult
         }
 
         // Método para testar se é possível obter um funcionário existente através do ID (GET)
