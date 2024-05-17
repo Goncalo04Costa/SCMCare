@@ -16,6 +16,6 @@
 
         public bool EnableLogging { get; set; } // Habilitar/desabilitar o registo de logs
 
-        // Adicione outras propriedades de configuração, conforme necessário
+     
     }
 }

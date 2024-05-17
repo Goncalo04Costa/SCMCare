@@ -12,7 +12,7 @@ namespace WebApplication1
         // Define as entidades DbSet
         public DbSet<ContaCorrenteMaterial> ContaCorrenteMateriais { get; set; }
         public DbSet<ContaCorrenteMedicamento> ContaCorrenteMedicamentos { get; set; }
-        public DbSet<Alta> Alta { get; set; }
+        public DbSet<Alta> Altas { get; set; }
         public DbSet<Avaliacao> Avaliacoes { get; set; }
         public DbSet<Avaria> Avarias { get; set; }
         public DbSet<Cama> Camas { get; set; }
@@ -33,7 +33,7 @@ namespace WebApplication1
         public DbSet<Medicamento> Medicamentos { get; set; }
         public DbSet<MedicamentoPrescricao> MedicamentosPrescricao { get; set; }
         public DbSet<Mensalidade> Mensalidades { get; set; }
-        public DbSet<Menu> Menu { get; set; }
+        public DbSet<Menu> Menus { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
         public DbSet<NotificacaoFuncionario> NotificacoesFuncionarios { get; set; }
         public DbSet<NotificacaoResponsavel> NotificacoesResponsaveis { get; set; }
@@ -50,8 +50,8 @@ namespace WebApplication1
         public DbSet<Sopa> Sopas { get; set; }
         public DbSet<TipoAdmissao> TiposAdmissao { get; set; }
         public DbSet<TipoAlergia> TiposAlergia { get; set; }
-        public DbSet<TipoAvaliacao> TipoAvaliacao { get; set; }
-        public DbSet<TipoContacto> TipoContacto { get; set; }
+        public DbSet<TipoAvaliacao> TiposAvaliacao { get; set; }
+        public DbSet<TipoContacto> TiposContacto { get; set; }
         public DbSet<TipoEquipamento> TiposEquipamento { get; set; }
         public DbSet<TipoFuncionario> TiposFuncionario { get; set; }
         public DbSet<TipoMaterial> TiposMaterial { get; set; }
@@ -61,11 +61,11 @@ namespace WebApplication1
         public DbSet<Turno> Turnos { get; set; }
         public DbSet<Utente> Utentes { get; set; }
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configurações das chaves primárias para entidades sem chave primária própria
-            modelBuilder.Entity<Alta>().HasKey(c => new { c.UtentesId });
+            modelBuilder.Entity<Alta>().HasKey(c => c.UtentesId);
             modelBuilder.Entity<ContactoFornecedor>().HasKey(c => new { c.FornecedoresId, c.TipoContactoId });
             modelBuilder.Entity<ContactoFuncionario>().HasKey(c => new { c.FuncionariosId, c.TipoContactoId });
             modelBuilder.Entity<ContactoResponsavel>().HasKey(c => new { c.ResponsaveisId, c.TipoContactoId });

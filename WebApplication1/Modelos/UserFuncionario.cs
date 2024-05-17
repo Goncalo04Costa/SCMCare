@@ -8,7 +8,7 @@ namespace Modelos
         public int FuncionarioId { get; set; }
 
         [Required]
-        public string User { get; set; }
+        public override string UserName { get; set; }
 
         [Required]
         public string Passe { get; set; }

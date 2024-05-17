@@ -1,11 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Modelos
 {
     public class UserResponsavel
     {
-        [Required]
+        [Key]
         public int ResponsaveisId { get; set; }
 
         [Required]

@@ -132,18 +132,18 @@ namespace YourNamespace
         {
             var host = CreateHostBuilder(args).Build();
 
-            // Configurar o banco de dados antes de iniciar a aplicação
+          
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
                     var dbContext = services.GetRequiredService<AppDbContext>();
-                    dbContext.Database.Migrate(); // Aplica as migrações pendentes
+                    dbContext.Database.Migrate(); 
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Erro ao configurar o banco de dados: " + ex.Message);
+                    Console.WriteLine("Erro ao configurar base de dados: " + ex.Message);
                 }
             }
 
