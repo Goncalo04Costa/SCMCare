@@ -100,7 +100,7 @@ namespace WebApplication1.Controllers
                 from utente in uG.DefaultIfEmpty()
                 join funcionario in _context.Funcionarios on avaliacao.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
-                join tipoAvaliacao in _context.TipoAvaliacao on avaliacao.TipoAvaliacaoId equals tipoAvaliacao.Id into tG
+                join tipoAvaliacao in _context.TiposAvaliacao on avaliacao.TipoAvaliacaoId equals tipoAvaliacao.Id into tG
                 from tipoAvaliacao in tG.DefaultIfEmpty()
                 select new
                 {

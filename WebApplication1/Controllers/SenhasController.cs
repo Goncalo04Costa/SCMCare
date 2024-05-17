@@ -50,7 +50,7 @@ namespace WebApplication1.Controllers
                 from senha in query
                 join funcionario in _context.Funcionarios on senha.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
-                join menu in _context.Menu on senha.MenuId equals menu.Id into mG
+                join menu in _context.Menus on senha.MenuId equals menu.Id into mG
                 from menu in mG.DefaultIfEmpty()
                 select new
                 {
@@ -77,7 +77,7 @@ namespace WebApplication1.Controllers
                 from senha in query
                 join funcionario in _context.Funcionarios on senha.FuncionariosId equals funcionario.FuncionarioID into fG
                 from funcionario in fG.DefaultIfEmpty()
-                join menu in _context.Menu on senha.MenuId equals menu.Id into mG
+                join menu in _context.Menus on senha.MenuId equals menu.Id into mG
                 from menu in mG.DefaultIfEmpty()
                 select new
                 {
@@ -156,7 +156,7 @@ namespace WebApplication1.Controllers
         public async Task<ActionResult<Senha>> ReservarSenha(int funcionarioId, int menuId)
         {
             var funcionario = await _context.Funcionarios.FindAsync(funcionarioId);
-            var menu = await _context.Menu.FindAsync(menuId);
+            var menu = await _context.Menus.FindAsync(menuId);
 
             if (funcionario == null || menu == null)
             {

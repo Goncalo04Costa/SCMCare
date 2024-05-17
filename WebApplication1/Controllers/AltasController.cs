@@ -23,7 +23,7 @@ namespace WebApplication1.Controllers
             int? funcionariosIdMin = null, int? funcionariosIdMax = null,
             DateTime? dataMin = null, DateTime? dataMax = null)
         {
-            IQueryable<Alta> query = _context.Alta;
+            IQueryable<Alta> query = _context.Altas;
 
             // Aplicar filtros opcionais
             if (utentesIdMin.HasValue)
@@ -82,7 +82,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{utenteId}/{funcionarioId}")]
         public async Task<ActionResult<Alta>> ObterAlta(int utentesId, int funcionarioId)
         {
-            IQueryable<Alta> query = _context.Alta;
+            IQueryable<Alta> query = _context.Altas;
             query = query.Where(d => d.UtentesId == utentesId && d.FuncionariosId == funcionarioId);
 
             // Realizar a consulta e retornar os detalhes da alta
@@ -117,7 +117,7 @@ namespace WebApplication1.Controllers
             }
 
             // Adicionar a nova alta ao contexto e guardar as alterações
-            _context.Alta.Add(alta);
+            _context.Altas.Add(alta);
             await _context.SaveChangesAsync();
 
             return Ok("Alta adicionada com sucesso");
@@ -127,7 +127,7 @@ namespace WebApplication1.Controllers
         [HttpPut("{utenteId}/{funcionarioId}")]
         public async Task<IActionResult> AtualizarAlta(int utenteId, int funcionarioId, [FromBody] Alta novaAlta)
         {
-            var alta = await _context.Alta
+            var alta = await _context.Altas
                 .FirstOrDefaultAsync(a => a.UtentesId == utenteId && a.FuncionariosId == funcionarioId);
 
             if (alta == null)
@@ -157,7 +157,7 @@ namespace WebApplication1.Controllers
         [HttpDelete("{utenteId}/{funcionarioId}")]
         public async Task<IActionResult> RemoverAlta(int utenteId, int funcionarioId)
         {
-            var alta = await _context.Alta
+            var alta = await _context.Altas
                 .FirstOrDefaultAsync(a => a.UtentesId == utenteId && a.FuncionariosId == funcionarioId);
 
             if (alta == null)
@@ -166,7 +166,7 @@ namespace WebApplication1.Controllers
             }
 
             // Remover a alta do contexto e guardar as alterações
-            _context.Alta.Remove(alta);
+            _context.Altas.Remove(alta);
             await _context.SaveChangesAsync();
 
             return Ok($"Alta removida para o utente ID {utenteId} e funcionário ID {funcionarioId}");

@@ -62,7 +62,7 @@ namespace WebApplication1.Controllers
 
             return new UserFuncionario
             {
-                User = user.UserName,
+                UserName = user.UserName,
             };
         }
 

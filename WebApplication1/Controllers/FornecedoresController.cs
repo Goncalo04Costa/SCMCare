@@ -62,7 +62,7 @@ namespace WebApplication1.Controllers
                     Contactos = _context.ContactosFornecedores
                         .Where(cf => cf.FornecedoresId == fornecedor.Id)
                         .Join(
-                            _context.TipoContacto,
+                            _context.TiposContacto,
                             cf => cf.TipoContactoId,
                             tc => tc.Id,
                             (cf, tc) => new
