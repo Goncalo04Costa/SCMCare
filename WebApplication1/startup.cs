@@ -27,7 +27,10 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
+            // Gonçalo
+            //var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
+            // Diogo
+            var connectionString = Configuration.GetConnectionString("LigacaoDiogo");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
@@ -75,6 +78,8 @@ namespace WebApplication1
 
             // Outros serviços
             services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
             services.AddScoped<NotificacoesServico>();
         }
 
@@ -84,11 +89,7 @@ namespace WebApplication1
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint(Configuration["Swagger:JsonRoute"], "My API V1");
-                    c.RoutePrefix = Configuration["Swagger:UiEndpoint"];
-                });
+                app.UseSwaggerUI();
             }
             else
             {
@@ -102,8 +103,7 @@ namespace WebApplication1
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, "HTML")),
-                RequestPath = "/HTML"
+                    Path.Combine(env.ContentRootPath, "HTML"))
             });
 
             app.UseRouting();
