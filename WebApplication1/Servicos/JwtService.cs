@@ -59,6 +59,5 @@ namespace WebApplication1.Servicos
                 ),
                 SecurityAlgorithms.HmacSha256
             );
-
     }
 }

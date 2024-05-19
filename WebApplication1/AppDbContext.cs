@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Modelos;
 
 namespace WebApplication1
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -64,6 +66,8 @@ namespace WebApplication1
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // Configurações das chaves primárias para entidades sem chave primária própria
             modelBuilder.Entity<Alta>().HasKey(c => c.UtentesId);
             modelBuilder.Entity<ContactoFornecedor>().HasKey(c => new { c.FornecedoresId, c.TipoContactoId });

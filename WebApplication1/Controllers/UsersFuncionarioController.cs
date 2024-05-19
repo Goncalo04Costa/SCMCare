@@ -11,20 +11,17 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class UserFuncionarioController : ControllerBase
     {
-      
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly JwtService _jwtService;
+        private readonly IJwtService _jwtService; 
 
         public UserFuncionarioController(
                     UserManager<IdentityUser> userManager,
-                    JwtService jwtService
+                    IJwtService jwtService 
                 )
         {
             _userManager = userManager;
             _jwtService = jwtService;
-
         }
-
 
         [HttpPost]
         public async Task<ActionResult<UserFuncionario>> PostUser([FromBody] UserFuncionarioDto userDto)
@@ -35,7 +32,7 @@ namespace WebApplication1.Controllers
             }
 
             var result = await _userManager.CreateAsync(
-                new IdentityUser() { UserName = userDto.User},
+                new IdentityUser() { UserName = userDto.User },
                 userDto.Passe
             );
 
@@ -47,7 +44,6 @@ namespace WebApplication1.Controllers
             userDto.Passe = null;
             return Created("", userDto);
         }
-
 
         // GET: api/Users/username
         [HttpGet("{username}")]
@@ -92,10 +88,5 @@ namespace WebApplication1.Controllers
 
             return Ok(token);
         }
-
     }
-
 }
-
-
-    

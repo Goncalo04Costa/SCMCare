@@ -43,7 +43,7 @@ namespace WebApplication1
             var jwtSettings = Configuration.GetSection("Jwt");
             var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
             services.Configure<AppSettings>(Configuration);
-            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IJwtService, JwtService>(); // Registering JwtService with the interface
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -99,7 +99,7 @@ namespace WebApplication1
 
             app.UseHttpsRedirection();
 
-            // Servir arquivos estáticos da pasta "HTML"
+            
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(

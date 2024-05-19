@@ -66,32 +66,32 @@ namespace WebApplication1.Controllers
             };
         }
 
-        [HttpPost("BearerToken")]
-        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Bad credentials");
-            }
+        //[HttpPost("BearerToken")]
+        //public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest("Bad credentials");
+        //    }
 
-            var user = await _userManager.FindByNameAsync(request.Username);
+        //    var user = await _userManager.FindByNameAsync(request.Username);
 
-            if (user == null)
-            {
-                return BadRequest("Bad credentials");
-            }
+        //    if (user == null)
+        //    {
+        //        return BadRequest("Bad credentials");
+        //    }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+        //    var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
 
-            if (!isPasswordValid)
-            {
-                return BadRequest("Bad credentials");
-            }
+        //    if (!isPasswordValid)
+        //    {
+        //        return BadRequest("Bad credentials");
+        //    }
 
-            var token = _jwtService.CreateToken(user);
+        //    var token = _jwtService.CreateToken(user);
 
-            return Ok(token);
-        }
+        //    return Ok(token);
+        //}
 
     }
 }
