@@ -28,9 +28,9 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             // Gonçalo
-            //var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
+            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
             // Diogo
-            var connectionString = Configuration.GetConnectionString("LigacaoDiogo");
+            //var connectionString = Configuration.GetConnectionString("LigacaoDiogo");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
