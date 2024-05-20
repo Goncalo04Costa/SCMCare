@@ -42,8 +42,34 @@ namespace WebApplication1.Testes
 
             var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
 
-            // inserir tipo de funcioario ("Diretor(a)"
-            // inserir medicamento 1
+            // Inserir tipo de funcionário "Diretor(a)"
+            var tipoFuncionario = new TipoFuncionario
+            {
+                Descricao = "Diretor(a)"
+            };
+            dbContext.TiposFuncionario.Add(tipoFuncionario);
+            await dbContext.SaveChangesAsync();
+
+            // Inserir medicamento 1
+            var medicamento = new Medicamento
+            {
+                Nome = "Paracetamol",
+                Descricao = "Medicamento para dor e febre",
+                Limite = 100,
+                Ativo = true
+            };
+            dbContext.Medicamentos.Add(medicamento);
+            await dbContext.SaveChangesAsync();
+
+            // Inserir funcionário
+            var funcionario = new Funcionario
+            {
+                Nome = "João Silva",
+                TiposFuncionarioId = tipoFuncionario.Id,
+                Historico = false
+            };
+            dbContext.Funcionarios.Add(funcionario);
+            await dbContext.SaveChangesAsync();
 
             var pedidoMedicamento = new PedidoMedicamento
             {
