@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
 using WebApplication1.Servicos;
+using Xunit.Sdk;
 
 namespace WebApplication1.Controllers
 {
@@ -152,12 +153,14 @@ namespace WebApplication1.Controllers
             _context.PedidosMedicamento.Add(pedidoMedicamento);
             await _context.SaveChangesAsync();
 
-            int i = await _tiposFuncionarioService.ObterTipoPorNome("Diretor(a)");
+            //int i = await _tiposFuncionarioService.ObterTipoPorNome("Diretor(a)");
 
-            if (i == -1)
-                return Ok("Pedido de medicamentos adicionado com sucesso, com erro de notificação");
+            //if (i == -1)
+            //    return Ok("Pedido de medicamentos adicionado com sucesso, com erro de notificação");
 
             var medicamento = await _context.Medicamentos.FindAsync(pedidoMedicamento.MedicamentosId);
+            if (medicamento == null)
+                throw new Exception($"Medicamento {pedidoMedicamento.MedicamentosId} não encontrado.");
 
             Notificacao notificacao = new Notificacao();
             notificacao.Mensagem = $"Novo pedido de medicamentos com o id {pedidoMedicamento.Id}: São requisitadas {pedidoMedicamento.Quantidade} unidade(s) do medicamento {medicamento.Nome} com Id {pedidoMedicamento.MedicamentosId}.";

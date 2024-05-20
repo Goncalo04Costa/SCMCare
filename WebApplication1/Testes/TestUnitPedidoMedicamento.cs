@@ -11,29 +11,21 @@ namespace WebApplication1.Testes
 {
     public class TestUnitPedidoMedicamento
     {
-        private PedidosMedicamentoController _controller;
+        //private PedidosMedicamentoController _controller;
         private DbContextOptions<AppDbContext> _options;
 
         public TestUnitPedidoMedicamento()
         {
-            _options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: "test_database")
-                .Options;
+            //_options = new DbContextOptionsBuilder<AppDbContext>()
+            //    .UseInMemoryDatabase(databaseName: "test_database")
+            //    .Options;
 
-            using (var context = new AppDbContext(_options))
-            {
+            //var dbContext = new AppDbContext(_options);
 
-            }
-            /*
-            var dbContext = new AppDbContext(_options);
-            _controller = new PedidosMedicamentoController(dbContext);*/
+            //var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            //var notificacoesService = new NotificacoesServico(dbContext);
 
-            var dbContext = new AppDbContext(_options); 
-
-            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext); 
-            var notificacoesService = new NotificacoesServico(dbContext); 
-
-            _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService); 
+            //_controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
 
         }
 
@@ -42,6 +34,17 @@ namespace WebApplication1.Testes
         public async Task InserirPedidoMed_Valido()
         {
             // Arrange
+            _options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "test_database1").Options;
+            var dbContext = new AppDbContext(_options);
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
+
+            // inserir tipo de funcioario ("Diretor(a)"
+            // inserir medicamento 1
+
             var pedidoMedicamento = new PedidoMedicamento
             {
                 MedicamentosId = 1,
@@ -60,13 +63,22 @@ namespace WebApplication1.Testes
             Assert.IsType<OkObjectResult>(result.Result);
 
             var okResult = result.Result as OkObjectResult;
-            Assert.Equal("pedidoMedicamento adicionado com sucesso", okResult.Value);
+            Assert.Equal("Pedido de medicamentos e notificação adicionados com sucesso.", okResult.Value);
         }
 
         // Método para testar a inserção de um pedido de medicamento nulo
         [Fact]
         public async Task InserirPedidoMed_Nulo()
         {
+            // Arrange
+            _options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "test_database2").Options;
+            var dbContext = new AppDbContext(_options);
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
+
             // Act
             var result = await _controller.InserirPedidoMedicamento(null);
 
@@ -80,6 +92,14 @@ namespace WebApplication1.Testes
         public async Task ObterPedidoMed_Existir()
         {
             // Arrange
+            _options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "test_database3").Options;
+            var dbContext = new AppDbContext(_options);
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
+
             var pedidoMedicamento = new PedidoMedicamento
             {
                 MedicamentosId = 1,
@@ -108,6 +128,14 @@ namespace WebApplication1.Testes
         public async Task ObterPedidoMed_Inexistente()
         {
             // Arrange - Supondo que não há pedido de medicamento com o ID 100
+            _options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "test_database4").Options;
+            var dbContext = new AppDbContext(_options);
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
+
             var idPedidoInexistente = 100;
 
             // Act 
@@ -124,6 +152,14 @@ namespace WebApplication1.Testes
         public async Task AtualizarPedidoMed_Valido()
         {
             // Arrange
+            _options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "test_database5").Options;
+            var dbContext = new AppDbContext(_options);
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
+
             var pedidoMedicamento = new PedidoMedicamento
             {
                 MedicamentosId = 1,
@@ -136,12 +172,22 @@ namespace WebApplication1.Testes
 
             var inserirResultado = await _controller.InserirPedidoMedicamento(pedidoMedicamento);
 
-            // Modifica os dados do pedido
-            pedidoMedicamento.Quantidade = 20;
-            pedidoMedicamento.DataConclusao = DateTime.Now;
+            var pedidoMedicamento2 = new PedidoMedicamento
+            {
+                MedicamentosId = 1,
+                FuncionariosId = 1,
+                Quantidade = 20,
+                DataPedido = DateTime.Now,
+                Estado = 0,
+                DataConclusao = DateTime.Now
+            };
+
+            //// Modifica os dados do pedido
+            //pedidoMedicamento2.Quantidade = 20;
+            //pedidoMedicamento2.DataConclusao = DateTime.Now;
 
             // Act
-            var result = await _controller.AtualizaPedidoMedicamento(1, pedidoMedicamento);
+            var result = await _controller.AtualizaPedidoMedicamento(1, pedidoMedicamento2);
 
             // Assert
             Assert.NotNull(result);
@@ -156,6 +202,14 @@ namespace WebApplication1.Testes
         public async Task AtualizarPedidoMed_Inexistente()
         {
             // Arrange
+            _options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "test_database6").Options;
+            var dbContext = new AppDbContext(_options);
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
+
             var pedidoMedicamento = new PedidoMedicamento
             {
                 Id = 100, // Supondo que o ID 100 não existe
@@ -180,6 +234,14 @@ namespace WebApplication1.Testes
         public async Task RemovePedidoMed_Valido()
         {
             // Arrange
+            _options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "test_database7").Options;
+            var dbContext = new AppDbContext(_options);
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
+
             var pedidoMedicamento = new PedidoMedicamento
             {
                 MedicamentosId = 1,
@@ -208,6 +270,14 @@ namespace WebApplication1.Testes
         public async Task RemovePedidoMed_Inexistente()
         {
             // Act
+            _options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "test_database8").Options;
+            var dbContext = new AppDbContext(_options);
+
+            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
+            var notificacoesService = new NotificacoesServico(dbContext);
+
+            var _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
+
             var result = await _controller.RemovePedidoMedicamento(100); // Supondo que o ID do pedido inexistente é 100
 
             // Assert
