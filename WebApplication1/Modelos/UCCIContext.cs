@@ -24,7 +24,7 @@ namespace WebApplication1.Modelos
             modelBuilder.Entity<NotificacaoResponsavel>().HasKey(c => new { c.ResponsaveisId, c.NotificacoesId });
             modelBuilder.Entity<Senha>().HasKey(c => new { c.FuncionariosId, c.MenuId });
             modelBuilder.Entity<UtenteAlergia>().HasKey(c => new { c.UtentesId, c.TiposAlergiaId });
-            modelBuilder.Entity<UserResponsavel>().HasKey(c => new { c.ResponsaveisId });
+           // modelBuilder.Entity<UserResponsavel>().HasKey(c => new { c.ResponsaveisId });
             base.OnModelCreating(modelBuilder);
 
         }
@@ -80,8 +80,8 @@ namespace WebApplication1.Modelos
         public DbSet<Turno> Turnos { get; set; }
         public DbSet<Utente> Utentes { get; set; }
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
-        public DbSet<UserResponsavel> UserResponsavel { get; set; }
-        public DbSet<UserFuncionario> UserFuncionario { get; set; }
+        //public DbSet<UserResponsavel> UserResponsavel { get; set; }
+        public DbSet<Users> Users { get; set; }
 
     }
 }

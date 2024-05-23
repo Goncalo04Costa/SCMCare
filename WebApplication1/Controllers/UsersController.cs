@@ -9,12 +9,12 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserFuncionarioController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IJwtService _jwtService; 
 
-        public UserFuncionarioController(
+        public UsersController(
                     UserManager<IdentityUser> userManager,
                     IJwtService jwtService 
                 )
@@ -24,7 +24,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserFuncionario>> PostUser([FromBody] UserFuncionarioDto userDto)
+        public async Task<ActionResult<Users>> PostUser([FromBody] UserFuncionarioDto userDto)
         {
             if (!ModelState.IsValid)
             {
@@ -47,7 +47,7 @@ namespace WebApplication1.Controllers
 
         // GET: api/Users/username
         [HttpGet("{username}")]
-        public async Task<ActionResult<UserFuncionario>> GetUser(string username)
+        public async Task<ActionResult<Users>> GetUser(string username)
         {
             IdentityUser user = await _userManager.FindByNameAsync(username);
 
@@ -56,7 +56,7 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
-            return new UserFuncionario
+            return new Users
             {
                 UserName = user.UserName,
             };
