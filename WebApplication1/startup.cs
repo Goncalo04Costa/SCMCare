@@ -27,10 +27,11 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Gonçalo
+            // Configuração da string de conexão
             var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
-            // Diogo
-            //var connectionString = Configuration.GetConnectionString("LigacaoDiogo");
+            // Caso queira usar outra conexão, comente a linha acima e descomente a linha abaixo
+            // var connectionString = Configuration.GetConnectionString("LigacaoDiogo");
+
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
@@ -42,37 +43,63 @@ namespace WebApplication1
             // Configuração do JWT
             var jwtSettings = Configuration.GetSection("Jwt");
             var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+
             services.Configure<AppSettings>(Configuration);
-            services.AddScoped<IJwtService, JwtService>(); // Registering JwtService with the interface
+            services.AddScoped<IJwtService, JwtService>(); // Registrando JwtService com a interface
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(options =>
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = true,
-                        ValidIssuer = jwtSettings["Issuer"],
-                        ValidateAudience = true,
-                        ValidAudience = jwtSettings["Audience"],
-                        ValidateLifetime = true
-                    };
-                });
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings["Audience"],
+                    ValidateLifetime = true
+                };
+            });
 
             // Configuração do Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "My API",  // Replace with your API name
-                    Version = "v1",    // Replace with your API version
+                    Title = "My API",  // Nome da sua API
+                    Version = "v1",    // Versão da sua API
                     Description = Configuration["Swagger:Description"]
+                });
+
+                // Configuração para adicionar suporte à autenticação JWT no Swagger
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
                 });
             });
 
@@ -89,7 +116,10 @@ namespace WebApplication1
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
             }
             else
             {
@@ -99,11 +129,12 @@ namespace WebApplication1
 
             app.UseHttpsRedirection();
 
-            
+            // Configuração para servir arquivos estáticos da pasta "HTML"
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, "HTML"))
+                    Path.Combine(env.ContentRootPath, "HTML")),
+                RequestPath = "/HTML"
             });
 
             app.UseRouting();
