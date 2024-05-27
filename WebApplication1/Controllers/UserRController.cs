@@ -105,5 +105,8 @@ namespace WebApplication1.Controllers
         {
             return _context.utilizadorR.Any(e => e.Id == id);
         }
+
+
+
     }
 }
