@@ -8,15 +8,11 @@ namespace Modelos
         [Required]
         public int ID { get; set; }
 
-
         public int IDFuncionario { get; set; }
 
         public int IDResponsavel { get; set; }
 
         [Required]
-        public  string UserName { get; set; }
-
-        [Required]
-        public string Passe { get; set; }
+        public string Passe { get; set; } // Password property
     }
 }

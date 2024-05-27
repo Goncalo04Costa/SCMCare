@@ -63,7 +63,6 @@ namespace WebApplication1
         public DbSet<TipoSessao> TiposSessao { get; set; }
         public DbSet<Turno> Turnos { get; set; }
         public DbSet<Token> Tokens { get; set; }
-
         public DbSet<Utente> Utentes { get; set; }
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
 

@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using System.Security.Claims;
-using WebApplication1.Modelos;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
@@ -13,71 +9,33 @@ namespace WebApplication1.Controllers
     [Route("[controller]")]
     public class TokenController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly JwtService _jwtService;
 
-        public TokenController(AppDbContext context, IConfiguration configuration)
+        public TokenController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, JwtService jwtService)
         {
-            _context = context;
-            _configuration = configuration;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _jwtService = jwtService;
         }
 
-        [HttpPost("create")]
-        public IActionResult CreateToken(int id, string role)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-
-            // Configuração do token JWT
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("id", id.ToString()),
-                    new Claim(ClaimTypes.Role, role)
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            // Criação e serialização do token
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-
-            _context.Tokens.Add(new Token { TokenValue = tokenString });
-            _context.SaveChanges();
-
-            return Ok(new { token = tokenString });
-        }
-
-        [HttpPost("validate")]
-        public IActionResult ValidateToken([FromBody] string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-
-            try
-            {
-                // Validação do token JWT
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,    // Opcional: Pode ser configurado conforme seu cenário
-                    ValidateAudience = false,  // Opcional: Pode ser configurado conforme seu cenário
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
-
-                return Ok(new { message = "Valid token" });
+                var token = _jwtService.GenerateToken(user.Id, "User");
+                return Ok(new { token });
             }
-            catch
-            {
-                return Unauthorized(new { message = "Invalid token" });
-            }
+            return Unauthorized();
         }
+    }
 
-        // Outros métodos como deleteToken, renewToken podem ser adicionados aqui
-
+    public class LoginModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Modelos;
 using WebApplication1.Dtos;
 using WebApplication1.Modelos;
+using WebApplication1.Services;
 using WebApplication1.Servicos;
 
 namespace WebApplication1.Controllers
@@ -11,57 +12,66 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IJwtService _jwtService; 
+        private readonly UserManager<Users> _userManager;
+        private readonly IJwtService _jwtService;
 
         public UsersController(
-                    UserManager<IdentityUser> userManager,
-                    IJwtService jwtService 
-                )
+            UserManager<Users> userManager,
+            IJwtService jwtService
+        )
         {
             _userManager = userManager;
             _jwtService = jwtService;
         }
 
+        // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<Users>> PostUser([FromBody] UserFuncionarioDto userDto)
+        public async Task<ActionResult<Users>> PostUser([FromBody] UsersDto userDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _userManager.CreateAsync(
-                new IdentityUser() { UserName = userDto.User },
-                userDto.Passe
-            );
+            var user = new Users
+            {
+                UserName = userDto.UserName,
+                Passe = userDto.Passe,
+                IDFuncionario = userDto.IDFuncionario,
+                IDResponsavel = userDto.IDResponsavel
+            };
+
+            var result = await _userManager.CreateAsync(user, userDto.Passe);
 
             if (!result.Succeeded)
             {
                 return BadRequest(result.Errors);
             }
 
-            userDto.Passe = null;
-            return Created("", userDto);
+            // Clear sensitive data
+            user.Passe = null;
+
+            return Created("", user);
         }
 
         // GET: api/Users/username
         [HttpGet("{username}")]
         public async Task<ActionResult<Users>> GetUser(string username)
         {
-            IdentityUser user = await _userManager.FindByNameAsync(username);
+            var user = await _userManager.FindByNameAsync(username);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return new Users
-            {
-                UserName = user.UserName,
-            };
+            // Clear sensitive data
+            user.Passe = null;
+
+            return user;
         }
 
+        // POST: api/Users/BearerToken
         [HttpPost("BearerToken")]
         public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
         {

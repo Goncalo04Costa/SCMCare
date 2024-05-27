@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IO;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using WebApplication1.Modelos;
-using WebApplication1.Servicos;
+using WebApplication1.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace WebApplication1
@@ -27,57 +27,46 @@ namespace WebApplication1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configuração da string de conexão
-            var connectionString = Configuration.GetConnectionString("LigacaoGoncalo");
-            // Caso queira usar outra conexão, comente a linha acima e descomente a linha abaixo
-            // var connectionString = Configuration.GetConnectionString("LigacaoDiogo");
-
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            // Configuração do Identity
+            // Add Identity services
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Configuração do JWT
-            var jwtSettings = Configuration.GetSection("Jwt");
-            var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
-
-            services.Configure<AppSettings>(Configuration);
-            services.AddScoped<IJwtService, JwtService>(); // Registrando JwtService com a interface
-            services.AddAuthentication(opt =>
+            var key = Encoding.ASCII.GetBytes(Configuration["Jwt:Key"]);
+            services.AddAuthentication(x =>
             {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
             {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = jwtSettings["Audience"],
-                    ValidateLifetime = true
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
-            // Configuração do Swagger
+            services.AddScoped<JwtService>(); // Add JwtService to DI container
+
+            // Add Swagger configuration
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "My API",  // Nome da sua API
-                    Version = "v1",    // Versão da sua API
+                    Title = "My API",
+                    Version = "v1",
                     Description = Configuration["Swagger:Description"]
                 });
 
-                // Configuração para adicionar suporte à autenticação JWT no Swagger
+                // Configure Swagger to use JWT Authentication
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -98,16 +87,13 @@ namespace WebApplication1
                                 Id = "Bearer"
                             }
                         },
-                        new string[] {}
+                        new string[] { }
                     }
                 });
             });
 
-            // Outros serviços
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
-            services.AddScoped<NotificacoesServico>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -129,7 +115,7 @@ namespace WebApplication1
 
             app.UseHttpsRedirection();
 
-            // Configuração para servir arquivos estáticos da pasta "HTML"
+            // Serve static files from the "HTML" folder
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
