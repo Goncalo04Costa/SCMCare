@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using WebApplication1.Services;
+using WebApplication1.Servicos;
 
 namespace WebApplication1.Controllers
 {

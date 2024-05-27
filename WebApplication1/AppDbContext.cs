@@ -1,5 +1,4 @@
-﻿using iText.StyledXmlParser.Jsoup.Parser;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
@@ -62,7 +61,7 @@ namespace WebApplication1
         public DbSet<TipoQuarto> TiposQuarto { get; set; }
         public DbSet<TipoSessao> TiposSessao { get; set; }
         public DbSet<Turno> Turnos { get; set; }
-        public DbSet<Token> Tokens { get; set; }
+        public DbSet<Modelos.Token> Tokens { get; set; }
         public DbSet<Utente> Utentes { get; set; }
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
 
@@ -84,6 +83,8 @@ namespace WebApplication1
             modelBuilder.Entity<NotificacaoResponsavel>().HasKey(c => new { c.ResponsaveisId, c.NotificacoesId });
             modelBuilder.Entity<Senha>().HasKey(c => new { c.FuncionariosId, c.MenuId });
             modelBuilder.Entity<UtenteAlergia>().HasKey(c => new { c.UtentesId, c.TiposAlergiaId });
+            modelBuilder.Entity<Modelos.Token>().HasKey(t => t.IdToken);
+
         }
     }
 }

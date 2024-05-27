@@ -5,9 +5,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace WebApplication1.Services
+namespace WebApplication1.Servicos
 {
-    public class JwtService
+    public class JwtService 
     {
         private readonly IConfiguration _configuration;
 

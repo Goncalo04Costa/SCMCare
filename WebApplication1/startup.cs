@@ -1,18 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.IO;
 using System.Text;
-using WebApplication1.Modelos;
-using WebApplication1.Services;
-using Microsoft.AspNetCore.Identity;
+using WebApplication1.Servicos;
 
 namespace WebApplication1
 {
@@ -28,7 +21,7 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LigacaoGoncalo")));
+                options.UseSqlServer(Configuration.GetConnectionString("LigacaoSofia")));
 
             // Add Identity services
             services.AddIdentity<IdentityUser, IdentityRole>()

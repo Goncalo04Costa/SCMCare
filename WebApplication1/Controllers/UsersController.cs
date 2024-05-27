@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Modelos;
 using WebApplication1.Dtos;
 using WebApplication1.Modelos;
-using WebApplication1.Services;
 using WebApplication1.Servicos;
 
 namespace WebApplication1.Controllers
