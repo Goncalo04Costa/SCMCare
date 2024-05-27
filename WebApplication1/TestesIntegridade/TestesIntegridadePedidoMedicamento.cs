@@ -1,83 +1,290 @@
 ﻿using Xunit;
+using Microsoft.EntityFrameworkCore;
 using Modelos;
 using WebApplication1.Controllers;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 using WebApplication1.Servicos;
 
 namespace WebApplication1.Testes
 {
     public class TesteInserirPedidoMedicamento
     {
-        private readonly PedidosMedicamentoController _controller;
+        private DbContextOptions<AppDbContext> _options;
 
         public TesteInserirPedidoMedicamento()
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: "test_database")
+            _options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Use a unique name for each test
                 .Options;
-
-            var dbContext = new AppDbContext(options);
-
-            // Instantiate TiposFuncionarioServico with the required AppDbContext parameter
-            var tiposFuncionarioService = new TiposFuncionarioServico(dbContext);
-
-            // Instantiate NotificacoesServico with the required AppDbContext parameter
-            var notificacoesService = new NotificacoesServico(dbContext);
-
-            _controller = new PedidosMedicamentoController(dbContext, tiposFuncionarioService, notificacoesService);
         }
 
+        // Method to reset the database to a known state before each test
+        private async Task ResetDatabase()
+        {
+            using (var context = new AppDbContext(_options))
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                // Insert initial data as needed
+                var tipoFuncionario = new TipoFuncionario
+                {
+                    Descricao = "Diretor(a)"
+                };
+                context.TiposFuncionario.Add(tipoFuncionario);
+
+                var medicamento = new Medicamento
+                {
+                    Id = 1,
+                    Nome = "Paracetamol",
+                    Descricao = "Medicamento para dor e febre",
+                    Limite = 100,
+                    Ativo = true
+                };
+                context.Medicamentos.Add(medicamento);
+
+                var funcionario = new Funcionario
+                {
+                    Nome = "João Silva",
+                    TiposFuncionarioId = tipoFuncionario.Id,
+                    Historico = false
+                };
+                context.Funcionarios.Add(funcionario);
+
+                await context.SaveChangesAsync();
+            }
+        }
+
+        // Método para testar a inserção de um pedido de medicamento válido
         [Fact]
-        public async Task TestarOperacoesCRUD()
+        public async Task InserirPedidoMed_Valido()
         {
             // Arrange
-            var pedidoMedicamento = new PedidoMedicamento
+            await ResetDatabase();
+
+            using (var context = new AppDbContext(_options))
             {
-                MedicamentosId = 1,
-                FuncionariosId = 1,
-                Quantidade = 10,
-                DataPedido = DateTime.Now,
-                Estado = 0,
-                DataConclusao = null
-            };
+                var tiposFuncionarioService = new TiposFuncionarioServico(context);
+                var notificacoesService = new NotificacoesServico(context);
 
-            // Act
-            var inserirResultado = await _controller.InserirPedidoMedicamento(pedidoMedicamento);
-            var inserirOkResult = inserirResultado.Result as OkObjectResult;
-            var pedidoMedicamentoInserido = inserirOkResult.Value as PedidoMedicamento;
+                var controller = new PedidosMedicamentoController(context, tiposFuncionarioService, notificacoesService);
 
-            var obterResultado = await _controller.ObterPedidoMedicamento(pedidoMedicamentoInserido.Id);
-            var obterOkResult = obterResultado.Result as OkObjectResult;
-            var pedidoMedicamentoObtido = obterOkResult.Value as PedidoMedicamento;
+                var pedidoMedicamento = new PedidoMedicamento
+                {
+                    MedicamentosId = 1,
+                    FuncionariosId = 1,
+                    Quantidade = 10,
+                    DataPedido = DateTime.Now,
+                    Estado = 0,
+                    DataConclusao = null
+                };
 
-            // Assert
-            Assert.NotNull(inserirOkResult);
-            Assert.NotNull(pedidoMedicamentoInserido);
-            Assert.Equal(pedidoMedicamento.MedicamentosId, pedidoMedicamentoInserido.MedicamentosId);
-            Assert.Equal(pedidoMedicamento.FuncionariosId, pedidoMedicamentoInserido.FuncionariosId);
-            Assert.Equal(pedidoMedicamento.Quantidade, pedidoMedicamentoInserido.Quantidade);
+                // Act
+                var result = await controller.InserirPedidoMedicamento(pedidoMedicamento);
 
-            Assert.NotNull(obterOkResult);
-            Assert.NotNull(pedidoMedicamentoObtido);
-            Assert.Equal(pedidoMedicamentoInserido.Id, pedidoMedicamentoObtido.Id);
+                // Assert
+                Assert.NotNull(result);
+                Assert.IsType<OkObjectResult>(result.Result);
 
-            // Modificar e atualizar
-            pedidoMedicamentoInserido.Quantidade = 20;
-            pedidoMedicamentoInserido.DataConclusao = DateTime.Now;
+                var okResult = result.Result as OkObjectResult;
+                Assert.Equal("Pedido de medicamentos e notificação adicionados com sucesso.", okResult.Value);
+            }
+        }
 
-            var atualizarResultado = await _controller.AtualizaPedidoMedicamento(pedidoMedicamentoInserido.Id, pedidoMedicamentoInserido);
-            var atualizarOkResult = atualizarResultado as OkObjectResult;
-            Assert.NotNull(atualizarOkResult);
-            Assert.Equal($"Foi atualizado o pedidoMedicamento com o ID {pedidoMedicamentoInserido.Id}", atualizarOkResult.Value);
+        // Método para testar a inserção de um pedido de medicamento nulo
+        [Fact]
+        public async Task InserirPedidoMed_Nulo()
+        {
+            // Arrange
+            await ResetDatabase();
 
-            // Remover
-            var removerResultado = await _controller.RemovePedidoMedicamento(pedidoMedicamentoInserido.Id);
-            var removerOkResult = removerResultado as OkObjectResult;
-            Assert.NotNull(removerOkResult);
-            Assert.Equal($"Foi removido o pedidoMedicamento com o ID {pedidoMedicamentoInserido.Id}", removerOkResult.Value);
+            using (var context = new AppDbContext(_options))
+            {
+                var tiposFuncionarioService = new TiposFuncionarioServico(context);
+                var notificacoesService = new NotificacoesServico(context);
+
+                var controller = new PedidosMedicamentoController(context, tiposFuncionarioService, notificacoesService);
+
+                // Act
+                var result = await controller.InserirPedidoMedicamento(null);
+
+                // Assert
+                Assert.NotNull(result);
+                Assert.IsType<BadRequestObjectResult>(result.Result);
+            }
+        }
+
+        // Método para testar a obtenção de um pedido de medicamento que exista
+        [Fact]
+        public async Task ObterPedidoMed_Existir()
+        {
+            // Arrange
+            await ResetDatabase();
+
+            using (var context = new AppDbContext(_options))
+            {
+                var tiposFuncionarioService = new TiposFuncionarioServico(context);
+                var notificacoesService = new NotificacoesServico(context);
+
+                var controller = new PedidosMedicamentoController(context, tiposFuncionarioService, notificacoesService);
+
+                var pedidoMedicamento = new PedidoMedicamento
+                {
+                    MedicamentosId = 1,
+                    FuncionariosId = 1,
+                    Quantidade = 10,
+                    DataPedido = DateTime.Now,
+                    Estado = 0,
+                    DataConclusao = null
+                };
+
+                var inserirResultado = await controller.InserirPedidoMedicamento(pedidoMedicamento);
+
+                // Act 
+                var result = await controller.ObterPedidoMedicamento(1); // Supondo que o ID do pedido seja 1
+
+                // Assert 
+                Assert.NotNull(result);
+                Assert.IsType<OkObjectResult>(result.Result);
+
+                var okResult = result.Result as OkObjectResult;
+                Assert.IsType<PedidoMedicamento>(okResult.Value);
+            }
+        }
+
+        // Método para testar a obtenção de um pedido de medicamento inexistente
+        [Fact]
+        public async Task ObterPedidoMed_Inexistente()
+        {
+            // Arrange
+            await ResetDatabase();
+
+            using (var context = new AppDbContext(_options))
+            {
+                var tiposFuncionarioService = new TiposFuncionarioServico(context);
+                var notificacoesService = new NotificacoesServico(context);
+
+                var controller = new PedidosMedicamentoController(context, tiposFuncionarioService, notificacoesService);
+
+                var idPedidoInexistente = 100;
+
+                // Act 
+                var result = await controller.ObterPedidoMedicamento(idPedidoInexistente);
+
+                // Assert 
+                Assert.NotNull(result);
+                Assert.IsType<NotFoundResult>(result.Result);
+            }
+        }
+
+        // Método para testar a atualização de um pedido de medicamento existente
+        [Fact]
+        public async Task AtualizarPedidoMed_Valido()
+        {
+            // Arrange
+            await ResetDatabase();
+
+            using (var context = new AppDbContext(_options))
+            {
+                var tiposFuncionarioService = new TiposFuncionarioServico(context);
+                var notificacoesService = new NotificacoesServico(context);
+
+                var controller = new PedidosMedicamentoController(context, tiposFuncionarioService, notificacoesService);
+
+                var pedidoMedicamento = new PedidoMedicamento
+                {
+                    MedicamentosId = 1,
+                    FuncionariosId = 1,
+                    Quantidade = 10,
+                    DataPedido = DateTime.Now,
+                    Estado = 0,
+                    DataConclusao = null
+                };
+
+                var inserirResultado = await controller.InserirPedidoMedicamento(pedidoMedicamento);
+
+                var pedidoMedicamento2 = new PedidoMedicamento
+                {
+                    Id = 1,
+                    MedicamentosId = 1,
+                    FuncionariosId = 1,
+                    Quantidade = 20,
+                    DataPedido = DateTime.Now,
+                    Estado = 0,
+                    DataConclusao = DateTime.Now
+                };
+
+                // Act
+                var result = await controller.AtualizaPedidoMedicamento(1, pedidoMedicamento2);
+
+                // Assert
+                Assert.NotNull(result);
+                Assert.IsType<OkObjectResult>(result);
+
+                var okResult = result as OkObjectResult;
+                Assert.Equal($"Foi atualizado o pedidoMedicamento com o ID {pedidoMedicamento.Id}", okResult.Value);
+            }
+        }
+
+        // Método para testar a tentativa de atualização de um pedido de medicamento inexistente
+        [Fact]
+        public async Task AtualizarPedidoMed_Inexistente()
+        {
+            // Arrange
+            await ResetDatabase();
+
+            using (var context = new AppDbContext(_options))
+            {
+                var tiposFuncionarioService = new TiposFuncionarioServico(context);
+                var notificacoesService = new NotificacoesServico(context);
+
+                var controller = new PedidosMedicamentoController(context, tiposFuncionarioService, notificacoesService);
+
+                var pedidoMedicamento = new PedidoMedicamento
+                {
+                    Id = 100, // Supondo que o ID 100 não existe
+                    MedicamentosId = 1,
+                    FuncionariosId = 1,
+                    Quantidade = 10,
+                    DataPedido = DateTime.Now,
+                    Estado = 0,
+                    DataConclusao = null
+                };
+
+                // Act
+                var result = await controller.AtualizaPedidoMedicamento(100, pedidoMedicamento);
+
+                // Assert
+                Assert.NotNull(result);
+                Assert.IsType<NotFoundObjectResult>(result);
+            }
+        }
+
+        // Método para testar a tentativa de remoção de um pedido de medicamento inexistente
+        [Fact]
+        public async Task RemovePedidoMed_Inexistente()
+        {
+            // Arrange
+            await ResetDatabase();
+
+            using (var context = new AppDbContext(_options))
+            {
+                var tiposFuncionarioService = new TiposFuncionarioServico(context);
+                var notificacoesService = new NotificacoesServico(context);
+
+                var controller = new PedidosMedicamentoController(context, tiposFuncionarioService, notificacoesService);
+
+                var idPedidoInexistente = 100;
+
+                // Act
+                var result = await controller.RemovePedidoMedicamento(idPedidoInexistente);
+
+                // Assert
+                Assert.NotNull(result);
+                Assert.IsType<NotFoundObjectResult>(result);
+            }
         }
     }
 }

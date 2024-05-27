@@ -1,8 +1,8 @@
-﻿using iText.StyledXmlParser.Jsoup.Parser;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
+using WebApplication1.Modelos;
 
 namespace WebApplication1
 {
@@ -69,6 +69,13 @@ namespace WebApplication1
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Token>(entity =>
+            {
+                entity.HasKey(e => e.IdToken);
+                entity.Property(e => e.IdToken).HasColumnName("idtoken").ValueGeneratedOnAdd();
+                entity.Property(e => e.TokenValue).HasColumnName("token").HasMaxLength(100).IsRequired();
+            });
 
             // Configurações das chaves primárias para entidades sem chave primária própria
             modelBuilder.Entity<Alta>().HasKey(c => c.UtentesId);

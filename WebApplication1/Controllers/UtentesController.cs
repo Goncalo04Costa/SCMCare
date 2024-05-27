@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using iText.Kernel.Pdf;
+using iText.Layout.Element;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
-using RegrasNegocio; 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
 
 namespace WebApplication1.Controllers
 {
@@ -18,24 +15,20 @@ namespace WebApplication1.Controllers
     public class UtentesController : ControllerBase
     {
         private readonly AppDbContext _context;
-        //private readonly RegrasUtentes _regrasUtentes; 
 
-        //public UtentesController(AppDbContext context, RegrasUtentes regrasUtentes)
         public UtentesController(AppDbContext context)
         {
             _context = context;
-            //_regrasUtentes = regrasUtentes;
         }
 
-
-        //Metodo para ver todos os utentes com filtros
+        // Method to retrieve all utentes with filters
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utente>>> ObterTodosUtentes(
             int? idMin = null, int? idMax = null,
             int? nifMin = null, int? nifMax = null,
             int? snsMin = null, int? snsMax = null,
             string nomeMin = null, string nomeMax = null,
-            DateTime? dataMin = null, DateTime? dataMax = null, 
+            DateTime? dataMin = null, DateTime? dataMax = null,
             bool historico0 = false, bool historico1 = false,
             bool tipo0 = false, bool tipo1 = false)
         {
@@ -109,7 +102,6 @@ namespace WebApplication1.Controllers
                 query = query.Where(d => d.Tipo);
             }
 
-
             var utentesDetalhes = await (
                 from utentes in query
                 join tiposadmissao in _context.TiposAdmissao on utentes.TiposAdmissaoId equals tiposadmissao.Id into tG
@@ -140,46 +132,21 @@ namespace WebApplication1.Controllers
             return Ok(utentesDetalhes);
         }
 
-
-        //Metodo para obter um utente pelo seu id
+        // Method to retrieve a utente by its id
         [HttpGet("{id}")]
         public async Task<ActionResult<Utente>> ObterUtente(int id)
         {
-            IQueryable<Utente> query = _context.Utentes;
-            query = query.Where(d => d.Id == id);
+            var utente = await _context.Utentes.FindAsync(id);
 
-            var utentesDetalhes = await (
-                from utentes in query
-                join tiposadmissao in _context.TiposAdmissao on utentes.TiposAdmissaoId equals tiposadmissao.Id into tG
-                from tiposadmissao in tG.DefaultIfEmpty()
-                select new
-                {
-                    Id = utentes.Id,
-                    Nome = utentes.Nome,
-                    NIF = utentes.NIF,
-                    SNS = utentes.SNS,
-                    DataAdmissao = utentes.DataAdmissao,
-                    DataNascimento = utentes.DataNascimento,
-                    Historico = utentes.Historico,
-                    Tipo = utentes.Tipo,
-                    TiposAdmissaoId = utentes.TiposAdmissaoId,
-                    TipoAdmissao = tiposadmissao.Descricao,
-                    MotivoAdmissao = utentes.MotivoAdmissao,
-                    DiagnosticoAdmissao = utentes.DiagnosticoAdmissao,
-                    Observacoes = utentes.Observacoes,
-                    NotaAdmissao = utentes.NotaAdmissao,
-                    AntecedentesPessoais = utentes.AntecedentesPessoais,
-                    ExameObjetivo = utentes.ExameObjetivo,
-                    Mensalidade = utentes.Mensalidade,
-                    Cofinanciamento = utentes.Cofinanciamento
-                }
-            ).ToListAsync();
+            if (utente == null)
+            {
+                return NotFound($"Utente com o ID '{id}' não encontrado.");
+            }
 
-            return Ok(utentesDetalhes);
+            return Ok(utente);
         }
 
-
-        //Metodo para obter utente por Nome
+        // Method to retrieve a utente by name
         [HttpGet("nome/{nome}")]
         public async Task<ActionResult<Utente>> ObterUtentePorNome(string nome)
         {
@@ -200,7 +167,7 @@ namespace WebApplication1.Controllers
             }
         }
 
-        //Metodo para inserir um novo utente
+        // Method to insert a new utente
         [HttpPost]
         public async Task<ActionResult<Utente>> InserirUtente([FromBody] Utente utente)
         {
@@ -209,17 +176,24 @@ namespace WebApplication1.Controllers
                 return BadRequest("Objeto inválido");
             }
 
+            // Check if there is already a utente with the same NIF
+            var existingUtente = await _context.Utentes.FirstOrDefaultAsync(u => u.NIF == utente.NIF);
+            if (existingUtente != null)
+            {
+                return Conflict("NIF já existe.");
+            }
+
             _context.Utentes.Add(utente);
             await _context.SaveChangesAsync();
 
             return Ok("Utente adicionado com sucesso");
         }
 
-        //Metodos para atualizar dados de um utente
+        // Method to update utente data
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizaUtente(int id, [FromBody] Utente novoUtente)
         {
-            var utente = await _context.Utentes.FirstOrDefaultAsync(d => d.Id == id);
+            var utente = await _context.Utentes.FindAsync(id);
             if (utente == null)
             {
                 return NotFound($"Não foi possível encontrar o utente com o ID {id}");
@@ -250,16 +224,15 @@ namespace WebApplication1.Controllers
             }
             catch (Exception e)
             {
-                throw e;
+                return StatusCode(500, $"Erro interno ao atualizar o utente com o ID {id}: {e.Message}");
             }
         }
 
-
-        //Metodo para remover um utente
+        // Method to remove a utente
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveUtente(int id)
         {
-            var utente = await _context.Utentes.FirstOrDefaultAsync(d => d.Id == id);
+            var utente = await _context.Utentes.FindAsync(id);
             if (utente == null)
             {
                 return NotFound($"Não foi possível encontrar o utente com o ID {id}");
@@ -270,7 +243,6 @@ namespace WebApplication1.Controllers
 
             return Ok($"Foi removido o utente com o ID {id}");
         }
-
 
         //imprimir ficha de utente
         [HttpGet("ficha/{id}")]
