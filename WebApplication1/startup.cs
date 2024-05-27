@@ -21,7 +21,7 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LigacaoSofia")));
+                options.UseSqlServer(Configuration.GetConnectionString("LigacaoGoncalo")));
 
             // Add Identity services
             services.AddIdentity<IdentityUser, IdentityRole>()
