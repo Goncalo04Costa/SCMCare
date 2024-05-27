@@ -9,7 +9,7 @@
 
         public string ConnectionString { get; set; } // Cadeia de conexão do banco de dados
         public string DatabaseProvider { get; set; } // Provedor de banco de dados (por exemplo, "SqlServer", "MySql", "PostgreSQL", etc.)
-        public string DatabaseName { get; set; } // Nome do banco de dados
+        public string DatabaseName { get; set; } 
 
         public string ThirdPartyApiKey { get; set; } // Chave de API de terceiros
         public string ThirdPartyApiUrl { get; set; } // URL da API de terceiros

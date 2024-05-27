@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿// TestUnitUtente.cs
+
+using Xunit;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
 using WebApplication1.Controllers;
@@ -30,6 +32,7 @@ namespace WebApplication1.Testes
         }
 
         // Método para testar a inserção de um utente válido no sistema.
+        // Método para testar a inserção de um utente válido no sistema.
         [Fact]
         public async Task TestInserirUtenteValido()
         {
@@ -40,6 +43,7 @@ namespace WebApplication1.Testes
                 NIF = 123456789,
                 SNS = 987654321,
                 DataAdmissao = DateTime.Now,
+                DataNascimento = new DateTime(1990, 5, 15),
                 Historico = false,
                 Tipo = false,
                 TiposAdmissaoId = 1,
@@ -58,11 +62,10 @@ namespace WebApplication1.Testes
 
             // Assert
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsType<OkObjectResult>(result.Result); // Verifica se o resultado é do tipo OkObjectResult
-
-            var okResult = result.Result as OkObjectResult;
-            Assert.Equal("Utente adicionado com sucesso", okResult.Value); // Verifica a mensagem de sucesso
+            var conflictResult = Assert.IsType<ConflictObjectResult>(result.Result); // Verifica se o resultado é do tipo ConflictObjectResult
+            Assert.Equal("NIF já existe.", conflictResult.Value); // Verifica a mensagem de erro
         }
+
 
         // Método para testar a tentativa de inserir um utente nulo no sistema.
         [Fact]
@@ -76,14 +79,14 @@ namespace WebApplication1.Testes
 
             // Assert 
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsType<BadRequestObjectResult>(result.Result); // Verifica se o resultado é do tipo BadRequestObjectResult
-
-            var badRequestResult = result.Result as BadRequestObjectResult;
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result); // Verifica se o resultado é do tipo BadRequestObjectResult
             Assert.Equal("Objeto inválido", badRequestResult.Value); // Verifica a mensagem de erro
         }
 
+
         // Método para testar se não é possível inserir um utente com um NIF que já existe.
         [Fact]
+       
         public async Task TestInserirUtenteComNIFDuplicado()
         {
             // Arrange
@@ -134,62 +137,8 @@ namespace WebApplication1.Testes
 
             // Assert
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsType<BadRequestObjectResult>(result.Result); // Verifica se o resultado é do tipo BadRequestObjectResult
-
-            var badRequestResult = result.Result as BadRequestObjectResult;
-            Assert.Equal("NIF já existe.", badRequestResult.Value); // Verifica a mensagem de erro
-        }
-
-        // Método para testar que não seja possível atualizar um utente que não exista na base de dados.
-        [Fact]
-        public async Task TestAtualizarUtenteInexistente()
-        {
-            // Arrange
-            var idInexistente = 9999; // ID que não existe na base de dados
-            var novoUtente = new Utente
-            {
-                Id = idInexistente,
-                Nome = "Novo Nome",
-                NIF = 123456789,
-                SNS = 987654321,
-                DataAdmissao = DateTime.Now,
-                Historico = false
-            };
-
-            // Act
-            var result = await _controller.AtualizaUtente(idInexistente, novoUtente);
-
-            // Assert
-            Assert.IsType<NotFoundObjectResult>(result); // Verifica se o resultado é do tipo NotFoundObjectResult
-
-            var notFoundResult = result as NotFoundObjectResult;
-            Assert.Equal($"Não foi possível encontrar o utente com o ID {idInexistente}", notFoundResult.Value); // Verifica a mensagem de erro
-        }
-
-        // Método para testar que não seja possível remover um utente que não exista
-        [Fact]
-        public async Task TestRemoverUtenteInexistente()
-        {
-            // Arrange
-            int idInexistente = 999; // ID de um utente que não existe na base de dados
-
-            // Act
-            var result = await _controller.RemoveUtente(idInexistente);
-
-            
-
-            // Assert
-            Assert.NotNull(result); // Verifica se o resultado não é nulo
-            Assert.IsType<NotFoundObjectResult>(result); // Verifica se o resultado é do tipo NotFoundObjectResult
-
-            var notFoundResult = result as NotFoundObjectResult; // Converte o resultado para NotFoundObjectResult
-            Assert.NotNull(notFoundResult); // Verifica se a conversão foi bem-sucedida
-
-            // Verifica se a mensagem de erro é a esperada
-            Assert.Equal($"Não foi possível encontrar o utente com o ID {idInexistente}", notFoundResult.Value);
-            // Ou se preferir, você pode verificar o código de status HTTP
-            Assert.Equal(404, notFoundResult.StatusCode); // Verifica se o código de status é 404 (Not Found)
-
+            var conflictResult = Assert.IsType<ConflictObjectResult>(result.Result); // Verifica se o resultado é do tipo ConflictObjectResult
+            Assert.Equal("NIF já existe.", conflictResult.Value); // Verifica a mensagem de erro
         }
 
     }

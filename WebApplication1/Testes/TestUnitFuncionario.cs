@@ -1,9 +1,8 @@
 ﻿using Xunit;
+using Microsoft.EntityFrameworkCore;
 using Modelos;
 using WebApplication1.Controllers;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace WebApplication1.Testes
 {

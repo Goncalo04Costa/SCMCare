@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Modelos;
+using WebApplication1.Modelos;
 
 namespace WebApplication1
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -59,11 +62,20 @@ namespace WebApplication1
         public DbSet<TipoQuarto> TiposQuarto { get; set; }
         public DbSet<TipoSessao> TiposSessao { get; set; }
         public DbSet<Turno> Turnos { get; set; }
+  
         public DbSet<Utente> Utentes { get; set; }
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
 
+        public DbSet<UtilizadorF> utilizadorF { get; set; }
+        public DbSet<UtilizadorR> utilizadorR { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+           
+
             // Configurações das chaves primárias para entidades sem chave primária própria
             modelBuilder.Entity<Alta>().HasKey(c => c.UtentesId);
             modelBuilder.Entity<ContactoFornecedor>().HasKey(c => new { c.FornecedoresId, c.TipoContactoId });
@@ -78,6 +90,8 @@ namespace WebApplication1
             modelBuilder.Entity<NotificacaoResponsavel>().HasKey(c => new { c.ResponsaveisId, c.NotificacoesId });
             modelBuilder.Entity<Senha>().HasKey(c => new { c.FuncionariosId, c.MenuId });
             modelBuilder.Entity<UtenteAlergia>().HasKey(c => new { c.UtentesId, c.TiposAlergiaId });
+         
+
         }
     }
 }
