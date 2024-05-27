@@ -62,20 +62,19 @@ namespace WebApplication1
         public DbSet<TipoQuarto> TiposQuarto { get; set; }
         public DbSet<TipoSessao> TiposSessao { get; set; }
         public DbSet<Turno> Turnos { get; set; }
-        public DbSet<Modelos.Token> Tokens { get; set; }
+  
         public DbSet<Utente> Utentes { get; set; }
         public DbSet<UtenteAlergia> UtentesAlergias { get; set; }
+
+        public DbSet<UtilizadorF> utilizadorF { get; set; }
+        public DbSet<UtilizadorR> utilizadorR { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Token>(entity =>
-            {
-                entity.HasKey(e => e.IdToken);
-                entity.Property(e => e.IdToken).HasColumnName("idtoken").ValueGeneratedOnAdd();
-                entity.Property(e => e.TokenValue).HasColumnName("token").HasMaxLength(100).IsRequired();
-            });
+           
 
             // Configurações das chaves primárias para entidades sem chave primária própria
             modelBuilder.Entity<Alta>().HasKey(c => c.UtentesId);
@@ -91,7 +90,7 @@ namespace WebApplication1
             modelBuilder.Entity<NotificacaoResponsavel>().HasKey(c => new { c.ResponsaveisId, c.NotificacoesId });
             modelBuilder.Entity<Senha>().HasKey(c => new { c.FuncionariosId, c.MenuId });
             modelBuilder.Entity<UtenteAlergia>().HasKey(c => new { c.UtentesId, c.TiposAlergiaId });
-            modelBuilder.Entity<Modelos.Token>().HasKey(t => t.IdToken);
+         
 
         }
     }

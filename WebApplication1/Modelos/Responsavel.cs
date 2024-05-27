@@ -7,7 +7,6 @@ namespace Modelos
     {
         public int Id { get; set; }
 
-        public int IDResponsavel { get; set; }
 
         [Required]
         public string Nome { get; set; }

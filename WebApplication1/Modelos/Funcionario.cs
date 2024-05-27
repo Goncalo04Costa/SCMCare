@@ -7,8 +7,6 @@ namespace Modelos
     {
         public int FuncionarioID { get; set; } 
 
-        public int IDFuncionario { get; set; }
-
         [Required]
         public string Nome { get; set; }
 
