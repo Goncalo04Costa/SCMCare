@@ -66,8 +66,8 @@ namespace WebApplication1.Controllers
 
             var consultasDetalhes = await (
                 from consulta in query
-                join hospital in _context.TiposSessao on consulta.HospitaisId equals hospital.Id into tG
-                from hospital in tG.DefaultIfEmpty()
+                join hospital in _context.Hospitais on consulta.HospitaisId equals hospital.Id into hG
+                from hospital in hG.DefaultIfEmpty()
                 join utente in _context.Utentes on consulta.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
                 join funcionario in _context.Funcionarios on consulta.FuncionariosId equals funcionario.FuncionarioID into fG
@@ -78,7 +78,7 @@ namespace WebApplication1.Controllers
                 {
                     Id = consulta.Id,
                     HospitalId = consulta.HospitaisId,
-                    Hospital = hospital.Descricao,
+                    Hospital = hospital.Nome,
                     FuncionarioId = consulta.FuncionariosId,
                     Funcionario = funcionario.Nome,
                     UtenteId = consulta.UtentesId,
@@ -104,8 +104,8 @@ namespace WebApplication1.Controllers
 
             var consultaDetalhes = await (
                 from consulta in query
-                join hospital in _context.TiposSessao on consulta.HospitaisId equals hospital.Id into tG
-                from hospital in tG.DefaultIfEmpty()
+                join hospital in _context.Hospitais on consulta.HospitaisId equals hospital.Id into hG
+                from hospital in hG.DefaultIfEmpty()
                 join utente in _context.Utentes on consulta.UtentesId equals utente.Id into uG
                 from utente in uG.DefaultIfEmpty()
                 join funcionario in _context.Funcionarios on consulta.FuncionariosId equals funcionario.FuncionarioID into fG
@@ -116,7 +116,7 @@ namespace WebApplication1.Controllers
                 {
                     Id = consulta.Id,
                     HospitalId = consulta.HospitaisId,
-                    Hospital = hospital.Descricao,
+                    Hospital = hospital.Nome,
                     FuncionarioId = consulta.FuncionariosId,
                     Funcionario = funcionario.Nome,
                     UtenteId = consulta.UtentesId,
@@ -134,44 +134,43 @@ namespace WebApplication1.Controllers
 
         // Metodo para registar uma nova consulta, e seja com funcionario ou responsavel a acompanhar
         [HttpPost]
-        public async Task<IActionResult> RegistarConsulta(int idConsulta, int idFuncionario, int idResponsavel, DateTime dataConsulta)
+        public async Task<IActionResult> RegistarConsulta([FromBody] Consulta consulta)
         {
-            var consulta = await _context.Consultas.FindAsync(idConsulta);
-            if (consulta == null)
+            if (consulta.ResponsaveisId != null)
             {
-                return NotFound($"Consulta com o ID {idConsulta} não encontrada");
+                var responsavel = await _context.Responsaveis.FindAsync(consulta.ResponsaveisId);
+                if (responsavel == null)
+                {
+                    return NotFound($"Responsável com o ID {consulta.ResponsaveisId} não encontrado");
+                }
+                var canAttendResult = await CanAttendConsulta(consulta.ResponsaveisId, consulta.Data);
+                if (canAttendResult is OkObjectResult)
+                {
+                    _context.Consultas.Add(consulta);
+                    await _context.SaveChangesAsync();
+                    return Ok("O responsável pode comparecer à consulta. Não é necessário nomear um funcionário.");
+                }
+                else
+                {
+                    return Ok("O responsável não pode comparecer à consulta. É necessário nomear um funcionário.");
+                }
             }
-
-            var funcionario = await _context.Funcionarios.FindAsync(idFuncionario);
-            if (funcionario == null)
+            else if (consulta.FuncionariosId != null)
             {
-                return NotFound($"Funcionário com o ID {idFuncionario} não encontrado");
-            }
-
-            var responsavel = await _context.Responsaveis.FindAsync(idResponsavel);
-            if (responsavel == null)
-            {
-                return NotFound($"Responsável com o ID {idResponsavel} não encontrado");
-            }
-
-           
-            var canAttendResult = await CanAttendConsulta(idResponsavel, dataConsulta);
-            if (canAttendResult is OkObjectResult)
-            {
-                return Ok("O responsável pode comparecer à consulta. Não é necessário nomear um funcionário.");
-            }
-            else if (canAttendResult is OkObjectResult)
-            {
-             
-                funcionario.FuncionarioID = idFuncionario;
-
+                var funcionario = await _context.Funcionarios.FindAsync(consulta.FuncionariosId);
+                if (funcionario == null)
+                {
+                    return NotFound($"Funcionário com o ID {consulta.FuncionariosId} não encontrado");
+                }
+                _context.Consultas.Add(consulta);
                 await _context.SaveChangesAsync();
-
-                return Ok($"Funcionário com o ID {idFuncionario} nomeado para a consulta com o ID {idConsulta}.");
+                return Ok("Consulta criada com um funcionário nomeado como acompanhante.");
             }
             else
             {
-                return StatusCode(500, "Erro interno do servidor ao verificar a disponibilidade do responsável.");
+                _context.Consultas.Add(consulta);
+                await _context.SaveChangesAsync();
+                return Ok("Consulta criada sem acompanhante.");
             }
         }
 
@@ -228,11 +227,10 @@ namespace WebApplication1.Controllers
 
         //Metodo para acompanhante
         [HttpGet("CanAttendConsulta")]
-        public async Task<IActionResult> CanAttendConsulta(int responsavelId, DateTime consultaData)
-        {
-          
+        public async Task<IActionResult> CanAttendConsulta(int? responsavelId, DateTime? consultaData)
+        {          
             var outraConsulta = await _context.Consultas
-                .FirstOrDefaultAsync(c => c.ResponsaveisId == responsavelId && c.Data == consultaData.Date);
+                .FirstOrDefaultAsync(c => c.ResponsaveisId == responsavelId && c.Data == consultaData);
 
             if (outraConsulta != null)
             {

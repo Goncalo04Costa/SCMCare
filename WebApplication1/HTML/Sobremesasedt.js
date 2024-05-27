@@ -43,7 +43,6 @@ function CarregarDados() {
             InserirDados(response);
         },
         error: function (xhr, status, error) {
-            // Handle error
             console.error(xhr.responseText);
         }
     });

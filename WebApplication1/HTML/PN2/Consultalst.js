@@ -11,7 +11,7 @@ const tipoUtilizador = params.get('usr');
 
 function CarregarDados() {	
     $.ajax({
-        url: '/api/Sobremesas',
+        url: '/api/Consultas',
         method: 'GET',
         dataType: 'json',
         success: function (response) {
@@ -26,29 +26,23 @@ function CarregarDados() {
 function AplicarFiltros() {
     var idMin = $("#id_de").val();
     var idMax = $("#id_ate").val();
-    var nomeMin = $("#nome_de").val();
-    var nomeMax = $("#nome_ate").val();
-    var descMin = $("#desc_de").val();
-    var descMax = $("#desc_ate").val();
-    var tipo1 = $("#tipo1").prop('checked');
-    var tipo0 = $("#tipo0").prop('checked');
-    var ativo1 = $("#ativo1").prop('checked');
-    var ativo0 = $("#ativo0").prop('checked');
+    var hospitaisId = $("#hosp_id").val();
+    var utentesId = $("#utnt_id").val();
+    var funcionariosId = $("#func_id").val();
+    var dataMin = $("#data_de").val();
+    var dataMax = $("#data_ate").val();
 
     $.ajax({
-        url: '/api/Sobremesas',
+        url: '/api/Consultas',
         method: 'GET',
         data: {
             idMin: idMin,
             idMax: idMax,
-            nomeMin: nomeMin,
-            nomeMax: nomeMax,
-            descMin: descMin,
-            descMax: descMax,
-            tipo1: tipo1,
-            tipo0: tipo0,
-            ativo1: ativo1,
-            ativo0: ativo0
+            hospitaisId: hospitaisId,
+            utentesId: utentesId,
+            funcionariosId: funcionariosId,
+            dataMin: dataMin,
+            dataMax: dataMax
         },
         dataType: 'json',
         success: function (response) {
@@ -68,9 +62,12 @@ function CriarTabela(dados) {
     var tabelaBody = tabela.createTBody();
 
     var colunas = [
-        { nome: 'Id', classe: 'col-2' },
-        { nome: 'Nome', classe: 'col-8' },
-        { nome: 'Opções', classe: 'col-2' }
+        { nome: 'Id', classe: 'col-1' },
+        { nome: 'Utente', classe: 'col-5' },
+        { nome: 'Hospital', classe: 'col-2' },
+        { nome: 'Data', classe: 'col-2' },
+        { nome: 'Estado', classe: 'col-1' },
+        { nome: 'Opções', classe: 'col-1' }
     ];
 
     colunas.forEach(tituloColuna => {
@@ -89,14 +86,27 @@ function CriarTabela(dados) {
             var c1 = linha.insertCell(0);
             var c2 = linha.insertCell(1);
             var c3 = linha.insertCell(2);
+            var c4 = linha.insertCell(3);
+            var c5 = linha.insertCell(4);
+            var c6 = linha.insertCell(5);
 
             var botoes = '<a title="Ver" style="cursor:pointer" onClick="ver(' + item.id + ');"><span class="material-icons">visibility</span></a>';
-            botoes += '<a title="Editar" style="cursor:pointer" onClick="editar(' + item.id + ');"><span class="material-icons">create</span></a>';
             botoes += '<a title="Remover" style="cursor:pointer" onClick="remover(' + item.id + ');"><span class="material-icons">highlight_off</span></a>';
 
             c1.innerHTML = item.id;
-            c2.innerHTML = item.nome;
-            c3.innerHTML = botoes;
+            c2.innerHTML = item.utente;
+            c3.innerHTML = item.hospital;
+            c4.innerHTML = item.data;
+            if (item.responsavelId) {
+                c5.innerHTML = '<span class="material-icons" title="Tem acompanhante">check_circle</span>';
+            }
+            else if (item.funcionarioId) {
+                c5.innerHTML = '<span class="material-icons" title="Funcionário ' + item.funcionarioId+' como acompanhante">check_circle</span>';
+            }
+            else {
+                c5.innerHTML = '<span class="material-icons" title="Utente sem acompanhante">cancel</span>';
+            }
+            c6.innerHTML = botoes;
         });
     } else {
         // Caso não haja dados, exibe uma mensagem na tabela
@@ -108,24 +118,20 @@ function CriarTabela(dados) {
 }
 
 function adicionar(id) {
-    window.open("../Sobremesasedt.html?opr=add", "_self");
+    window.open("../PN2/Consultaedt.html?opr=add", "_self");
 }
 
 function ver(id) {
-    window.open("../Sobremesasedt.html?opr=ver&id=" + id, "_self");
-}
-
-function editar(id) {
-    window.open("../Sobremesasedt.html?opr=edt&id=" + id, "_self");
+    window.open("../PN2/Consultaedt.html?opr=ver&id=" + id, "_self");
 }
 
 function remover(id) {
     $.ajax({
-        url: '/api/Sobremesas/'+id,
+        url: '/api/Consultas/'+id,
         method: 'DELETE',
         dataType: 'json',
         success: function (response) {
-            console.log("Sobremesa apagada com sucesso.");
+            console.log("Consulta apagada com sucesso.");
             CarregarDados();
         },
         error: function (xhr, status, error) {
