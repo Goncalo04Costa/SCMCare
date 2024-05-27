@@ -13,6 +13,9 @@ namespace Modelos
         public int IDResponsavel { get; set; }
 
         [Required]
+        public string UserName {  get; set; }
+
+        [Required]
         public string Passe { get; set; } // Password property
     }
 }
