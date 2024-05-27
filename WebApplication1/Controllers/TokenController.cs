@@ -24,7 +24,7 @@ namespace WebApplication1.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user= await _userManager.FindByIdAsync(model.UserName);
+            var user= await _userManager.FindByNameAsync(model.UserName);
             return Ok(new { user });
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Passe))
             {
