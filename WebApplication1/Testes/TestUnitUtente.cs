@@ -62,8 +62,8 @@ namespace WebApplication1.Testes
 
             // Assert
             Assert.NotNull(result); // Verifica se o resultado não é nulo
-            var okResult = Assert.IsType<OkObjectResult>(result.Result); // Verifica se o resultado é do tipo OkObjectResult
-            Assert.Equal("Utente adicionado com sucesso", okResult.Value); // Verifica a mensagem de sucesso
+            var conflictResult = Assert.IsType<ConflictObjectResult>(result.Result); // Verifica se o resultado é do tipo ConflictObjectResult
+            Assert.Equal("NIF já existe.", conflictResult.Value); // Verifica a mensagem de erro
         }
 
 
