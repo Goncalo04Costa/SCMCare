@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace WebApplication1.Modelos
 {
