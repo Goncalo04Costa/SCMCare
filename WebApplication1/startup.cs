@@ -115,8 +115,9 @@ namespace WebApplication1
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, "HTML")),
-                RequestPath = "/HTML"
+                    Path.Combine(env.ContentRootPath, "HTML"))
+                //,
+                //RequestPath = "/HTML"
             });
 
             app.UseRouting();

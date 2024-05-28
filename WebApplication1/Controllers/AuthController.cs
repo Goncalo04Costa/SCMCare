@@ -24,14 +24,15 @@ public class AuthController : ControllerBase
     // funcao para verificar se token passou validade
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(string userUserName)
+    public async Task<IActionResult> Login(string userUserName, string password)
     {
-        var data = await DetermineUserRoleAsync(userUserName);
+        var data = await DetermineUserRoleAsync(userUserName, password);
         string token;
+
 
         if (!string.IsNullOrEmpty(data.Item1 )&& data.Item1=="Funcionario"  )
         {
-            token = _tokenService.GenerateToken(userUserName, data.Item1);
+            token = _tokenService.GenerateToken(userUserName,  data.Item1);
             return Ok(new { Token = token });
         }
 
@@ -45,24 +46,10 @@ public class AuthController : ControllerBase
 
     }
 
-    [HttpGet("{UsernameF}")]
-    public async Task<ActionResult<UtilizadorF>> GetUserFuncionario(string UserName)
+    [HttpGet("{UserName}")]
+    public async Task<ActionResult<UtilizadorF>> GetUserFuncionario(string UserName, string Password)
     {
-        var userR = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == UserName);
-
-        if (userR == null)
-        {
-            return NotFound($"User com o UsernName {UserName} não encontrado");
-        }
-
-        return Ok(userR);
-    }
-
-    // GET: api/UserR/5
-    [HttpGet("{UsernameR}")]
-    public async Task<ActionResult<UtilizadorR>> GetUserResponsavel(string UserName)
-    {
-        var userR = await _context.utilizadorR.FirstOrDefaultAsync(f => f.UserName == UserName);
+        var userR = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == UserName && f.Password == Password);
 
         if (userR == null)
         {
@@ -72,9 +59,23 @@ public class AuthController : ControllerBase
         return Ok(userR);
     }
 
-    private async Task<(string,string,string)> DetermineUserRoleAsync(string userUserName)
+    // GET: api/UserR/5
+    [HttpGet("{UsernameR}")]
+    public async Task<ActionResult<UtilizadorR>> GetUserResponsavel(string UserName, string Password)
     {
-        var funcionario = await GetUserFuncionario(userUserName);
+        var userR = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == UserName && f.Password == Password);
+
+        if (userR == null)
+        {
+            return NotFound($"User com o UserName {UserName} não encontrado");
+        }
+
+        return Ok(userR);
+    }
+
+    private async Task<(string,string,string)> DetermineUserRoleAsync(string userUserName, string password)
+    {
+        var funcionario = await GetUserFuncionario(userUserName, password);
 
         if (funcionario.Result is OkObjectResult okFuncionario)
         {
@@ -82,7 +83,7 @@ public class AuthController : ControllerBase
             return ("Funcionario", funcionarioResult.UserName, funcionarioResult.Password);
         }
 
-        var responsavel = await GetUserResponsavel(userUserName);
+        var responsavel = await GetUserResponsavel(userUserName, password);
         if(responsavel.Result is OkObjectResult okResponsavel)
         {
             var responsavelresult = okResponsavel.Value as UtilizadorR;
