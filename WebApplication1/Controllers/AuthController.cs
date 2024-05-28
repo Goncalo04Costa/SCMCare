@@ -4,7 +4,6 @@ using Modelos;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1;
-using WebApplication1.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -19,80 +18,85 @@ public class AuthController : ControllerBase
         _context = appDbContext;
     }
 
-
-    // mudar isso de id para username 
-    // funcao para verificar se token passou validade
+    public class LoginRequest
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+    }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(string userUserName, string password)
+    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
-        var data = await DetermineUserRoleAsync(userUserName, password);
-        string token;
-
-
-        if (!string.IsNullOrEmpty(data.Item1 )&& data.Item1=="Funcionario"  )
+        var data = await DetermineUserRoleAsync(loginRequest.UserName, loginRequest.Password);
+        if (!string.IsNullOrEmpty(data.Role))
         {
-            token = _tokenService.GenerateToken(userUserName,  data.Item1);
+            string kid = DetermineKidBasedOnLogic(data.Role);
+            string token = _tokenService.GenerateToken(loginRequest.UserName, data.Role, kid);
             return Ok(new { Token = token });
         }
 
-       else  if (!string.IsNullOrEmpty(data.Item1) && data.Item1 == "Responsavel")
-        {
-            token = _tokenService.GenerateToken(userUserName, data.Item1);
-            return Ok(new { Token = token });
-        }
-
-        return BadRequest();
-
+        return BadRequest("Invalid username or password.");
     }
 
-    [HttpGet("{UserName}")]
-    public async Task<ActionResult<UtilizadorF>> GetUserFuncionario(string UserName, string Password)
+    private async Task<(string Role, string UserName, string Password)> DetermineUserRoleAsync(string userName, string password)
     {
-        var userR = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == UserName && f.Password == Password);
+        var userF = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == userName && f.Password == password);
+        if (userF != null)
+        {
+            return ("Funcionario", userF.UserName, userF.Password);
+        }
 
+        var userR = await _context.utilizadorR.FirstOrDefaultAsync(r => r.UserName == userName && r.Password == password);
+        if (userR != null)
+        {
+            return ("Responsavel", userR.UserName, userR.Password);
+        }
+
+        return ("", "", "");
+    }
+
+    [HttpGet("funcionario/{userName}")]
+    public async Task<ActionResult<UtilizadorF>> GetUserFuncionario(string userName, string password)
+    {
+        var userF = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == userName && f.Password == password);
+        if (userF == null)
+        {
+            return NotFound($"User with UserName {userName} not found.");
+        }
+
+        return Ok(userF);
+    }
+
+    [HttpGet("responsavel/{userName}")]
+    public async Task<ActionResult<UtilizadorR>> GetUserResponsavel(string userName, string password)
+    {
+        var userR = await _context.utilizadorR.FirstOrDefaultAsync(r => r.UserName == userName && r.Password == password);
         if (userR == null)
         {
-            return NotFound($"User com o UserName {UserName} não encontrado");
+            return NotFound($"User with UserName {userName} not found.");
         }
 
         return Ok(userR);
     }
 
-    // GET: api/UserR/5
-    [HttpGet("{UsernameR}")]
-    public async Task<ActionResult<UtilizadorR>> GetUserResponsavel(string UserName, string Password)
+    [HttpGet("validate-token")]
+    public IActionResult ValidateToken(string token)
     {
-        var userR = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == UserName && f.Password == Password);
-
-        if (userR == null)
+        var isValid = _tokenService.ValidateToken(token);
+        if (isValid)
         {
-            return NotFound($"User com o UserName {UserName} não encontrado");
+            return Ok("Token is valid.");
         }
-
-        return Ok(userR);
+        return Unauthorized("Token is invalid or expired.");
     }
 
-    private async Task<(string,string,string)> DetermineUserRoleAsync(string userUserName, string password)
+    private string DetermineKidBasedOnLogic(string role)
     {
-        var funcionario = await GetUserFuncionario(userUserName, password);
-
-        if (funcionario.Result is OkObjectResult okFuncionario)
+        return role switch
         {
-            var funcionarioResult = okFuncionario.Value as UtilizadorF;
-            return ("Funcionario", funcionarioResult.UserName, funcionarioResult.Password);
-        }
-
-        var responsavel = await GetUserResponsavel(userUserName, password);
-        if(responsavel.Result is OkObjectResult okResponsavel)
-        {
-            var responsavelresult = okResponsavel.Value as UtilizadorR;
-            return  ("Responsavel", responsavelresult.UserName, responsavelresult.Password);
-        }
-
-
-        return ("","","");
+            "Funcionario" => "kid_for_funcionario",
+            "Responsavel" => "kid_for_responsavel",
+            _ => "default_kid",
+        };
     }
-
-    
 }

@@ -105,5 +105,10 @@ namespace WebApplication1.Controllers
         {
             return _context.utilizadorF.Any(e => e.Id == id);
         }
+
+        internal async Task PostAsync(string v, StringContent stringContent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

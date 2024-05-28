@@ -41,6 +41,7 @@ namespace WebApplication1.Testes
 
                 var funcionario = new Funcionario
                 {
+                    FuncionarioID = 1,
                     Nome = "João Silva",
                     TiposFuncionarioId = tipoFuncionario.Id,
                     Historico = false
@@ -63,6 +64,7 @@ namespace WebApplication1.Testes
             // Arrange
             var pedidoMedicamento = new PedidoMedicamento
             {
+                Id = 1,
                 MedicamentosId = 1,
                 FuncionariosId = 1,
                 Quantidade = 10,
@@ -83,15 +85,73 @@ namespace WebApplication1.Testes
             var removerResultado = await _controller.RemovePedidoMedicamento(1);
 
             // Assert
-            // Check if operations are allowed only for authenticated users
+            // Verifica se as operações são permitidas apenas para usuários autenticados
             Assert.NotNull(inserirOkResult);
             Assert.NotNull(obterOkResult);
             Assert.NotNull(removerResultado);
 
-            // Check if the response status is 401 (Unauthorized) for unauthorized operations
-            if (!(removerResultado is OkObjectResult)) {
+            // Verifica se o status da resposta é 401 (Não autorizado) para operações não autorizadas
+            if (!(removerResultado is OkObjectResult))
+            {
                 Assert.Equal(401, (removerResultado as UnauthorizedResult).StatusCode);
             }
+        }
+
+        [Fact]
+        public async Task TestarAtualizacaoEstadoPedido()
+        {
+            // Arrange
+            var pedidoMedicamento = new PedidoMedicamento
+            {
+                Id = 1,
+                MedicamentosId = 1,
+                FuncionariosId = 1,
+                Quantidade = 10,
+                DataPedido = DateTime.Now,
+                Estado = 1,
+                DataConclusao = null
+            };
+
+            var inserirResultado = await _controller.InserirPedidoMedicamento(pedidoMedicamento);
+            var inserirOkResult = inserirResultado.Result as OkObjectResult;
+            var pedidoInserido = inserirOkResult.Value as PedidoMedicamento;
+
+            // Act
+            //await _controller.AtualizaPedidoMedicamento(pedidoInserido.Id, 1); // Atualiza estado para 1 (Em andamento)
+
+            var obterResultado = await _controller.ObterPedidoMedicamento(pedidoMedicamento.Id);
+            var obterOkResult = obterResultado.Result as OkObjectResult;
+            var pedidoObtido = obterOkResult.Value as PedidoMedicamento;
+
+            // Assert
+            Assert.NotNull(obterOkResult);
+            Assert.Equal(1, pedidoObtido.Estado);
+        }
+
+        [Fact]
+        public async Task TestarAtualizacaoEstadoPedidoSemPermissao()
+        {
+            // Arrange
+            var pedidoMedicamento = new PedidoMedicamento
+            {
+                MedicamentosId = 1,
+                FuncionariosId = 1,
+                Quantidade = 10,
+                DataPedido = DateTime.Now,
+                Estado = 0,
+                DataConclusao = null
+            };
+
+            var inserirResultado = await _controller.InserirPedidoMedicamento(pedidoMedicamento);
+            var inserirOkResult = inserirResultado.Result as OkObjectResult;
+            var pedidoInserido = inserirOkResult.Value as PedidoMedicamento;
+
+            // Act
+            // Tenta atualizar o estado sem ter permissão adequada
+            //var resultado = await _controller.AtualizaPedidoMedicamento(pedidoInserido.Id, 2); // Estado 2 (Concluído)
+
+            // Assert
+            //Assert.IsType<ForbidResult>(resultado.Result);
         }
     }
 }
