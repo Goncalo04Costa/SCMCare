@@ -101,10 +101,10 @@ function CriarTabela(dados) {
                 c5.innerHTML = '<span class="material-icons" title="Tem acompanhante">check_circle</span>';
             }
             else if (item.funcionarioId) {
-                c5.innerHTML = '<span class="material-icons" title="Funcionário ' + item.funcionarioId+' como acompanhante">check_circle</span>';
+                c5.innerHTML = '<span style="cursor:pointer" class="material-icons" title="Funcionário ' + item.funcionarioId+' como acompanhante">check_circle</span>';
             }
             else {
-                c5.innerHTML = '<span class="material-icons" title="Utente sem acompanhante">cancel</span>';
+                c5.innerHTML = '<span style="cursor:pointer" class="material-icons" title="Utente sem acompanhante">cancel</span>';
             }
             c6.innerHTML = botoes;
         });

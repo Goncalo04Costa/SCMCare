@@ -22,7 +22,7 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LigacaoGoncalo")));
+                options.UseSqlServer(Configuration.GetConnectionString("LigacaoDiogo")));
 
             // Add Identity services
             services.AddIdentity<IdentityUser, IdentityRole>()
@@ -116,8 +116,7 @@ namespace WebApplication1
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(env.ContentRootPath, "HTML"))
-                //,
-                //RequestPath = "/HTML"
+                //,RequestPath = "/HTML"
             });
 
             app.UseRouting();
