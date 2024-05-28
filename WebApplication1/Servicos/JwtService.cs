@@ -21,11 +21,12 @@ namespace WebApplication1.Servicos
 
         public AuthenticationResponse CreateToken(ApplicationUser user)
         {
-            var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
+            DateTime datacriacao = DateTime.Now;
+            var expires = datacriacao.AddMinutes(60);
             var token = CreateJwtToken(
                 CreateClaims(user),
                 CreateSigningCredentials(),
-                expiration
+                expires
             );
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -33,7 +34,7 @@ namespace WebApplication1.Servicos
             {
                 
                 Token = tokenHandler.WriteToken(token),
-                Expiration = expiration
+                Expiration = expires
             };
         }
 

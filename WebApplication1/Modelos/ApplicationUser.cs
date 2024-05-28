@@ -8,9 +8,7 @@ namespace WebApplication1.Modelos
     /// </summary>
     public class ApplicationUser : IdentityUser
     {
-        /// <summary>
-        /// User's Name
-        /// </summary>
+        
         public string Name { get; set; } = null!;
     }
 }
