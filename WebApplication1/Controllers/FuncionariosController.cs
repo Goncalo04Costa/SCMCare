@@ -17,6 +17,49 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Funcionario>>> ObterTodosFuncionarios(
+            int? idMin = null, int? idMax = null,
+            string? nomeMin = null, string? nomeMax = null,
+            bool historico0 = false, bool historico1 = false)
+        {
+            IQueryable<Funcionario> query = _context.Funcionarios;
+
+            if (idMin.HasValue)
+            {
+                query = query.Where(d => d.FuncionarioID >= idMin.Value);
+            }
+
+            if (idMax.HasValue)
+            {
+                query = query.Where(d => d.FuncionarioID <= idMax.Value);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMin))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMin) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(nomeMax))
+            {
+                query = query.Where(d => d.Nome.CompareTo(nomeMax + "ZZZ") <= 0);
+            }
+
+            if (historico0 && !historico1)
+            {
+                query = query.Where(d => !d.Historico);
+            }
+
+            else if (!historico0 && historico1)
+            {
+                query = query.Where(d => d.Historico);
+            }
+
+            var dados = await query.ToListAsync();
+            return Ok(dados);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Funcionario>> GetFuncionario(int id)
         {

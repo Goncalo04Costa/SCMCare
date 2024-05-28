@@ -80,7 +80,7 @@ namespace WebApplication1.Testes
             var result = await _controller.GetFuncionario(funcionarioID);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
+            Assert.IsType<NotFoundObjectResult>(result.Result);
         }
 
         // Método para testar a atualização de um funcionário que não existe
@@ -95,7 +95,7 @@ namespace WebApplication1.Testes
             var result = await _controller.PutFuncionario(funcionarioID, funcionario);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<NotFoundObjectResult>(result);
         }
 
         // Método para testar a exclusão de um funcionário que não existe

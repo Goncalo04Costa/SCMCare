@@ -64,6 +64,7 @@ namespace WebApplication1.Testes
             // Arrange
             var pedidoMedicamento = new PedidoMedicamento
             {
+                Id = 1,
                 MedicamentosId = 1,
                 FuncionariosId = 1,
                 Quantidade = 10,
@@ -102,11 +103,12 @@ namespace WebApplication1.Testes
             // Arrange
             var pedidoMedicamento = new PedidoMedicamento
             {
+                Id = 1,
                 MedicamentosId = 1,
                 FuncionariosId = 1,
                 Quantidade = 10,
                 DataPedido = DateTime.Now,
-                Estado = 0,
+                Estado = 1,
                 DataConclusao = null
             };
 
@@ -117,7 +119,7 @@ namespace WebApplication1.Testes
             // Act
             //await _controller.AtualizaPedidoMedicamento(pedidoInserido.Id, 1); // Atualiza estado para 1 (Em andamento)
 
-            var obterResultado = await _controller.ObterPedidoMedicamento(pedidoInserido.Id);
+            var obterResultado = await _controller.ObterPedidoMedicamento(pedidoMedicamento.Id);
             var obterOkResult = obterResultado.Result as OkObjectResult;
             var pedidoObtido = obterOkResult.Value as PedidoMedicamento;
 

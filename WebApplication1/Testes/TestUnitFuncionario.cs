@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Modelos;
 using WebApplication1.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Testes
 {
@@ -49,7 +50,7 @@ namespace WebApplication1.Testes
         public async Task TestGetFuncionarioIdValido()
         {
             // Arrange
-            var funcionario = new Funcionario { Nome = "Maria", Historico = false };
+            var funcionario = new Funcionario { Nome = "João", TiposFuncionarioId = 1, Historico = false };
             var resultInserir = await _controller.PostFuncionario(funcionario);
             var funcionarioInserido = (resultInserir.Result as CreatedAtActionResult).Value as Funcionario;
 

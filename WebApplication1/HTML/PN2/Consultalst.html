@@ -60,5 +60,65 @@ LESI-IPCA -->
         </div>
     </div>
 
+    <!-- Modal Funcionário -->
+    <div class="modal" id="modalFunc">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100">Funcionário Acompanhante</h4>
+                </div>
+
+                <!-- Corpo -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-section">
+                            <input type="hidden" class="form-control" id="idModalF">
+                            <label for="func1">Funcionário:</label>
+                            <input type="text" class="form-control" id="func1" autocomplete="off">
+                            <div class="dropdown-test">
+                                <div id="func2" class="dropdown-auto list-group"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="Acao()">Confirmar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Responsável -->
+    <div class="modal" id="modalResp">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100">Disponibilidade</h4>
+                </div>
+
+                <!-- Corpo -->
+                <div class="modal-body">
+                    <div class="row justify-content-between">
+                        <div class="col-4 form-section">
+                            <input type="text" class="form-control" id="idModalR" disabled>
+                        </div>
+                        <div class="col-4 form-section">
+                            <input type="date" class="form-control" id="dataModalR" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="Acao()">Confirmar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
