@@ -1,14 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using WebApplication1.Modelos;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using WebApplication1.Models;
+
 
 namespace WebApplication1.Servicos
 {
-    public class JwtService 
+    public class JwtService
     {
+        private const int ExpirationMinutes = 180;
         private readonly IConfiguration _configuration;
 
         public JwtService(IConfiguration configuration)
@@ -16,23 +19,49 @@ namespace WebApplication1.Servicos
             _configuration = configuration;
         }
 
-        public string GenerateToken(string userId, string role)
+        public AuthenticationResponse CreateToken(ApplicationUser user)
         {
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
+            var token = CreateJwtToken(
+                CreateClaims(user),
+                CreateSigningCredentials(),
+                expiration
+            );
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            return new AuthenticationResponse
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userId),
-                    new Claim(ClaimTypes.Role, role)
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                
+                Token = tokenHandler.WriteToken(token),
+                Expiration = expiration
+            };
+        }
+
+        private JwtSecurityToken CreateJwtToken(Claim[] claims, SigningCredentials credentials, DateTime expiration) =>
+            new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: expiration,
+                signingCredentials: credentials
+            );
+
+        private Claim[] CreateClaims(ApplicationUser user) =>
+            new[] {
+                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
+        private SigningCredentials CreateSigningCredentials() =>
+            new SigningCredentials(
+                new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+                ),
+                SecurityAlgorithms.HmacSha256
+            );
     }
 }

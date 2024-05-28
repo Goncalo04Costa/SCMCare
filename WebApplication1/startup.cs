@@ -50,7 +50,7 @@ namespace WebApplication1
                 };
             });
 
-            services.AddScoped<JwtService>(); // Add JwtService to DI container
+            services.AddScoped<TokenService>(); // Add JwtService to DI container
 
             // Add Swagger configuration
             services.AddSwaggerGen(c =>
@@ -131,3 +131,4 @@ namespace WebApplication1
         }
     }
 }
+

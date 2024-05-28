@@ -21,7 +21,7 @@ namespace WebApplication1.Controllers
         public async Task<ActionResult<Funcionario>> GetFuncionario(int id)
         {
             var funcionario = await _context.Funcionarios
-                //.Include(f => f.Contactos) // Inclui os contatos do funcionário
+                
                 .FirstOrDefaultAsync(f => f.FuncionarioID == id);
 
             if (funcionario == null)

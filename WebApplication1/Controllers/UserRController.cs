@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Modelos;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
@@ -84,7 +85,7 @@ namespace WebApplication1.Controllers
             return Ok($"User com o ID {id} atualizado com sucesso");
         }
 
-        // DELETE: api/UserR/5
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserResponsavel(int id)
         {
@@ -107,6 +108,8 @@ namespace WebApplication1.Controllers
         }
 
 
+    
 
+      
     }
 }
