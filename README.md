@@ -46,7 +46,7 @@ E assim surgiu o **SCM CARE**, um projeto que pretende revolucionar os sistemas 
 5. Submit a pull request to the main repository's branch.
 
 
-#### Equipa:
+## Equipa:
 * Gonçalo Costa , nº26024
 * Daniela Pereira, nº25988
 * Diogo Fernandes, nº26008
