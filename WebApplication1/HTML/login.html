@@ -76,7 +76,8 @@
             if (response.ok) {
                 const data = await response.json();
                 alert('Login successful! Token: ' + data.token);
-                // Save the token, redirect, or take other actions
+                window.location.href = 'https://localhost:7134/swagger/index.html';
+                
             } else {
                 alert('Login failed. Please check your credentials.');
             }

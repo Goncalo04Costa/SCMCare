@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>SCMCare - API Documentation</title>
+    <link rel="icon" href="img/transferir.png" type="image/png" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css">
+    <style>
+        .api-section {
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .api-endpoint {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="bg-info text-white text-center py-3">
+        <h1>SCMCare - API Documentation</h1>
+    </header>
+
+    <div class="container-fluid">
+        <div id="apiList" class="row">
+            <!-- API endpoints will be populated here -->
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        async function fetchApiDocumentation() {
+            const response = await fetch('http://localhost:7134/swagger/v1/swagger.json');
+            if (!response.ok) {
+                throw new Error('Failed to fetch API documentation');
+            }
+            const data = await response.json();
+            return data;
+        }
+
+        async function renderApiEndpoints(apiDoc) {
+            const apiListContainer = document.getElementById('apiList');
+            const paths = apiDoc.paths;
+
+            for (const path in paths) {
+                const methods = paths[path];
+
+                for (const method in methods) {
+                    const endpoint = methods[method];
+                    const summary = endpoint.summary || '';
+                    const description = endpoint.description || '';
+
+                    const endpointHtml = `
+                            <div class="col-md-6 api-endpoint">
+                                <div class="api-section">
+                                    <h3>${method.toUpperCase()} ${path}</h3>
+                                    <p>${summary}</p>
+                                    <p>${description}</p>
+                                </div>
+                            </div>
+                        `;
+
+                    apiListContainer.insertAdjacentHTML('beforeend', endpointHtml);
+                }
+            }
+        }
+
+        async function init() {
+            try {
+                const apiDoc = await fetchApiDocumentation();
+                renderApiEndpoints(apiDoc);
+            } catch (error) {
+                console.error('Error fetching API documentation:', error);
+                alert('Failed to load API documentation. Please try again later.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => init());
+    </script>
+
+</body>
+
+</html>
