@@ -46,4 +46,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="HTML\PN1\" />
+    <Folder Include="HTML\PN3\" />
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

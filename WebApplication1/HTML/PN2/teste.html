@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autocomplete with Bootstrap</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .autocomplete-suggestions {
+      max-height: 200px;
+      overflow-y: auto;
+      position: absolute;
+      z-index: 1000;
+      width: 100%;
+    }
+    .autocomplete-suggestion {
+      padding: 10px;
+      cursor: pointer;
+    }
+    .autocomplete-suggestion:hover {
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-5">
+  <div class="form-group">
+    <label for="autocomplete-input">Search for a person:</label>
+    <input type="text" class="form-control" id="autocomplete-input" autocomplete="off">
+    <div id="autocomplete-dropdown" class="autocomplete-suggestions list-group"></div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+// JavaScript data and logic
+
+const data = [
+  { name: "John", value: 1, car: false },
+  { name: "Jane", value: 2, car: true }
+];
+
+const input = document.getElementById('autocomplete-input');
+const dropdown = document.getElementById('autocomplete-dropdown');
+
+input.addEventListener('input', function() {
+  const searchTerm = input.value.toLowerCase();
+  dropdown.innerHTML = '';
+
+  if (searchTerm.length === 0) {
+    dropdown.classList.remove('show');
+    return;
+  }
+
+  const filteredData = data.filter(item => item.name.toLowerCase().includes(searchTerm));
+  
+  if (filteredData.length === 0) {
+    dropdown.classList.remove('show');
+    return;
+  }
+
+  filteredData.forEach(item => {
+    const suggestion = document.createElement('a');
+    suggestion.classList.add('list-group-item', 'list-group-item-action', 'autocomplete-suggestion');
+    suggestion.textContent = item.name;
+    suggestion.setAttribute('data-value', item.value);
+
+    suggestion.addEventListener('click', function() {
+      input.value = item.name;
+      input.setAttribute('data-value', item.value);
+      dropdown.innerHTML = '';
+      dropdown.classList.remove('show');
+    });
+
+    dropdown.appendChild(suggestion);
+  });
+
+  dropdown.classList.add('show');
+});
+
+document.addEventListener('click', function(event) {
+  if (!dropdown.contains(event.target) && event.target !== input) {
+    dropdown.innerHTML = '';
+    dropdown.classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
