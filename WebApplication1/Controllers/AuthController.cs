@@ -18,71 +18,65 @@ public class AuthController : ControllerBase
         _context = appDbContext;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(string userUserName, string password)
+    public class LoginRequest
     {
-        var data = await DetermineUserRoleAsync(userUserName, password);
-        string token;
+        public string UserName { get; set; }
+        public string Password { get; set; }
+    }
 
-        if (!string.IsNullOrEmpty(data.Item1) && data.Item1 == "Funcionario")
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+    {
+        var data = await DetermineUserRoleAsync(loginRequest.UserName, loginRequest.Password);
+        if (!string.IsNullOrEmpty(data.Role))
         {
-            string kid = DetermineKidBasedOnLogic(data.Item1);
-            token = _tokenService.GenerateToken(userUserName, data.Item1, kid);
-            return Ok(new { Token = token });
-        }
-        else if (!string.IsNullOrEmpty(data.Item1) && data.Item1 == "Responsavel")
-        {
-            string kid = DetermineKidBasedOnLogic(data.Item1);
-            token = _tokenService.GenerateToken(userUserName, data.Item1, kid);
+            string kid = DetermineKidBasedOnLogic(data.Role);
+            string token = _tokenService.GenerateToken(loginRequest.UserName, data.Role, kid);
             return Ok(new { Token = token });
         }
 
         return BadRequest("Invalid username or password.");
     }
 
-    [HttpGet("funcionario/{UserName}")]
-    public async Task<ActionResult<UtilizadorF>> GetUserFuncionario(string UserName, string Password)
+    private async Task<(string Role, string UserName, string Password)> DetermineUserRoleAsync(string userName, string password)
     {
-        var userF = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == UserName && f.Password == Password);
+        var userF = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == userName && f.Password == password);
+        if (userF != null)
+        {
+            return ("Funcionario", userF.UserName, userF.Password);
+        }
 
+        var userR = await _context.utilizadorR.FirstOrDefaultAsync(r => r.UserName == userName && r.Password == password);
+        if (userR != null)
+        {
+            return ("Responsavel", userR.UserName, userR.Password);
+        }
+
+        return ("", "", "");
+    }
+
+    [HttpGet("funcionario/{userName}")]
+    public async Task<ActionResult<UtilizadorF>> GetUserFuncionario(string userName, string password)
+    {
+        var userF = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == userName && f.Password == password);
         if (userF == null)
         {
-            return NotFound($"User with UserName {UserName} not found.");
+            return NotFound($"User with UserName {userName} not found.");
         }
 
         return Ok(userF);
     }
 
-    [HttpGet("responsavel/{UserName}")]
-    public async Task<ActionResult<UtilizadorR>> GetUserResponsavel(string UserName, string Password)
+    [HttpGet("responsavel/{userName}")]
+    public async Task<ActionResult<UtilizadorR>> GetUserResponsavel(string userName, string password)
     {
-        var userR = await _context.utilizadorR.FirstOrDefaultAsync(r => r.UserName == UserName && r.Password == Password);
-
+        var userR = await _context.utilizadorR.FirstOrDefaultAsync(r => r.UserName == userName && r.Password == password);
         if (userR == null)
         {
-            return NotFound($"User with UserName {UserName} not found.");
+            return NotFound($"User with UserName {userName} not found.");
         }
 
         return Ok(userR);
-    }
-
-    private async Task<(string, string, string)> DetermineUserRoleAsync(string userUserName, string password)
-    {
-        var userF = await GetUserFuncionario(userUserName, password);
-        if (userF.Result is OkObjectResult okFuncionario)
-        {
-            var funcionarioResult = okFuncionario.Value as UtilizadorF;
-            return ("Funcionario", funcionarioResult.UserName, funcionarioResult.Password);
-        }
-
-        var userR = await GetUserResponsavel(userUserName, password);
-        if (userR.Result is OkObjectResult okResponsavel)
-        {
-            var responsavelResult = okResponsavel.Value as UtilizadorR;
-            return ("Responsavel", responsavelResult.UserName, responsavelResult.Password);
-        }
-
-        return ("", "", "");
     }
 
     [HttpGet("validate-token")]
@@ -98,18 +92,11 @@ public class AuthController : ControllerBase
 
     private string DetermineKidBasedOnLogic(string role)
     {
-        // Example logic to determine kid based on role or environment
-        if (role == "Funcionario")
+        return role switch
         {
-            return "kid_for_funcionario";
-        }
-        else if (role == "Responsavel")
-        {
-            return "kid_for_responsavel";
-        }
-        else
-        {
-            return "default_kid";
-        }
+            "Funcionario" => "kid_for_funcionario",
+            "Responsavel" => "kid_for_responsavel",
+            _ => "default_kid",
+        };
     }
 }
