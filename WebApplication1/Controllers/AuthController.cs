@@ -1,44 +1,98 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Modelos;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1;
-using WebApplication1.Modelos;
+using WebApplication1.Controllers;
 
-namespace YourNamespace.Controllers
+[ApiController]
+[Route("[controller]")]
+public class AuthController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    private readonly TokenService _tokenService;
+    private readonly AppDbContext _context;
+
+    public AuthController(TokenService tokenService, AppDbContext appDbContext)
     {
-        private readonly IConfiguration _configuration;
-        private readonly AppDbContext _context;
-
-        public AuthController(IConfiguration configuration, AppDbContext context)
-        {
-            _configuration = configuration;
-            _context = context;
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(UtilizadorF loginUser)
-        {
-            var user = await _context.utilizadorF.FirstOrDefaultAsync(u => u.UserName == loginUser.UserName && u.Password == loginUser.Password);
-
-            if (user == null)
-            {
-                return Unauthorized("Invalid username or password");
-            }
-
-            return Ok(user);
-        }
-
-      
+        _tokenService = tokenService;
+        _context = appDbContext;
     }
+
+
+    // mudar isso de id para username 
+    // funcao para verificar se token passou validade
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(string userUserName, string password)
+    {
+        var data = await DetermineUserRoleAsync(userUserName, password);
+        string token;
+
+
+        if (!string.IsNullOrEmpty(data.Item1 )&& data.Item1=="Funcionario"  )
+        {
+            token = _tokenService.GenerateToken(userUserName,  data.Item1);
+            return Ok(new { Token = token });
+        }
+
+       else  if (!string.IsNullOrEmpty(data.Item1) && data.Item1 == "Responsavel")
+        {
+            token = _tokenService.GenerateToken(userUserName, data.Item1);
+            return Ok(new { Token = token });
+        }
+
+        return BadRequest();
+
+    }
+
+    [HttpGet("{UserName}")]
+    public async Task<ActionResult<UtilizadorF>> GetUserFuncionario(string UserName, string Password)
+    {
+        var userR = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == UserName && f.Password == Password);
+
+        if (userR == null)
+        {
+            return NotFound($"User com o UserName {UserName} não encontrado");
+        }
+
+        return Ok(userR);
+    }
+
+    // GET: api/UserR/5
+    [HttpGet("{UsernameR}")]
+    public async Task<ActionResult<UtilizadorR>> GetUserResponsavel(string UserName, string Password)
+    {
+        var userR = await _context.utilizadorF.FirstOrDefaultAsync(f => f.UserName == UserName && f.Password == Password);
+
+        if (userR == null)
+        {
+            return NotFound($"User com o UserName {UserName} não encontrado");
+        }
+
+        return Ok(userR);
+    }
+
+    private async Task<(string,string,string)> DetermineUserRoleAsync(string userUserName, string password)
+    {
+        var funcionario = await GetUserFuncionario(userUserName, password);
+
+        if (funcionario.Result is OkObjectResult okFuncionario)
+        {
+            var funcionarioResult = okFuncionario.Value as UtilizadorF;
+            return ("Funcionario", funcionarioResult.UserName, funcionarioResult.Password);
+        }
+
+        var responsavel = await GetUserResponsavel(userUserName, password);
+        if(responsavel.Result is OkObjectResult okResponsavel)
+        {
+            var responsavelresult = okResponsavel.Value as UtilizadorR;
+            return  ("Responsavel", responsavelresult.UserName, responsavelresult.Password);
+        }
+
+
+        return ("","","");
+    }
+
+    
 }
