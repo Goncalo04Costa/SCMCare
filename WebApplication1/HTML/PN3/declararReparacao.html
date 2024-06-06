@@ -64,7 +64,7 @@
         <form id="avariaForm" class="mt-4">
             <div class="form-group">
                 <label for="equipamentosId">ID do Equipamento:</label>
-                <input type="number" id="pedidosId" name="pedido" class="form-control" required>
+                <input type="number" id="pedidosId" name="pedido" class="form-control" value="2" required>
             </div>
             <div class="form-group">
                 <label for="descricao">Descrição:</label>
@@ -79,7 +79,16 @@
                     <option value="cancelada">Cancelada</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Declarar Reparação</button>
+
+            <div class="row">
+                <div class="col-sm-6 pt-4">
+                    <a href="https://localhost:7134/PN3/listaavarias.html" id="btnAcao" class="btn btn-danger">Voltar</a>
+                </div>
+                <div class="col-sm-6 pt-3 text-right">
+                    <button type="submit" class="btn btn-primary" onclick="window.location.href='https://localhost:7134/PN3/listaavarias_2.html'">Declarar Reparação</button>
+                </div>
+
+            </div>
         </form>
         <p id="responseMessage" class="mt-4"></p>
     </div>

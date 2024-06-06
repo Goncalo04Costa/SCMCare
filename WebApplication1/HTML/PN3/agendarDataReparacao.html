@@ -74,7 +74,16 @@
                 <label for="data">Data:</label>
                 <input type="datetime-local" id="data" name="data" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">Agendar Reparação</button>
+
+            <div class="row">
+                <div class="col-sm-6 pt-4">
+                    <a id="btnAcao" class="btn btn-danger">Voltar</a>
+                </div>
+                <div class="col-sm-6 pt-3 text-right">
+                    <button type="button" class="btn btn-primary" onclick="window.location.href='https://localhost:7134/PN3/listaavarias.html'">Agendar Reparação</button>
+                </div>
+
+            </div>
         </form>
         <p id="responseMessage" class="mt-4"></p>
     </div>
