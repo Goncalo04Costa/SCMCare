@@ -100,14 +100,14 @@
     </div>
 
     <div class="header">
-        <h1>Santa Casa da Misericórdia</h1>
-        <p>Apoio e Solidariedade desde 1498</p>
+        <h1>SCM Care</h1>
+        <p>Projeto Desenvolvimento de Software</p>
     </div>
 
     <div class="process-buttons">
         <button onclick="scrollToSection('processo1')">Processo de Negócio 1</button>
         <button onclick="redirectToConsultalst()">Processo de Negócio 2</button>
-        <button onclick="scrollToSection('processo3')">Processo de Negócio 3</button>
+        <button onclick="redirectNovaAvaria('processo3')">Processo de Negócio 3</button>
     </div>
 
     <script>
@@ -120,6 +120,10 @@
 
         function redirectToConsultalst() {
             window.location.href = 'https://localhost:7134/PN2/Consultalst.html';
+        }
+
+        function redirectNovaAvaria() {
+            window.location.href = 'https://localhost:7134/PN3/novaavaria.html';
         }
     </script>
 

@@ -25,8 +25,14 @@
                 background-color: #f8f9fa;
             }
     </style>
+    <script>
+        function voltarMenu() {
+            window.location.href = "https://localhost:7134/menu.html";
+        }
+    </script>
 </head>
 <body>
+    <button class="btn btn-primary float-right mt-3" onclick="voltarMenu()">Voltar ao Menu</button>
     <div class="container mt-5">
         <h1>Inserir Nova Avaria</h1>
         <form id="avariaForm" class="mt-4">

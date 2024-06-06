@@ -14,6 +14,11 @@
             estado: parseInt(estado)
         };
 
+        function voltarMenu() {
+            window.location.href = "https://localhost:7134/menu.html";
+        }
+
+
         $.ajax({
             url: 'https://localhost:5001/api/Avarias',
             method: 'POST',
