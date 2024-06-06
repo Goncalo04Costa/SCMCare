@@ -9,7 +9,7 @@
             font-family: 'Georgia', serif;
             margin: 0;
             padding: 0;
-            background-color: white;
+            background-color: #f7f7f7;
             text-align: center; /* Centraliza o conteúdo na página */
         }
 
@@ -101,16 +101,14 @@
 
     <div class="header">
         <h1>SCM Care</h1>
-        <p>Projeto de Desenvolvimento de Software</p>
+        <p>Projeto Desenvolvimento de Software</p>
     </div>
 
     <div class="process-buttons">
         <button onclick="scrollToSection('processo1')">Processo de Negócio 1</button>
-        <button onclick="scrollToSection('processo2')">Processo de Negócio 2</button>
-        <button onclick="scrollToSection('processo3')">Processo de Negócio 3</button>
+        <button onclick="redirectToConsultalst()">Processo de Negócio 2</button>
+        <button onclick="redirectNovaAvaria('processo3')">Processo de Negócio 3</button>
     </div>
-
-   
 
     <script>
         function scrollToSection(sectionId) {
@@ -118,6 +116,14 @@
             if (section) {
                 section.scrollIntoView({ behavior: 'smooth' });
             }
+        }
+
+        function redirectToConsultalst() {
+            window.location.href = 'https://localhost:7134/PN2/Consultalst.html';
+        }
+
+        function redirectNovaAvaria() {
+            window.location.href = 'https://localhost:7134/PN3/novaavaria.html';
         }
     </script>
 
