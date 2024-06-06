@@ -64,7 +64,7 @@
     </script>
 </head>
 <body>
-    <button class="btn btn-primary float-right mt-3" onclick="voltarMenu()">Voltar ao Menu</button>
+    
     <div class="container mt-5">
         <button class="btn btn-primary float-right mb-3" onclick="voltarMenu()">Voltar ao Menu</button>
         <h1>Inserir Nova Avaria</h1>
@@ -85,7 +85,7 @@
                 <label for="estado">Estado:</label>
                 <input type="number" id="estado" name="estado" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">Inserir Avaria</button>
+            <button type="submit" class="btn btn-primary" onclick="window.location.href='https://localhost:7134/PN3/listaavarias.html'">Declarar Avaria</button>
         </form>
         <p id="responseMessage" class="mt-4"></p>
     </div>
