@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santa Casa da Misericórdia</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            text-align: center; /* Centraliza o conteúdo na página */
+        }
+
+        .navbar {
+            background-color: #0056b3;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding: 10px 0;
+        }
+
+            .navbar .logout {
+                float: right;
+                color: white;
+                text-decoration: none;
+                padding: 10px 20px;
+            }
+
+        .header {
+            text-align: center;
+            padding: 50px;
+            background: #0056b3;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 48px;
+            }
+
+            .header p {
+                font-size: 20px;
+            }
+
+        .process-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin: 0 auto; /* Centraliza os botões */
+            max-width: 600px; /* Limita a largura dos botões */
+            margin-bottom: 50px; /* Espaçamento abaixo dos botões */
+        }
+
+            .process-buttons button {
+                padding: 15px 30px;
+                background-color: #007BFF;
+                border: none;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.3s, color 0.3s;
+                border-radius: 8px;
+            }
+
+                .process-buttons button:hover {
+                    background-color: #0056b3; /* Tom mais escuro de azul */
+                }
+
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+            .section h2 {
+                font-size: 28px;
+                margin-top: 0;
+            }
+
+            .section p {
+                font-size: 16px;
+            }
+
+            .section img {
+                width: 100%;
+                height: auto;
+                border-radius: 8px;
+                margin-top: 20px;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="https://localhost:7134/login.html" class="logout">Logout</a>
+    </div>
+
+    <div class="header">
+        <h1>SCM Care</h1>
+        <p>Projeto de Desenvolvimento de Software</p>
+    </div>
+
+    <div class="process-buttons">
+        <button onclick="scrollToSection('processo1')">Processo de Negócio 1</button>
+        <button onclick="scrollToSection('processo2')">Processo de Negócio 2</button>
+        <button onclick="scrollToSection('processo3')">Processo de Negócio 3</button>
+    </div>
+
+   
+
+    <script>
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+
+</body>
+</html>

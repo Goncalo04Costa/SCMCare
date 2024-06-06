@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Inserir Nova Avaria</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <style>
+        .dropdown-test {
+            max-height: 100px;
+            overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .dropdown-auto {
+            cursor: pointer;
+        }
+
+            .dropdown-auto:hover {
+                background-color: #f8f9fa;
+            }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Inserir Nova Avaria</h1>
+        <form id="avariaForm" class="mt-4">
+            <div class="form-group">
+                <label for="data">Data:</label>
+                <input type="datetime-local" id="data" name="data" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="equipamentosId">ID do Equipamento:</label>
+                <input type="number" id="equipamentosId" name="equipamentosId" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descrição:</label>
+                <input type="text" id="descricao" name="descricao" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <input type="number" id="estado" name="estado" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Inserir Avaria</button>
+        </form>
+        <p id="responseMessage" class="mt-4"></p>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

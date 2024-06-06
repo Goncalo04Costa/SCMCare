@@ -22,9 +22,9 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("LigacaoGoncalo")));
+            options.UseSqlServer(Configuration.GetConnectionString("LigacaoGoncalo")));
             //options.UseSqlServer(Configuration.GetConnectionString("LigacaoDiogo")));
-            options.UseSqlServer(Configuration.GetConnectionString("LigacaoSofia")));
+            //options.UseSqlServer(Configuration.GetConnectionString("LigacaoSofia")));
             // Add Identity services
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
