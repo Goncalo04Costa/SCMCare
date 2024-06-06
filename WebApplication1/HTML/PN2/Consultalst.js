@@ -234,6 +234,11 @@ function Atualiza(objeto) {
     });
 
 }
+
+function voltarMenu() {
+    window.location.href = "https://localhost:7134/menu.html";
+}
+
 function Acao() {
     var idVal;
     var idVal2;
