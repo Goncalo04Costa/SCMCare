@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Inserir Nova Avaria</title>
+    <title>Agendar Data Reparação</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -57,21 +57,11 @@
                 background-color: #f8f9fa;
             }
     </style>
-    <script>
-        function voltarMenu() {
-            window.location.href = "https://localhost:7134/menu.html";
-        }
-    </script>
 </head>
 <body>
     <div class="container mt-5">
-        <button class="btn btn-primary float-right mb-3" onclick="voltarMenu()">Voltar ao Menu</button>
-        <h1>Inserir Nova Avaria</h1>
+        <h1>Agendar Data Reparação</h1>
         <form id="avariaForm" class="mt-4">
-            <div class="form-group">
-                <label for="data">Data:</label>
-                <input type="datetime-local" id="data" name="data" class="form-control" required>
-            </div>
             <div class="form-group">
                 <label for="equipamentosId">ID do Equipamento:</label>
                 <input type="number" id="equipamentosId" name="equipamentosId" class="form-control" required>
@@ -81,10 +71,10 @@
                 <input type="text" id="descricao" name="descricao" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="estado">Estado:</label>
-                <input type="number" id="estado" name="estado" class="form-control" required>
+                <label for="data">Data:</label>
+                <input type="datetime-local" id="data" name="data" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">Inserir Avaria</button>
+            <button type="submit" class="btn btn-primary">Agendar Reparação</button>
         </form>
         <p id="responseMessage" class="mt-4"></p>
     </div>

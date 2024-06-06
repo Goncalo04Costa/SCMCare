@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HTML\PN1\**" />
+    <Content Remove="HTML\PN1\**" />
+    <EmbeddedResource Remove="HTML\PN1\**" />
+    <None Remove="HTML\PN1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Controllers\UserController.cs" />
     <Compile Remove="Controllers\UserFuncionarioDTO.cs" />
   </ItemGroup>
@@ -47,7 +54,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="HTML\PN1\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
