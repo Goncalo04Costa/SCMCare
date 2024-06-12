@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Senha</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <!--<script src="Senha.js" type="text/javascript"></script>-->
+    <style>
+        .square {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding-top: 100%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .square-content {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #b9f8ff;
+            align-content: center;
+            text-align: center;
+        }
+
+        .calendar-row {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .teste {
+            border: 5px solid white;
+        }
+    </style>
+</head>
+<body>
+    <br />
+    <div class="container border">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8 text-center">
+                <h2 id="demo" style="text-transform: capitalize;"></h2>
+            </div>
+            <div class="col-2">
+                <label for="horario">Horário:</label>
+                <select id="horario">
+                    <option value="0">Almoço</option>
+                    <option value="1">Jantar</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <div class="row calendar-row">
+                <div class="col-1">D</div>
+                <div class="col-1">S</div>
+                <div class="col-1">T</div>
+                <div class="col-1">Q</div>
+                <div class="col-1">Q</div>
+                <div class="col-1">S</div>
+                <div class="col-1">S</div>
+            </div>
+            <div class="row p-1 calendar-row">
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1" onclick="abrirModal(1)">
+                    <div class="square">
+                        <div class="square-content pointer">1</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-1 calendar-row">
+                <div class="col-1" onclick="abrirModal(2)">
+                    <div class="square">
+                        <div class="square-content pointer">2</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(3)">
+                    <div class="square">
+                        <div class="square-content pointer">3</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(4)">
+                    <div class="square">
+                        <div class="square-content pointer">4</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(5)">
+                    <div class="square">
+                        <div class="square-content pointer">5</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(6)">
+                    <div class="square">
+                        <div class="square-content pointer">6</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(7)">
+                    <div class="square">
+                        <div class="square-content pointer">7</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(8)">
+                    <div class="square">
+                        <div class="square-content pointer">8</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-1 calendar-row">
+                <div class="col-1" onclick="abrirModal(9)">
+                    <div class="square">
+                        <div class="square-content pointer">9</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(10)">
+                    <div class="square">
+                        <div class="square-content pointer">10</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(11)">
+                    <div class="square">
+                        <div class="square-content pointer">11</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(12)">
+                    <div class="square">
+                        <div class="square-content pointer">12</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(13)">
+                    <div class="square">
+                        <div class="square-content pointer">13</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(14)">
+                    <div class="square">
+                        <div class="square-content pointer">14</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(15)">
+                    <div class="square">
+                        <div class="square-content pointer">15</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-1 calendar-row">
+                <div class="col-1" onclick="abrirModal(16)">
+                    <div class="square">
+                        <div class="square-content pointer">16</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(17)">
+                    <div class="square">
+                        <div class="square-content pointer">17</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(18)">
+                    <div class="square">
+                        <div class="square-content pointer">18</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(19)">
+                    <div class="square">
+                        <div class="square-content pointer">19</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(20)">
+                    <div class="square">
+                        <div class="square-content pointer">20</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(21)">
+                    <div class="square">
+                        <div class="square-content pointer">21</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(22)">
+                    <div class="square">
+                        <div class="square-content pointer">22</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-1 calendar-row">
+                <div class="col-1" onclick="abrirModal(23)">
+                    <div class="square">
+                        <div class="square-content pointer">23</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(24)">
+                    <div class="square">
+                        <div class="square-content pointer">24</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(25)">
+                    <div class="square">
+                        <div class="square-content pointer">25</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(26)">
+                    <div class="square">
+                        <div class="square-content pointer">26</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(27)">
+                    <div class="square">
+                        <div class="square-content pointer">27</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(28)">
+                    <div class="square">
+                        <div class="square-content pointer">28</div>
+                    </div>
+                </div>
+                <div class="col-1" onclick="abrirModal(29)">
+                    <div class="square">
+                        <div class="square-content pointer">29</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-1 calendar-row">
+                <div class="col-1" onclick="abrirModal(30)">
+                    <div class="square">
+                        <div class="square-content pointer">30</div>
+                    </div>
+                </div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+                <div class="col-1"></div>
+            </div>
+        </div>
+
+        <br />
+    </div>
+
+    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="workModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100">Escolher Refeição</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6 text-center">
+                            <table class="table teste" id="tab1" onclick="seleciona('tab1')">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="2">Normal</th>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Sopa:</b></td>
+                                        <td>Sopa de legumes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Prato:</b></td>
+                                        <td>Feijoada à transmontana</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Sobremesa:</b></td>
+                                        <td>Bolo de cenoura</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6 text-center">
+                            <table class="table teste" id="tab2" onclick="seleciona('tab2')">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="2">Dieta</th>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Sopa:</b></td>
+                                        <td>Sopa de legumes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Prato:</b></td>
+                                        <td>Salada de 3 feijões com arroz branco </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Sobremesa:</b></td>
+                                        <td>Fruta da época</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="Acao()">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var y = 2024;
+        var m = 6;
+        var d = 30;
+
+        var dt = new Date(y + "-" + m + "-" + d);
+
+
+        const options = { month: 'long' };
+        const mes = dt.toLocaleDateString('pt-PT', options);
+
+        document.getElementById("demo").innerHTML = mes;
+
+        function abrirModal(id) {
+            $('#modal').modal('show');
+        }
+
+        function seleciona(id) {
+            var element = document.getElementById(id);
+            element.style.borderColor = '#0094ff';
+        }
+    </script>
+
+</body>
+</html>
